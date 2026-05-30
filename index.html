@@ -194,6 +194,7 @@ input[type=number]{-moz-appearance:textfield;}
     <p>FIFA World Cup · 11 juni – 19 juli · USA · Canada · Mexico</p>
     <div class="user-bar" id="user-bar" style="display:none">
       <span id="user-name-display"></span>
+      <button onclick="showChangePwPrompt(currentUser)" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.6rem;padding:2px 7px;cursor:pointer;font-family:'DM Sans',sans-serif">🔑</button>
       <button onclick="doLogout()">Wisselen</button>
     </div>
     <div id="pts-badge-wrap" style="display:none">
@@ -214,6 +215,7 @@ input[type=number]{-moz-appearance:textfield;}
 </div>
 <div class="tabs" id="admin-tabs" style="display:none">
   <button class="tab-btn active" onclick="switchAdminTab('scores',this)">⚽ Scores</button>
+  <button class="tab-btn" onclick="switchAdminTab('pronostieken',this)">👥 Pronostieken</button>
   <button class="tab-btn" onclick="switchAdminTab('speeldagen',this)">📅 Speeldagen</button>
   <button class="tab-btn" onclick="switchAdminTab('klassement',this)">📊 Klassement</button>
   <button class="tab-btn" onclick="switchAdminTab('groepen',this)">🗂 Groepen</button>
@@ -225,9 +227,11 @@ input[type=number]{-moz-appearance:textfield;}
   <div style="margin-top:16px">
     <div class="card">
       <div class="card-title">👋 Welkom!</div>
-      <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">Vul je naam in om je pronostiek in te vullen. Sla op voor elke wedstrijd begint!</p>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.6">Vul je naam en wachtwoord in. Eerste keer inloggen? Gebruik wachtwoord <strong style="color:var(--gold)">user2026</strong></p>
       <label class="lbl">Jouw naam</label>
-      <input class="inp" id="name-input" placeholder="bijv. Jan, Mama, Papa…" maxlength="30" onkeydown="if(event.key==='Enter')doLogin()">
+      <input class="inp" id="name-input" placeholder="bijv. Jan, Mama, Papa…" maxlength="30" onkeydown="if(event.key==='Enter')document.getElementById('pw-input').focus()">
+      <label class="lbl">Wachtwoord</label>
+      <input class="inp" type="password" id="pw-input" placeholder="Wachtwoord…" onkeydown="if(event.key==='Enter')doLogin()">
       <button class="btn btn-gold btn-block" onclick="doLogin()">⚽ Start mijn pronostiek</button>
       <div style="text-align:center;margin-top:10px">
         <button onclick="showSetup()" style="background:none;border:none;color:var(--muted);font-size:.72rem;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif">⚙️ Google koppeling instellen</button>
@@ -268,12 +272,28 @@ input[type=number]{-moz-appearance:textfield;}
 <!-- ADMIN SCREEN -->
 <div class="screen" id="screen-admin">
   <div id="admin-page-scores" class="page active"></div>
+  <div id="admin-page-pronostieken" class="page"></div>
   <div id="admin-page-speeldagen" class="page"></div>
   <div id="admin-page-klassement" class="page"></div>
   <div id="admin-page-groepen" class="page"></div>
   <div id="admin-page-punten" class="page"></div>
   <div style="text-align:center;padding:16px 0 24px">
     <button class="btn btn-outline" onclick="doLogout()">← Uitloggen</button>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD POPUP -->
+<div class="popup-overlay" id="changepw-popup" style="display:none">
+  <div class="popup-box" onclick="event.stopPropagation()" style="max-width:340px">
+    <div style="font-size:2rem;margin-bottom:6px">🔑</div>
+    <div class="popup-title" style="color:var(--gold)">Wachtwoord wijzigen</div>
+    <p style="font-size:.76rem;color:var(--muted);margin:8px 0 16px;line-height:1.6">Je gebruikt nog het standaard wachtwoord <strong style="color:var(--gold)">user2026</strong>. Stel een persoonlijk wachtwoord in!</p>
+    <input class="inp" type="password" id="new-pw-1" placeholder="Nieuw wachtwoord…" style="margin-bottom:8px">
+    <input class="inp" type="password" id="new-pw-2" placeholder="Herhaal wachtwoord…" style="margin-bottom:14px">
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="btn btn-gold" onclick="doChangePw()">✅ Opslaan</button>
+      <button class="btn btn-outline" onclick="document.getElementById('changepw-popup').style.display='none'">Later</button>
+    </div>
   </div>
 </div>
 
@@ -343,12 +363,14 @@ const DEFAULT_PTS = {winner:2,perfectScore:5,goalSlot:1,firstScorer:1,champion:1
 // ══════════════════════════════════════════════════
 let state = {
   participants: {},
+  passwords: {},      // name -> hashed password
   actualScores: {},
   actualWinner: "", actualRunnerUp: "", actualThird: "", actualBelgiumRound: "",
   sdStatus: (()=>{const s={};SPEELDAGEN.forEach(sd=>s[sd.id]="open");["SD_R32","SD_R16","SD_QF","SD_SF","SD_3RD","SD_F"].forEach(id=>s[id]="closed");return s;})(),
   pts: {...DEFAULT_PTS},
   shownPopups: []
 };
+const DEFAULT_USER_PW = "user2026";
 let currentUser = "";
 let isAdmin = false;
 let collapsed = {};
@@ -480,6 +502,7 @@ function switchAdminTab(id, btn) {
   document.querySelectorAll("#screen-admin .page").forEach(p=>p.classList.remove("active"));
   document.getElementById("admin-page-"+id).classList.add("active");
   if(id==="scores") renderAdminScores();
+  if(id==="pronostieken") renderAdminPronostieken();
   if(id==="speeldagen") renderAdminSpeeldagen();
   if(id==="klassement") renderKlassement(true);
   if(id==="groepen") renderGroepen();
@@ -541,20 +564,46 @@ function txt(text) { return document.createTextNode(text); }
 // ══════════════════════════════════════════════════
 function doLogin() {
   const name = document.getElementById("name-input").value.trim();
+  const pw = document.getElementById("pw-input").value;
   if(!name) { showToast("Vul je naam in!"); return; }
+  if(!pw) { showToast("Vul je wachtwoord in!"); return; }
+
+  // Check password
+  const storedPw = state.passwords[name];
+  if(storedPw) {
+    if(pw !== storedPw) { showToast("❌ Fout wachtwoord!"); return; }
+  } else {
+    // First login - check default password
+    if(pw !== DEFAULT_USER_PW) { showToast("❌ Eerste keer inloggen? Gebruik: user2026"); return; }
+    // Set default password
+    state.passwords[name] = DEFAULT_USER_PW;
+  }
+
   currentUser = name; isAdmin = false;
   if(!state.participants[name]) state.participants[name]={predictions:{},winner:"",runnerUp:"",third:"",belgiumRound:""};
   document.getElementById("user-name-display").textContent = "👤 "+name;
+
   // Init collapsed
   SPEELDAGEN.forEach(sd=>{
     const sdOpen=state.sdStatus[sd.id]==="open";
-    const hasEditable=sdOpen&&sd.matches.some(m=>!isLocked(m.id));
+    const adminOverride=state.sdStatus[sd.id+"_override"]===true;
+    const hasEditable=sdOpen&&(adminOverride||sd.matches.some(m=>!isLocked(m.id)));
     collapsed[sd.id]=!hasEditable;
   });
   showScreen("app");
   renderSpeeldagen();
   updateHeaderPts();
   checkSdPopups();
+
+  // Prompt password change on first login
+  if(!storedPw) {
+    setTimeout(()=>showChangePwPrompt(name), 800);
+  }
+}
+
+function showChangePwPrompt(name) {
+  const popup = document.getElementById("changepw-popup");
+  if(popup) popup.style.display="flex";
 }
 function doAdminLogin() {
   const pw = document.getElementById("admin-pw-input").value;
@@ -946,6 +995,105 @@ function renderKlassement(isAdminView=false) {
 }
 
 // ══════════════════════════════════════════════════
+// ADMIN PRONOSTIEKEN VIEW
+// ══════════════════════════════════════════════════
+function renderAdminPronostieken() {
+  const container = document.getElementById("admin-page-pronostieken");
+  container.innerHTML = "";
+
+  const participants = Object.keys(state.participants);
+  if(participants.length === 0) {
+    const card = div("card");
+    card.innerHTML = "<div class='card-title'>👥 Pronostieken</div><p style='color:var(--muted);font-size:.8rem'>Nog geen deelnemers ingelogd.</p>";
+    container.appendChild(card);
+    return;
+  }
+
+  // Filter selector
+  const filterCard = div("card");
+  filterCard.innerHTML = "<div class='card-title'>👥 Pronostieken per deelnemer</div>";
+
+  const filterRow = div(""); filterRow.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px";
+  participants.forEach(name => {
+    const btn = e("button", {class:"round-btn"+(selectedPronostiekUser===name?" sel":"")});
+    btn.textContent = name;
+    btn.addEventListener("click", () => { selectedPronostiekUser = name; renderAdminPronostieken(); });
+    filterRow.appendChild(btn);
+  });
+  filterCard.appendChild(filterRow);
+
+  if(selectedPronostiekUser && state.participants[selectedPronostiekUser]) {
+    const p = state.participants[selectedPronostiekUser];
+    const totalPts = calcTotal(selectedPronostiekUser);
+
+    // Header info
+    const infoRow = div(""); infoRow.style.cssText = "display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--dark3);border-radius:9px;margin-bottom:14px;border:1px solid var(--gold)";
+    const nameDiv = div(""); nameDiv.style.cssText = "font-weight:700;font-size:.95rem"; nameDiv.textContent = "👤 "+selectedPronostiekUser;
+    const ptsDiv = div(""); ptsDiv.style.cssText = "font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--accent)"; ptsDiv.textContent = totalPts+" pt";
+    infoRow.appendChild(nameDiv); infoRow.appendChild(ptsDiv);
+    filterCard.appendChild(infoRow);
+
+    // Specials
+    const specialsDiv = div(""); specialsDiv.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px";
+    [["🥇",p.winner||"—",state.actualWinner],["🥈",p.runnerUp||"—",state.actualRunnerUp],["🥉",p.third||"—",state.actualThird],["🇧🇪",p.belgiumRound||"—",state.actualBelgiumRound]].forEach(([icon,val,actual])=>{
+      const chip = div(""); chip.style.cssText = `background:${actual&&val===actual?"rgba(34,197,94,.1)":"var(--dark3)"};border:1px solid ${actual&&val===actual?"var(--green)":"var(--border)"};border-radius:8px;padding:6px 10px;font-size:.75rem;`;
+      chip.textContent = icon+" "+val+(actual&&val===actual?" ✓":"");
+      specialsDiv.appendChild(chip);
+    });
+    filterCard.appendChild(specialsDiv);
+
+    // Matches per speeldag
+    SPEELDAGEN.forEach(sd => {
+      const sdTitle = div(""); sdTitle.style.cssText = "font-family:'Bebas Neue',cursive;font-size:.95rem;color:var(--gold);letter-spacing:2px;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)";
+      sdTitle.textContent = sd.emoji+" "+sd.label;
+      filterCard.appendChild(sdTitle);
+
+      sd.matches.forEach(m => {
+        const pred = (p.predictions||{})[m.id]||{};
+        const actual = state.actualScores[m.id]||{};
+        const hasPred = pred.h!==undefined && pred.h!=="";
+        if(!hasPred) return; // skip unfilled
+
+        const {total:matchPts, bd} = calcMatchPts(pred, actual);
+        const hasActual = actual.h!==""&&actual.a!=="";
+
+        const row = div(""); row.style.cssText = `display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;margin-bottom:5px;background:${hasActual?(matchPts>0?"rgba(34,197,94,.06)":"rgba(239,68,68,.05)"):"var(--dark3)"};border:1px solid ${hasActual?(matchPts>0?"rgba(34,197,94,.2)":"rgba(239,68,68,.15)"):"var(--border)"}`;
+
+        const matchInfo = div("");
+        const matchName = div(""); matchName.style.cssText = "font-size:.75rem;font-weight:600"; matchName.textContent = m.t1+" - "+m.t2;
+        const predScore = div(""); predScore.style.cssText = "font-size:.68rem;color:var(--muted);margin-top:2px";
+        predScore.textContent = "Pronostiek: "+pred.h+" – "+pred.a+(pred.goalSlot?" · "+pred.goalSlot:"")+(pred.firstScorer?" · "+pred.firstScorer:"");
+        if(hasActual){
+          const actScore = div(""); actScore.style.cssText = "font-size:.68rem;color:var(--gold);margin-top:1px";
+          actScore.textContent = "Uitslag: "+actual.h+" – "+actual.a;
+          matchInfo.appendChild(matchName); matchInfo.appendChild(predScore); matchInfo.appendChild(actScore);
+        } else {
+          matchInfo.appendChild(matchName); matchInfo.appendChild(predScore);
+        }
+
+        const timeDiv = div(""); timeDiv.style.cssText = "font-size:.6rem;color:var(--muted);text-align:right"; timeDiv.textContent = m.time||"";
+
+        const ptsDiv2 = div(""); ptsDiv2.style.cssText = "text-align:right;min-width:40px";
+        if(hasActual){
+          const n = div(""); n.style.cssText = `font-family:'Bebas Neue',cursive;font-size:1.3rem;color:${matchPts>=state.pts.perfectScore?"var(--green)":matchPts>0?"var(--orange)":"var(--red)"}`;
+          n.textContent = matchPts>0?"+"+matchPts:"0";
+          ptsDiv2.appendChild(n);
+        } else {
+          const n = div(""); n.style.cssText = "font-size:.65rem;color:var(--muted)"; n.textContent = "Afwachten";
+          ptsDiv2.appendChild(n);
+        }
+
+        row.appendChild(matchInfo); row.appendChild(timeDiv); row.appendChild(ptsDiv2);
+        filterCard.appendChild(row);
+      });
+    });
+  }
+
+  container.appendChild(filterCard);
+}
+let selectedPronostiekUser = "";
+
+// ══════════════════════════════════════════════════
 // ADMIN SCORES
 // ══════════════════════════════════════════════════
 function renderAdminScores() {
@@ -1008,7 +1156,7 @@ function renderAdminMatch(match) {
   const scoreRow=div(""); scoreRow.style.cssText="display:grid;grid-template-columns:1fr 32px 10px 32px 1fr;align-items:center;gap:4px;margin-bottom:7px";
   const t1=span("",match.t1); t1.style.cssText="font-size:.74rem;font-weight:600";
   const hIn=e("input",{type:"number",min:"0",max:"30",class:"score-inp admin-inp",value:actual.h||""});
-  hIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].h=ev.target.value;saveState();});
+  hIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].h=ev.target.value;saveState();refreshKlassementIfVisible();});
   const vs=span("vsep","–");
   const aIn=e("input",{type:"number",min:"0",max:"30",class:"score-inp admin-inp",value:actual.a||""});
   aIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].a=ev.target.value;saveState();});
@@ -1021,7 +1169,7 @@ function renderAdminMatch(match) {
   const gsChips=div("chips");
   NORMAL_SLOTS.forEach((lbl,i)=>{
     const c=e("button",{class:"chip chip-accent chip-sm"+(actual.goalSlot===NORMAL_KEYS[i]?" sel":"")});
-    c.textContent=lbl; c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].goalSlot=actual.goalSlot===NORMAL_KEYS[i]?"":NORMAL_KEYS[i];saveState();renderAdminScores();});
+    c.textContent=lbl; c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].goalSlot=actual.goalSlot===NORMAL_KEYS[i]?"":NORMAL_KEYS[i];saveState();renderAdminScores();refreshKlassementIfVisible();});
     gsChips.appendChild(c);
   });
   gsDiv.appendChild(gsLbl); gsDiv.appendChild(gsChips); extras.appendChild(gsDiv);
@@ -1032,7 +1180,7 @@ function renderAdminMatch(match) {
   [match.t1,match.t2,"Geen"].forEach(t=>{
     const c=e("button",{class:"chip chip-gold chip-sm"+(actual.firstScorer===t?" sel":"")});
     c.textContent=t==="Geen"?"Geen":t.length>6?t.substring(0,5)+"…":t;
-    c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].firstScorer=actual.firstScorer===t?"":t;saveState();renderAdminScores();});
+    c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].firstScorer=actual.firstScorer===t?"":t;saveState();renderAdminScores();refreshKlassementIfVisible();});
     fsChips.appendChild(c);
   });
   fsDiv.appendChild(fsLbl); fsDiv.appendChild(fsChips); extras.appendChild(fsDiv);
@@ -1185,6 +1333,34 @@ function showSdPopup(label,pts,isWinner) {
   popup.style.display="flex";
 }
 function closePopup() { document.getElementById("popup").style.display="none"; }
+
+function doChangePw() {
+  const p1 = document.getElementById("new-pw-1").value;
+  const p2 = document.getElementById("new-pw-2").value;
+  if(!p1) { showToast("Vul een wachtwoord in!"); return; }
+  if(p1 !== p2) { showToast("❌ Wachtwoorden komen niet overeen!"); return; }
+  if(p1.length < 4) { showToast("Wachtwoord moet minstens 4 tekens zijn!"); return; }
+  state.passwords[currentUser] = p1;
+  saveState();
+  document.getElementById("changepw-popup").style.display="none";
+  showToast("✅ Wachtwoord gewijzigd!");
+}
+
+// ══════════════════════════════════════════════════
+// AUTO-REFRESH KLASSEMENT WHEN SCORES CHANGE
+// ══════════════════════════════════════════════════
+function refreshKlassementIfVisible() {
+  // If admin klassement tab is active, re-render it
+  const klassPage = document.getElementById("admin-page-klassement");
+  if(klassPage && klassPage.classList.contains("active")) {
+    renderKlassement(true);
+  }
+  // Also refresh pronostieken if visible
+  const pronPage = document.getElementById("admin-page-pronostieken");
+  if(pronPage && pronPage.classList.contains("active")) {
+    renderAdminPronostieken();
+  }
+}
 
 // ══════════════════════════════════════════════════
 // AUTO-REFRESH & INIT
