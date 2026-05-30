@@ -26,10 +26,10 @@ input[type=number]{-moz-appearance:textfield;}
 .header-inner{position:relative;}
 .header h1{font-family:'Bebas Neue',cursive;font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
 .header p{color:var(--muted);font-size:.65rem;margin-top:3px;letter-spacing:2px;text-transform:uppercase;}
-.pts-badge{position:absolute;top:10px;right:12px;display:flex;flex-direction:column;align-items:center;background:linear-gradient(135deg,rgba(245,166,35,.15),rgba(255,215,0,.08));border:1.5px solid var(--gold);border-radius:12px;padding:5px 10px;min-width:54px;z-index:2;}
+.pts-badge{display:flex;flex-direction:row;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(245,166,35,.15),rgba(255,215,0,.08));border:1.5px solid var(--gold);border-radius:12px;padding:5px 12px;z-index:2;margin-top:8px;justify-content:center;}
 .pts-badge .trophy{font-size:1.1rem;line-height:1;}
-.pts-badge .pts-num{font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--gold2);line-height:1;margin-top:1px;}
-.pts-badge .pts-lbl{font-size:.5rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:1px;}
+.pts-badge .pts-num{font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--gold2);line-height:1;}
+.pts-badge .pts-lbl{font-size:.6rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
 .user-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;}
 .user-bar span{font-size:.74rem;color:var(--gold);}
 .user-bar button{background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.6rem;padding:2px 8px;cursor:pointer;font-family:'DM Sans',sans-serif;}
@@ -189,19 +189,19 @@ input[type=number]{-moz-appearance:textfield;}
 <!-- HEADER -->
 <div class="header" id="header">
   <div class="header-inner">
-    <div id="pts-badge-wrap" style="display:none">
-      <div class="pts-badge">
-        <span class="trophy">🏆</span>
-        <span class="pts-num" id="header-pts">0</span>
-        <span class="pts-lbl">punten</span>
-      </div>
-    </div>
     <div style="font-size:1.4rem;margin-bottom:1px">🏆</div>
     <h1>WK 2026 PRONOSTIEK</h1>
     <p>FIFA World Cup · 11 juni – 19 juli · USA · Canada · Mexico</p>
     <div class="user-bar" id="user-bar" style="display:none">
       <span id="user-name-display"></span>
       <button onclick="doLogout()">Wisselen</button>
+    </div>
+    <div id="pts-badge-wrap" style="display:none">
+      <div class="pts-badge">
+        <span class="trophy">🏆</span>
+        <span class="pts-num" id="header-pts">0</span>
+        <span class="pts-lbl">punten</span>
+      </div>
     </div>
   </div>
 </div>
@@ -379,7 +379,16 @@ function loadState() {
 // HELPERS
 // ══════════════════════════════════════════════════
 function isLocked(mid) { const iso=MATCH_ISO[mid]; return iso ? new Date(iso)<=new Date() : false; }
-function matchEditable(mid) { const sd=SPEELDAGEN.find(s=>s.matches.some(m=>m.id===mid)); return sd && state.sdStatus[sd.id]==="open" && !isLocked(mid); }
+function matchEditable(mid) {
+  const sd=SPEELDAGEN.find(s=>s.matches.some(m=>m.id===mid));
+  if(!sd) return false;
+  const sdOpen = state.sdStatus[sd.id]==="open";
+  if(!sdOpen) return false;
+  // If admin explicitly opened this speeldag, override time lock
+  const adminOverride = state.sdStatus[sd.id+"_override"]===true;
+  if(adminOverride) return true;
+  return !isLocked(mid);
+}
 function myPreds() { return (state.participants[currentUser]||{}).predictions||{}; }
 function mySpecials() { const p=state.participants[currentUser]||{}; return {winner:p.winner||"",runnerUp:p.runnerUp||"",third:p.third||"",belgiumRound:p.belgiumRound||""}; }
 
@@ -513,6 +522,7 @@ function e(tag, attrs={}, ...children) {
     if(k==="class") el.className=v;
     else if(k==="style") el.style.cssText=v;
     else if(k.startsWith("on")) el.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(k==="disabled") { if(v) el.disabled=true; }
     else el.setAttribute(k,v);
   });
   children.forEach(c=>{
@@ -906,7 +916,7 @@ function renderKlassement(isAdminView=false) {
     const isMe=name===currentUser;
     const row=div("lb-row"+(isMe?" me":""));
     const rankDiv=div("lb-rank"); rankDiv.style.color=i===0?"var(--gold2)":i===1?"#94a3b8":i===2?"#c77b30":"var(--muted)"; rankDiv.textContent=medals[i]||(i+1);
-    const infoDiv=div("");
+    const infoDiv=div(""); infoDiv.style.flex="1";
     const nameDiv=div("lb-name"); nameDiv.textContent=name; if(isMe){const you=e("span",{style:"font-size:.6rem;color:var(--gold);margin-left:5px"}," (jij)"); nameDiv.appendChild(you);}
     const subDiv=div("lb-sub");
     const aW=state.actualWinner, aR=state.actualRunnerUp, aT=state.actualThird, aB=state.actualBelgiumRound;
@@ -916,6 +926,20 @@ function renderKlassement(isAdminView=false) {
     infoDiv.appendChild(nameDiv); infoDiv.appendChild(subDiv);
     const ptsDiv=div(""); const ptsNum=div("lb-pts"); ptsNum.textContent=total; const ptsLbl=div("lb-pts-lbl"); ptsLbl.textContent="punten"; ptsDiv.appendChild(ptsNum); ptsDiv.appendChild(ptsLbl);
     row.appendChild(rankDiv); row.appendChild(infoDiv); row.appendChild(ptsDiv);
+    // Delete button for admin
+    if(isAdminView){
+      const delBtn=e("button",{style:"background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:.65rem;margin-left:6px;flex-shrink:0;font-family:'DM Sans',sans-serif;"},"🗑");
+      delBtn.title="Verwijder "+name;
+      delBtn.addEventListener("click",()=>{
+        if(confirm("Verwijder '"+name+"' uit het klassement?'")) {
+          delete state.participants[name];
+          saveState();
+          renderKlassement(true);
+          showToast("🗑 "+name+" verwijderd");
+        }
+      });
+      row.appendChild(delBtn);
+    }
     card.appendChild(row);
   });
   container.appendChild(card);
@@ -1036,7 +1060,13 @@ function renderAdminSpeeldagen() {
     if(anyLocked&&!allLocked){const note=div(""); note.style.cssText="font-size:.58rem;color:var(--orange);margin-top:1px"; note.textContent="⏰ Sommige wedstrijden al vergrendeld"; info.appendChild(note);}
     if(allLocked){const note=div(""); note.style.cssText="font-size:.58rem;color:var(--muted);margin-top:1px"; note.textContent="⏰ Alle wedstrijden vergrendeld"; info.appendChild(note);}
     const btn=e("button",{class:"btn btn-sm",style:`border:1.5px solid ${isOpen?"var(--red)":"var(--green)"};background:transparent;color:${isOpen?"var(--red)":"var(--green)"}`},isOpen?"🔒 Sluiten":"🔓 Openen");
-    btn.addEventListener("click",()=>{state.sdStatus[sd.id]=isOpen?"closed":"open";saveState();renderAdminSpeeldagen();showToast(isOpen?"🔒 Gesloten":"🔓 Geopend");});
+    btn.addEventListener("click",()=>{
+    const newStatus = isOpen?"closed":"open";
+    state.sdStatus[sd.id]=newStatus;
+    // When admin opens, set override to bypass time lock
+    state.sdStatus[sd.id+"_override"] = newStatus==="open";
+    saveState();renderAdminSpeeldagen();showToast(isOpen?"🔒 Gesloten":"🔓 Geopend");
+  });
     row.appendChild(info); row.appendChild(btn); card.appendChild(row);
   });
   container.appendChild(card);
