@@ -24,11 +24,11 @@ input[type=number]{-moz-appearance:textfield;}
 .header{background:linear-gradient(160deg,#08101f,#0f2040,#08101f);border-bottom:2px solid var(--gold);padding:14px 18px;text-align:center;position:relative;overflow:hidden;}
 .header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -20%,rgba(245,166,35,.14),transparent 65%);}
 .header-inner{position:relative;}
-.header h1{font-family:'Bebas Neue',cursive;font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.header h1{font-family:Bebas Neue,cursive;font-size:clamp(1.6rem,5vw,2.8rem);letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
 .header p{color:var(--muted);font-size:.65rem;margin-top:3px;letter-spacing:2px;text-transform:uppercase;}
 .pts-badge{display:flex;flex-direction:row;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(245,166,35,.15),rgba(255,215,0,.08));border:1.5px solid var(--gold);border-radius:12px;padding:5px 12px;z-index:2;margin-top:8px;justify-content:center;}
 .pts-badge .trophy{font-size:1.1rem;line-height:1;}
-.pts-badge .pts-num{font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--gold2);line-height:1;}
+.pts-badge .pts-num{font-family:Bebas Neue,cursive;font-size:1.5rem;color:var(--gold2);line-height:1;}
 .pts-badge .pts-lbl{font-size:.6rem;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
 .user-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;}
 .user-bar span{font-size:.74rem;color:var(--gold);}
@@ -42,7 +42,7 @@ input[type=number]{-moz-appearance:textfield;}
 
 /* CARDS */
 .card{background:var(--dark2);border:1px solid var(--border);border-radius:14px;padding:17px;margin-bottom:13px;}
-.card-title{font-family:'Bebas Neue',cursive;font-size:1.1rem;color:var(--gold);letter-spacing:2px;margin-bottom:11px;}
+.card-title{font-family:Bebas Neue,cursive;font-size:1.1rem;color:var(--gold);letter-spacing:2px;margin-bottom:11px;}
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:9px 19px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;}
@@ -67,7 +67,7 @@ input[type=number]{-moz-appearance:textfield;}
 .sd-header-inner{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .sd-arrow{font-size:.95rem;color:var(--muted);flex-shrink:0;transition:transform .2s;}
 .sd-arrow.collapsed{transform:rotate(-90deg);}
-.sd-title{font-family:'Bebas Neue',cursive;font-size:clamp(1.4rem,4vw,2rem);line-height:1;letter-spacing:3px;}
+.sd-title{font-family:Bebas Neue,cursive;font-size:clamp(1.4rem,4vw,2rem);line-height:1;letter-spacing:3px;}
 .sd-title.open-color{color:var(--gold);}
 .sd-title.closed-color{color:var(--muted);}
 .sd-sub{font-size:.65rem;color:var(--muted);margin-top:2px;}
@@ -87,7 +87,7 @@ input[type=number]{-moz-appearance:textfield;}
 .team-name{font-size:.8rem;font-weight:600;}
 .team-name.right{text-align:right;}
 .team-name.dim{color:var(--muted);}
-.score-inp{width:38px;background:var(--dark4);border:1.5px solid var(--gold);border-radius:6px;color:var(--gold);font-family:'Bebas Neue',cursive;font-size:1.2rem;text-align:center;padding:3px 1px;outline:none;}
+.score-inp{width:38px;background:var(--dark4);border:1.5px solid var(--gold);border-radius:6px;color:var(--gold);font-family:Bebas Neue,cursive;font-size:1.2rem;text-align:center;padding:3px 1px;outline:none;}
 .score-inp.locked-inp{border-color:#16253a;opacity:.4;cursor:not-allowed;}
 .score-inp.admin-inp{border-color:var(--accent);color:var(--accent);width:32px;font-size:1rem;}
 .vsep{font-size:.58rem;color:var(--muted);font-weight:700;}
@@ -114,7 +114,7 @@ input[type=number]{-moz-appearance:textfield;}
 .match-pts-row.pts-bad{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);}
 .match-pts-tags{display:flex;gap:4px;flex-wrap:wrap;align-items:center;}
 .pts-tag{font-size:.6rem;color:var(--muted);background:rgba(0,0,0,.2);padding:1px 6px;border-radius:10px;}
-.pts-num-big{font-family:'Bebas Neue',cursive;font-size:1.35rem;line-height:1;}
+.pts-num-big{font-family:Bebas Neue,cursive;font-size:1.35rem;line-height:1;}
 .pts-num-big.good{color:var(--green);}
 .pts-num-big.med{color:var(--orange);}
 .pts-num-big.bad{color:var(--red);}
@@ -130,9 +130,9 @@ input[type=number]{-moz-appearance:textfield;}
 /* LEADERBOARD */
 .lb-row{display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:8px;padding:10px 13px;border-radius:9px;border:1px solid var(--border);background:var(--dark3);margin-bottom:5px;}
 .lb-row.me{border-color:var(--gold);background:rgba(245,166,35,.06);}
-.lb-rank{font-family:'Bebas Neue',cursive;font-size:1.3rem;text-align:center;}
+.lb-rank{font-family:Bebas Neue,cursive;font-size:1.3rem;text-align:center;}
 .lb-name{font-weight:700;font-size:.88rem;}
-.lb-pts{font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--accent);}
+.lb-pts{font-family:Bebas Neue,cursive;font-size:1.5rem;color:var(--accent);}
 .lb-pts-lbl{font-size:.56rem;color:var(--muted);text-align:right;}
 .lb-sub{font-size:.58rem;color:var(--muted);margin-top:1px;display:flex;gap:7px;flex-wrap:wrap;}
 
@@ -156,13 +156,94 @@ input[type=number]{-moz-appearance:textfield;}
 /* POPUP */
 .popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;}
 .popup-box{background:linear-gradient(135deg,#0f1a2e,#162038);border-radius:20px;padding:28px 30px;text-align:center;max-width:310px;width:100%;animation:popIn .35s ease;}
-.popup-title{font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:3px;margin-bottom:5px;}
-.popup-pts{font-family:'Bebas Neue',cursive;font-size:2.8rem;line-height:1;}
+.popup-title{font-family:Bebas Neue,cursive;font-size:1.3rem;letter-spacing:3px;margin-bottom:5px;}
+.popup-pts{font-family:Bebas Neue,cursive;font-size:2.8rem;line-height:1;}
 .popup-pts-wrap{background:rgba(0,0,0,.3);border-radius:12px;padding:12px 18px;margin-bottom:16px;}
 
 /* TOAST */
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--dark3);border:1px solid var(--gold);border-radius:10px;padding:9px 18px;font-size:.8rem;color:var(--text);z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);display:none;animation:fadeUp .3s ease;}
 .toast.show{display:block;}
+
+/* DARK POPUPS */
+.dp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;display:flex;align-items:center;justify-content:center;padding:16px;}
+.dp-box{background:linear-gradient(135deg,#0f1a2e,#162038);border-radius:20px;overflow:hidden;max-width:340px;width:100%;animation:popIn .35s ease;display:flex;flex-direction:column;max-height:88vh;}
+.dp-box.gold{border:2px solid #F5A623;box-shadow:0 0 30px rgba(245,166,35,.2);}
+.dp-box.blue{border:2px solid #00C8FF;box-shadow:0 0 30px rgba(0,200,255,.2);}
+.dp-box.red{border:2px solid #ef4444;box-shadow:0 0 20px rgba(239,68,68,.15);}
+.dp-box.green{border:2px solid #22c55e;box-shadow:0 0 20px rgba(34,197,94,.15);}
+.dp-header{padding:20px 22px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08);}
+.dp-icon-big{font-size:2.8rem;margin-bottom:5px;line-height:1;}
+.dp-title{font-family:Bebas Neue,cursive;font-size:1.15rem;letter-spacing:3px;margin-bottom:3px;}
+.dp-title.gold{color:#F5A623;}
+.dp-title.blue{color:#00C8FF;}
+.dp-title.red{color:#ef4444;}
+.dp-title.green{color:#22c55e;}
+.dp-sub-txt{font-size:.7rem;color:#6b82a8;line-height:1.5;}
+.dp-body{padding:14px 18px 18px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;} .dp-body::-webkit-scrollbar{width:3px;} .dp-body::-webkit-scrollbar-thumb{background:#1e3050;border-radius:3px;}
+.dp-pts-display{background:rgba(0,0,0,.3);border-radius:12px;padding:12px 18px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.dp-pts-num{font-family:Bebas Neue,cursive;font-size:2.8rem;line-height:1;}
+.dp-pts-num.gold{color:#FFD700;}
+.dp-pts-num.blue{color:#00C8FF;}
+.dp-pts-num.green{color:#22c55e;}
+.dp-pts-lbl{font-size:.62rem;color:#6b82a8;text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.dp-task{display:flex;align-items:center;gap:9px;padding:8px 10px;background:rgba(255,255,255,.05);border-radius:8px;margin-bottom:6px;border:1px solid rgba(255,255,255,.07);}
+.dp-task.done{opacity:.5;}
+.dp-task-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.ticon-gold{background:rgba(245,166,35,.15);color:#F5A623;}
+.ticon-blue{background:rgba(0,200,255,.15);color:#00C8FF;}
+.ticon-green{background:rgba(34,197,94,.15);color:#22c55e;}
+.ticon-red{background:rgba(239,68,68,.12);color:#ef4444;}
+.dp-task-name{font-size:.77rem;font-weight:600;color:#e8f0ff;}
+.dp-task-sub{font-size:.63rem;color:#6b82a8;margin-top:1px;}
+.dp-pill{font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
+.dp-pill-gold{background:rgba(245,166,35,.15);color:#F5A623;border:1px solid rgba(245,166,35,.3);}
+.dp-pill-blue{background:rgba(0,200,255,.1);color:#00C8FF;border:1px solid rgba(0,200,255,.2);}
+.dp-pill-green{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.25);}
+.dp-pill-red{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2);}
+.dp-btn-main{width:100%;padding:10px;border-radius:9px;border:none;font-size:.83rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px;}
+.dp-btn-main.gold{background:#F5A623;color:#000;}
+.dp-btn-main.blue{background:rgba(0,200,255,.15);color:#00C8FF;border:1.5px solid rgba(0,200,255,.3);}
+.dp-btn-main.outline{background:transparent;border:1.5px solid #1e3050;color:#6b82a8;}
+.dp-btn-row{display:flex;gap:8px;margin-top:10px;}
+.dp-btn-row .dp-btn-main{margin-top:0;}
+.dp-yday-strip{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.dp-match-row{display:flex;align-items:center;gap:7px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:5px;border:1px solid rgba(255,255,255,.07);}
+.dp-match-flag{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.dp-match-name{flex:1;font-size:.73rem;font-weight:600;color:#e8f0ff;}
+.dp-match-time{font-size:.62rem;color:#6b82a8;}
+.dp-match-grp{font-size:.57rem;color:#6b82a8;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:7px;}
+.dp-dot-on{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0;}
+.dp-dot-off{width:7px;height:7px;border-radius:50%;background:#2a3850;flex-shrink:0;}
+.dp-tabs{display:flex;gap:5px;margin-bottom:10px;}
+.dp-tab{padding:4px 11px;border-radius:14px;font-size:.66rem;font-weight:600;cursor:pointer;border:1px solid #1e3050;background:none;color:#6b82a8;font-family:'DM Sans',sans-serif;}
+.dp-tab.active{background:rgba(0,200,255,.12);color:#00C8FF;border-color:rgba(0,200,255,.3);}
+.dp-pts-breakdown{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.dp-pts-tag{font-size:.6rem;color:#6b82a8;background:rgba(0,0,0,.2);padding:2px 6px;border-radius:9px;}
+.bell-wrap{position:relative;display:inline-flex;}
+.bell-notification-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:9px;border:1.5px solid #1e3050;background:#0f1a2e;font-size:.72rem;font-weight:700;cursor:pointer;color:#e8f0ff;font-family:'DM Sans',sans-serif;}
+.bell-n-badge{position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:#ef4444;color:white;font-size:.58rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+
+
+/* RULES POPUP ELEMENTS */
+.dp-rules-section{font-size:.6rem;color:#6b82a8;text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin:10px 0 5px;padding-bottom:3px;border-bottom:1px solid rgba(255,255,255,.05);}
+.dp-rules-section:first-child{margin-top:0;}
+.dp-rule{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:8px;margin-bottom:5px;border:1px solid rgba(255,255,255,.05);}
+.dp-rule.g{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.18);}
+.dp-rule.o{background:rgba(249,115,22,.07);border-color:rgba(249,115,22,.18);}
+.dp-rule.b{background:rgba(0,200,255,.06);border-color:rgba(0,200,255,.12);}
+.dp-rule.r{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.12);}
+.dp-rule-icon{font-size:1.1rem;flex-shrink:0;}
+.dp-rule-info{flex:1;}
+.dp-rule-name{font-size:.74rem;font-weight:600;color:#e8f0ff;line-height:1.3;}
+.dp-rule-sub{font-size:.62rem;color:#6b82a8;margin-top:1px;}
+.dp-rule-pts{flex-shrink:0;font-weight:700;font-size:1.05rem;min-width:32px;text-align:right;}
+.dp-rule-pts.gold{color:#FFD700;}
+.dp-rule-pts.green{color:#22c55e;}
+.dp-rule-pts.orange{color:#f97316;}
+.dp-rule-pts.blue{color:#00C8FF;}
+.dp-rule-pts.red{color:#ef4444;}
+.dp-tip{background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.15);border-radius:8px;padding:8px 11px;font-size:.68rem;color:#94a3b8;line-height:1.5;margin-top:10px;}
+.dp-divider{height:1px;background:rgba(255,255,255,.06);margin:8px 0;}
 
 /* SPINNER */
 .spinner{width:13px;height:13px;border:2px solid rgba(0,200,255,.3);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
@@ -171,12 +252,12 @@ input[type=number]{-moz-appearance:textfield;}
 .pts-setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--dark3);border:1px solid var(--border);border-radius:9px;margin-bottom:6px;}
 .pts-setting-name{font-size:.82rem;font-weight:600;}
 .counter-btn{width:27px;height:27px;border-radius:6px;border:1px solid var(--border);background:var(--dark4);color:var(--text);font-size:1rem;cursor:pointer;}
-.counter-val{font-family:'Bebas Neue',cursive;font-size:1.4rem;color:var(--accent);min-width:28px;text-align:center;}
+.counter-val{font-family:Bebas Neue,cursive;font-size:1.4rem;color:var(--accent);min-width:28px;text-align:center;}
 
 /* GROUPS VIEW */
 .groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px;}
 .group-card{background:var(--dark4);border-radius:9px;padding:8px 10px;border:1px solid var(--border);}
-.group-title{font-family:'Bebas Neue',cursive;color:var(--gold);font-size:.95rem;letter-spacing:2px;margin-bottom:6px;}
+.group-title{font-family:Bebas Neue,cursive;color:var(--gold);font-size:.95rem;letter-spacing:2px;margin-bottom:6px;}
 .group-row{display:grid;grid-template-columns:14px 1fr 20px 20px 24px;gap:2px;align-items:center;padding:2px 0;font-size:.66rem;border-radius:3px;}
 .group-row.q{background:rgba(34,197,94,.05);}
 .group-row.p{background:rgba(245,166,35,.04);}
@@ -194,6 +275,13 @@ input[type=number]{-moz-appearance:textfield;}
     <p>FIFA World Cup · 11 juni – 19 juli · USA · Canada · Mexico</p>
     <div class="user-bar" id="user-bar" style="display:none">
       <span id="user-name-display"></span>
+      <div class="bell-wrap">
+        <button class="bell-notification-btn" onclick="showNotifPopup()" id="bell-btn">
+          🔔
+          <span id="bell-count" style="display:none"></span>
+        </button>
+        <span class="bell-n-badge" id="bell-badge" style="display:none">0</span>
+      </div>
       <button onclick="showChangePwPrompt(currentUser)" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.6rem;padding:2px 7px;cursor:pointer;font-family:'DM Sans',sans-serif">🔑</button>
       <button onclick="doLogout()">Wisselen</button>
     </div>
@@ -282,6 +370,152 @@ input[type=number]{-moz-appearance:textfield;}
   </div>
 </div>
 
+
+
+<!-- WELCOME WK INFO POPUP -->
+<div id="wk-welcome-popup" style="display:none" class="dp-overlay" onclick="closeWkWelcome()">
+  <div class="dp-box gold" onclick="event.stopPropagation()">
+    <div class="dp-header">
+      <div class="dp-icon-big">🏆</div>
+      <div class="dp-title gold">Welkom bij WK 2026!</div>
+      <div class="dp-sub-txt">FIFA World Cup · 11 juni – 19 juli 2026</div>
+    </div>
+    <div class="dp-body">
+      <div style="background:linear-gradient(135deg,rgba(245,166,35,.1),rgba(0,200,255,.06));border:1px solid rgba(245,166,35,.2);border-radius:12px;padding:12px 14px;margin-bottom:12px;">
+        <div style="font-family:Bebas Neue,cursive;font-size:1.1rem;color:#F5A623;margin-bottom:4px;">11 juni – 19 juli 2026</div>
+        <div style="font-size:.72rem;color:#94a3b8;">🇺🇸 USA · 🇨🇦 Canada · 🇲🇽 México</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+        <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:10px 8px;text-align:center;"><div style="font-family:Bebas Neue,cursive;font-size:1.5rem;color:#FFD700;line-height:1;">48</div><div style="font-size:.58rem;color:#6b82a8;margin-top:3px;text-transform:uppercase;">Teams</div></div>
+        <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:10px 8px;text-align:center;"><div style="font-family:Bebas Neue,cursive;font-size:1.5rem;color:#00C8FF;line-height:1;">104</div><div style="font-size:.58rem;color:#6b82a8;margin-top:3px;text-transform:uppercase;">Wedstrijden</div></div>
+        <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:10px 8px;text-align:center;"><div style="font-family:Bebas Neue,cursive;font-size:1.5rem;color:#22c55e;line-height:1;">39</div><div style="font-size:.58rem;color:#6b82a8;margin-top:3px;text-transform:uppercase;">Dagen</div></div>
+      </div>
+      <div style="font-size:.6rem;color:#6b82a8;text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid rgba(255,255,255,.05);">📅 Programma</div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;gap:8px;padding:5px 0;"><div style="width:8px;height:8px;border-radius:50%;background:#F5A623;flex-shrink:0;margin-top:4px;"></div><div><div style="font-size:.76rem;font-weight:600;color:#e8f0ff;">Groepsfase (Speeldag 1–3)</div><div style="font-size:.62rem;color:#6b82a8;">11 juni – 1 juli · 72 wedstrijden</div></div></div>
+        <div style="display:flex;gap:8px;padding:5px 0;"><div style="width:8px;height:8px;border-radius:50%;background:#00C8FF;flex-shrink:0;margin-top:4px;"></div><div><div style="font-size:.76rem;font-weight:600;color:#e8f0ff;">Ronde van 32 → Kwartfinale → Halve Finale</div><div style="font-size:.62rem;color:#6b82a8;">28 juni – 14 juli</div></div></div>
+        <div style="display:flex;gap:8px;padding:5px 0;"><div style="width:8px;height:8px;border-radius:50%;background:#F5A623;flex-shrink:0;margin-top:4px;"></div><div><div style="font-size:.76rem;font-weight:600;color:#e8f0ff;">🏆 Finale</div><div style="font-size:.62rem;color:#6b82a8;">19 juli · MetLife Stadium, New Jersey</div></div></div>
+      </div>
+      <div class="dp-tip">💡 <strong style="color:#e8f0ff">Jouw doel:</strong> Voorspel zo veel mogelijk wedstrijden correct en scoor punten. Bekijk de spelregels voor het volledige puntensysteem!</div>
+      <button class="dp-btn-main gold" onclick="closeWkWelcome();setTimeout(()=>document.getElementById('rules-group-popup').style.display='flex',300)">📋 Bekijk de spelregels</button>
+      <button class="dp-btn-main outline" style="margin-top:6px" onclick="closeWkWelcome()">Later bekijken</button>
+    </div>
+  </div>
+</div>
+
+<!-- GROEPSFASE RULES POPUP -->
+<div id="rules-group-popup" style="display:none" class="dp-overlay" onclick="document.getElementById('rules-group-popup').style.display='none'">
+  <div class="dp-box blue" onclick="event.stopPropagation()">
+    <div class="dp-header">
+      <div class="dp-icon-big">📋</div>
+      <div class="dp-title blue">Spelregels Groepsfase</div>
+      <div class="dp-sub-txt">Morgen begint het WK! Hier zijn de regels.</div>
+    </div>
+    <div class="dp-body">
+      <div class="dp-rules-section">⚽ Punten per wedstrijd</div>
+      <div class="dp-rule g"><span class="dp-rule-icon">🎯</span><div class="dp-rule-info"><div class="dp-rule-name">Perfecte score</div><div class="dp-rule-sub">Bv. jij 2–1, uitslag 2–1</div></div><div class="dp-rule-pts gold">3 pt</div></div>
+      <div class="dp-rule b"><span class="dp-rule-icon">✅</span><div class="dp-rule-info"><div class="dp-rule-name">Juiste winnaar of gelijkspel</div><div class="dp-rule-sub">Score fout maar winnaar juist</div></div><div class="dp-rule-pts blue">2 pt</div></div>
+      <div class="dp-rule o"><span class="dp-rule-icon">⏱</span><div class="dp-rule-info"><div class="dp-rule-name">Juist tijdslot eerste goal</div><div class="dp-rule-sub">Bv. 0'–15', 15'–30', ...</div></div><div class="dp-rule-pts orange">1 pt</div></div>
+      <div class="dp-rule o"><span class="dp-rule-icon">🥅</span><div class="dp-rule-info"><div class="dp-rule-name">Juiste eerste scorer</div><div class="dp-rule-sub">Welk team scoort het eerst?</div></div><div class="dp-rule-pts orange">1 pt</div></div>
+      <div class="dp-rule r"><span class="dp-rule-icon">❌</span><div class="dp-rule-info"><div class="dp-rule-name">Verkeerde winnaar</div></div><div class="dp-rule-pts red">0 pt</div></div>
+      <div class="dp-divider"></div>
+      <div class="dp-rules-section">🏆 Specials (eenmalig invullen voor 11 juni)</div>
+      <div class="dp-rule g"><span class="dp-rule-icon">🥇</span><div class="dp-rule-info"><div class="dp-rule-name">Winnaar · Runner-up · Derde</div></div><div class="dp-rule-pts gold">10 pt</div></div>
+      <div class="dp-rule b"><span class="dp-rule-icon">⚽</span><div class="dp-rule-info"><div class="dp-rule-name">Topschutter · Speler · Keeper</div></div><div class="dp-rule-pts blue">7 pt</div></div>
+      <div class="dp-rule b"><span class="dp-rule-icon">🟥</span><div class="dp-rule-info"><div class="dp-rule-name">Aantal rode kaarten</div></div><div class="dp-rule-pts blue">7 pt</div></div>
+      <div class="dp-rule b"><span class="dp-rule-icon">🇧🇪</span><div class="dp-rule-info"><div class="dp-rule-name">Ronde België</div></div><div class="dp-rule-pts blue">5 pt</div></div>
+      <div class="dp-tip">💡 <strong style="color:#e8f0ff">Let op:</strong> Wedstrijden vergrendelen automatisch op aftrapmoment!</div>
+      <button class="dp-btn-main gold" onclick="document.getElementById('rules-group-popup').style.display='none'">✅ Begrepen, begin invullen!</button>
+      <button class="dp-btn-main outline" style="margin-top:6px" onclick="document.getElementById('rules-group-popup').style.display='none'">Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- KNOCKOUT RULES POPUP -->
+<div id="rules-ko-popup" style="display:none" class="dp-overlay" onclick="document.getElementById('rules-ko-popup').style.display='none'">
+  <div class="dp-box gold" onclick="event.stopPropagation()">
+    <div class="dp-header">
+      <div class="dp-icon-big">⚡</div>
+      <div class="dp-title gold">Knockout Fase — Nieuwe Regels</div>
+      <div class="dp-sub-txt">Vanaf de Ronde van 32 gelden aangepaste regels</div>
+    </div>
+    <div class="dp-body">
+      <div class="dp-rules-section">📊 Normale wedstrijd (winnaar na 90 min)</div>
+      <div class="dp-rule g"><span class="dp-rule-icon">🎯</span><div class="dp-rule-info"><div class="dp-rule-name">Perfecte score (bv. 2–1)</div></div><div class="dp-rule-pts gold">3 pt</div></div>
+      <div class="dp-rule b"><span class="dp-rule-icon">✅</span><div class="dp-rule-info"><div class="dp-rule-name">Juiste winnaar, score fout</div></div><div class="dp-rule-pts blue">2 pt</div></div>
+      <div class="dp-rule r"><span class="dp-rule-icon">❌</span><div class="dp-rule-info"><div class="dp-rule-name">Verkeerde winnaar</div></div><div class="dp-rule-pts red">0 pt</div></div>
+      <div class="dp-divider"></div>
+      <div class="dp-rules-section">⏱ Gelijkspel → verlengingen + penalty's</div>
+      <div class="dp-rule g"><span class="dp-rule-icon">🎯</span><div class="dp-rule-info"><div class="dp-rule-name">Juiste score + juiste penalty-winnaar</div></div><div class="dp-rule-pts gold">3 pt</div></div>
+      <div class="dp-rule o"><span class="dp-rule-icon">⚡</span><div class="dp-rule-info"><div class="dp-rule-name">Juiste score, penalty-winnaar fout</div></div><div class="dp-rule-pts orange">2 pt</div></div>
+      <div class="dp-rule o"><span class="dp-rule-icon">⚡</span><div class="dp-rule-info"><div class="dp-rule-name">Score fout, penalty-winnaar juist</div></div><div class="dp-rule-pts orange">2 pt</div></div>
+      <div class="dp-rule b"><span class="dp-rule-icon">✅</span><div class="dp-rule-info"><div class="dp-rule-name">Gelijkspel voorspeld (score + penalty fout)</div><div class="dp-rule-sub">Je wist dat het gelijkspel werd</div></div><div class="dp-rule-pts blue">1 pt</div></div>
+      <div class="dp-rule r"><span class="dp-rule-icon">❌</span><div class="dp-rule-info"><div class="dp-rule-name">Geen gelijkspel voorspeld</div></div><div class="dp-rule-pts red">0 pt</div></div>
+      <div class="dp-tip">💡 <strong style="color:#e8f0ff">Tip:</strong> Vul altijd een penalty-winnaar in bij gelijkspel — tot <strong style="color:#F5A623">3 punten</strong>!</div>
+      <button class="dp-btn-main gold" onclick="document.getElementById('rules-ko-popup').style.display='none'">✅ Begrepen, naar de Ronde van 32!</button>
+      <button class="dp-btn-main outline" style="margin-top:6px" onclick="document.getElementById('rules-ko-popup').style.display='none'">Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION POPUP -->
+<div id="notif-popup" style="display:none" class="dp-overlay" onclick="closeNotifPopup()">
+  <div class="dp-box blue" onclick="event.stopPropagation()" id="notif-box">
+    <div class="dp-header">
+      <div class="dp-icon-big">📅</div>
+      <div class="dp-title blue" id="notif-title">Meldingen</div>
+      <div class="dp-sub-txt" id="notif-sub"></div>
+    </div>
+    <div class="dp-body" id="notif-body" style="overflow-y:auto;max-height:60vh;-webkit-overflow-scrolling:touch;"></div>
+  </div>
+</div>
+
+<!-- WELCOME POPUP -->
+<div id="welcome-popup" style="display:none" class="dp-overlay" onclick="closeWelcomePopup()">
+  <div class="dp-box blue" onclick="event.stopPropagation()">
+    <div class="dp-header">
+      <div class="dp-icon-big">🏆</div>
+      <div class="dp-title blue">WK 2026 · Welkom!</div>
+      <div class="dp-sub-txt">Vul deze zaken in voor <strong style="color:#e8f0ff">11 juni 21:00</strong></div>
+    </div>
+    <div class="dp-body" id="welcome-body"></div>
+  </div>
+</div>
+
+<!-- YESTERDAY POPUP -->
+<div id="yday-popup" style="display:none" class="dp-overlay" onclick="closeYdayPopup()">
+  <div class="dp-box gold" onclick="event.stopPropagation()">
+    <div class="dp-header">
+      <div class="dp-icon-big">🏆</div>
+      <div class="dp-title gold" id="yday-title">Resultaat van gisteren</div>
+      <div class="dp-sub-txt" id="yday-sub"></div>
+    </div>
+    <div class="dp-body" id="yday-body"></div>
+  </div>
+</div>
+
+<!-- R32 RE-PREDICTION POPUP -->
+<div id="r32pred-popup" style="display:none" class="dp-overlay" onclick="document.getElementById('r32pred-popup').style.display='none'">
+  <div class="dp-box gold" onclick="event.stopPropagation()">
+    <div class="dp-header">
+      <div class="dp-icon-big">🔄</div>
+      <div class="dp-title gold">Nieuwe voorspelling!</div>
+      <div class="dp-sub-txt">De Ronde van 32 is afgelopen · Voorspel opnieuw de top 3 voor <strong style="color:#e8f0ff">5 punten elk</strong></div>
+    </div>
+    <div class="dp-body">
+      <div class="dp-task">
+        <div class="dp-task-icon ticon-gold">🏆</div>
+        <div style="flex:1"><div class="dp-task-name">Top 3 hervoorspelling</div><div class="dp-task-sub">Sluit bij start Ronde van 16</div></div>
+        <span class="dp-pill dp-pill-gold">5 pt elk</span>
+      </div>
+      <div class="dp-btn-row">
+        <button class="dp-btn-main gold" onclick="document.getElementById('r32pred-popup').style.display='none';switchTab('specials',document.querySelector('.tab-btn:nth-child(2))'))">Voorspellen</button>
+        <button class="dp-btn-main outline" onclick="document.getElementById('r32pred-popup').style.display='none'">Later</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- CHANGE PASSWORD POPUP -->
 <div class="popup-overlay" id="changepw-popup" style="display:none">
   <div class="popup-box" onclick="event.stopPropagation()" style="max-width:340px">
@@ -292,7 +526,7 @@ input[type=number]{-moz-appearance:textfield;}
     <input class="inp" type="password" id="new-pw-2" placeholder="Herhaal wachtwoord…" style="margin-bottom:14px">
     <div style="display:flex;gap:8px;justify-content:center">
       <button class="btn btn-gold" onclick="doChangePw()">✅ Opslaan</button>
-      <button class="btn btn-outline" onclick="document.getElementById('changepw-popup').style.display='none'">Later</button>
+      <button class="btn btn-outline" onclick="document.getElementById('changepw-popup').style.display='none';if(window._pendingStartupCheck){window._pendingStartupCheck=false;setTimeout(()=>{checkSdPopups();checkAndShowStartupPopups();},300);}">Later</button>
     </div>
   </div>
 </div>
@@ -356,21 +590,72 @@ function buildSpeeldagen() {
   ];
 }
 const SPEELDAGEN = buildSpeeldagen();
-const DEFAULT_PTS = {winner:2,perfectScore:5,goalSlot:1,firstScorer:1,champion:10,runnerUp:10,third:10,belgiumRound:5};
+const DEFAULT_PTS = {winner:2,perfectScore:3,goalSlot:1,firstScorer:1,champion:5,runnerUp:5,third:5,belgiumRound:5,topscorer:7,playerTournament:7,keeperTournament:7,redCards:7,champion2:5,runnerUp2:5,third2:5,pkBoth:3,pkScoreOnly:2,pkWinnerOnly:2,pkDrawOnly:1};
+
+function getTodayStr(){ return new Date().toISOString().split("T")[0]; }
+function getYesterdayStr(){ const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().split("T")[0]; }
+function calcDayPts(name, dateStr) {
+  const p = state.participants[name]||{};
+  let t=0;
+  Object.keys(p.predictions||{}).forEach(mid=>{
+    const iso = MATCH_ISO[mid]; if(!iso) return;
+    const matchDate = new Date(iso).toISOString().split("T")[0];
+    if(matchDate===dateStr) t+=calcMatchPts(p.predictions[mid],state.actualScores[mid]).total;
+  });
+  return t;
+}
 
 // ══════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════
 let state = {
   participants: {},
-  passwords: {},      // name -> hashed password
+  passwords: {},
   actualScores: {},
   actualWinner: "", actualRunnerUp: "", actualThird: "", actualBelgiumRound: "",
+  actualTopscorer: "", actualPlayerTournament: "", actualKeeperTournament: "", actualRedCards: "",
   sdStatus: (()=>{const s={};SPEELDAGEN.forEach(sd=>s[sd.id]="open");["SD_R32","SD_R16","SD_QF","SD_SF","SD_3RD","SD_F"].forEach(id=>s[id]="closed");return s;})(),
   pts: {...DEFAULT_PTS},
-  shownPopups: []
+  shownPopups: [],
+  shownYesterdayPopup: "",
+  specialsOverrideOpen: false,
+  r32PredOverrideOpen: false,   // "YYYY-MM-DD" last shown
+  r32PredDone: {},           // name -> bool
 };
+// Extra specials deadline: SD1 start = 2026-06-11T21:00+02:00
+const SPECIALS_DEADLINE = new Date("2026-06-11T21:00+02:00");
+const R16_DEADLINE = new Date("2026-07-04T19:00+02:00");
+function specialsOpen(){ if(state.specialsOverrideOpen) return true; return new Date() < SPECIALS_DEADLINE; }
+function r16PredOpen(){ return new Date() < R16_DEADLINE; }
 const DEFAULT_USER_PW = "user2026";
+
+const FLAGS = {
+  "México":"\uD83C\uDDF2\uD83C\uDDFD","Zuid-Afrika":"\uD83C\uDDFF\uD83C\uDDE6",
+  "Zuid-Korea":"\uD83C\uDDF0\uD83C\uDDF7","Tsjechië":"\uD83C\uDDE8\uD83C\uDDFF",
+  "Canada":"\uD83C\uDDE8\uD83C\uDDE6","Bosnië-Herz.":"\uD83C\uDDE7\uD83C\uDDE6",
+  "Qatar":"\uD83C\uDDF6\uD83C\uDDE6","Zwitserland":"\uD83C\uDDE8\uD83C\uDDED",
+  "Brazilië":"\uD83C\uDDE7\uD83C\uDDF7","Marokko":"\uD83C\uDDF2\uD83C\uDDE6",
+  "Haïti":"\uD83C\uDDED\uD83C\uDDF9","Schotland":"\uD83C\uDFF4",
+  "Ver. Staten":"\uD83C\uDDFA\uD83C\uDDF8","Paraguay":"\uD83C\uDDF5\uD83C\uDDFE",
+  "Australië":"\uD83C\uDDE6\uD83C\uDDFA","Turkije":"\uD83C\uDDF9\uD83C\uDDF7",
+  "Duitsland":"\uD83C\uDDE9\uD83C\uDDEA","Curaçao":"\uD83C\uDDE8\uD83C\uDDFC",
+  "Ivoorkust":"\uD83C\uDDE8\uD83C\uDDEE","Ecuador":"\uD83C\uDDEA\uD83C\uDDE8",
+  "Nederland":"\uD83C\uDDF3\uD83C\uDDF1","Japan":"\uD83C\uDDEF\uD83C\uDDF5",
+  "Zweden":"\uD83C\uDDF8\uD83C\uDDEA","Tunesië":"\uD83C\uDDF9\uD83C\uDDF3",
+  "België":"\uD83C\uDDE7\uD83C\uDDEA","Egypte":"\uD83C\uDDEA\uD83C\uDDEC",
+  "Iran":"\uD83C\uDDEE\uD83C\uDDF7","Nieuw-Zeeland":"\uD83C\uDDF3\uD83C\uDDFF",
+  "Spanje":"\uD83C\uDDEA\uD83C\uDDF8","Kaapverdië":"\uD83C\uDDE8\uD83C\uDDFB",
+  "Saoedi-Arabië":"\uD83C\uDDF8\uD83C\uDDE6","Uruguay":"\uD83C\uDDFA\uD83C\uDDFE",
+  "Frankrijk":"\uD83C\uDDEB\uD83C\uDDF7","Senegal":"\uD83C\uDDF8\uD83C\uDDF3",
+  "Irak":"\uD83C\uDDEE\uD83C\uDDF6","Noorwegen":"\uD83C\uDDF3\uD83C\uDDF4",
+  "Argentinië":"\uD83C\uDDE6\uD83C\uDDF7","Algerije":"\uD83C\uDDE9\uD83C\uDDFF",
+  "Oostenrijk":"\uD83C\uDDE6\uD83C\uDDF9","Jordanië":"\uD83C\uDDEF\uD83C\uDDF4",
+  "Portugal":"\uD83C\uDDF5\uD83C\uDDF9","DR Congo":"\uD83C\uDDE8\uD83C\uDDE9",
+  "Oezbekistan":"\uD83C\uDDFA\uD83C\uDDFF","Colombia":"\uD83C\uDDE8\uD83C\uDDF4",
+  "Engeland":"\uD83C\uDFF4","Kroatië":"\uD83C\uDDED\uD83C\uDDF7",
+  "Ghana":"\uD83C\uDDEC\uD83C\uDDED","Panama":"\uD83C\uDDF5\uD83C\uDDE6"
+};
+function flag(team){ return FLAGS[team]||"🏳"; }
 let currentUser = "";
 let isAdmin = false;
 let collapsed = {};
@@ -419,11 +704,29 @@ function calcMatchPts(pred, actual) {
   if(!actual||actual.h===""||actual.a==="") return {total:0,bd:[]};
   const ph=parseInt(pred?.h??""),pa=parseInt(pred?.a??""),ah=parseInt(actual.h),aa=parseInt(actual.a);
   if(isNaN(ph)||isNaN(pa)) return {total:0,bd:[]};
-  const bd=[];let total=0;
-  if(ph===ah&&pa===aa){total+=pts.perfectScore;bd.push(`+${pts.perfectScore} exacte score`);}
-  else{const pw=ph>pa?1:ph<pa?-1:0,aw=ah>aa?1:ah<aa?-1:0;if(pw===aw){total+=pts.winner;bd.push(`+${pts.winner} juiste winnaar`);}}
-  if(pred?.goalSlot&&actual?.goalSlot&&pred.goalSlot===actual.goalSlot){total+=pts.goalSlot;bd.push(`+${pts.goalSlot} tijdslot`);}
-  if(pred?.firstScorer&&actual?.firstScorer&&pred.firstScorer===actual.firstScorer){total+=pts.firstScorer;bd.push(`+${pts.firstScorer} eerste scorer`);}
+  const bd=[]; let total=0;
+  const isKOMatch = actual.pk===true || actual.pk===1;
+  const actualDraw = ah===aa;
+  const predDraw = ph===pa;
+  // Dynamic PK values
+  const pkBoth = pts.pkBoth!==undefined ? pts.pkBoth : 3;
+  const pkScoreOnly = pts.pkScoreOnly!==undefined ? pts.pkScoreOnly : 2;
+  const pkWinnerOnly = pts.pkWinnerOnly!==undefined ? pts.pkWinnerOnly : 2;
+  const pkDrawOnly = pts.pkDrawOnly!==undefined ? pts.pkDrawOnly : 1;
+
+  if(isKOMatch && actualDraw) {
+    const scoreCorrect = ph===ah && pa===aa;
+    const pkCorrect = pred?.pkWinner && actual?.pkWinner && pred.pkWinner===actual.pkWinner;
+    if(scoreCorrect && pkCorrect){ total+=pts.pkBoth; bd.push("+"+pts.pkBoth+" juiste score + penalty-winnaar"); }
+    else if(scoreCorrect && !pkCorrect){ total+=pts.pkScoreOnly; bd.push("+"+pts.pkScoreOnly+" juiste score, penalty fout"); }
+    else if(!scoreCorrect && pkCorrect){ total+=pts.pkWinnerOnly; bd.push("+"+pts.pkWinnerOnly+" penalty-winnaar juist"); }
+    else if(!scoreCorrect && predDraw){ total+=pts.pkDrawOnly; bd.push("+"+pts.pkDrawOnly+" gelijkspel voorspeld"); }
+  } else {
+    if(ph===ah&&pa===aa){total+=pts.perfectScore;bd.push("+"+pts.perfectScore+" exacte score");}
+    else{const pw=ph>pa?1:ph<pa?-1:0,aw=ah>aa?1:ah<aa?-1:0;if(pw===aw){total+=pts.winner;bd.push("+"+pts.winner+" juiste winnaar");}}
+  }
+  if(pred?.goalSlot&&actual?.goalSlot&&pred.goalSlot===actual.goalSlot){total+=pts.goalSlot;bd.push("+"+pts.goalSlot+" tijdslot");}
+  if(pred?.firstScorer&&actual?.firstScorer&&pred.firstScorer===actual.firstScorer){total+=pts.firstScorer;bd.push("+"+pts.firstScorer+" eerste scorer");}
   return {total,bd};
 }
 
@@ -593,11 +896,19 @@ function doLogin() {
   showScreen("app");
   renderSpeeldagen();
   updateHeaderPts();
-  checkSdPopups();
+  updateBellBadge();
 
-  // Prompt password change on first login
   if(!storedPw) {
-    setTimeout(()=>showChangePwPrompt(name), 800);
+    // First ever login: show password change FIRST, then startup popups after
+    setTimeout(()=>{
+      showChangePwPrompt(name);
+    }, 400);
+    // After pw popup is closed, checkSdPopups and startup popups will run
+    // We store that startup popups should run after pw change
+    window._pendingStartupCheck = true;
+  } else {
+    checkSdPopups();
+    checkAndShowStartupPopups();
   }
 }
 
@@ -631,9 +942,16 @@ function doSetup() {
 // ══════════════════════════════════════════════════
 function savePreds() {
   if(!currentUser||isAdmin) return;
+  // Mark R32 pred done if filled
+  const p=state.participants[currentUser]||{};
+  if(p.winner2){
+    if(!state.r32PredDone) state.r32PredDone={};
+    state.r32PredDone[currentUser]=true;
+  }
   saveState();
   showToast("💾 Opgeslagen!");
   updateHeaderPts();
+  updateBellBadge();
 }
 function setPred(mid, field, val) {
   if(!state.participants[currentUser]) state.participants[currentUser]={predictions:{},winner:"",runnerUp:"",third:"",belgiumRound:""};
@@ -702,11 +1020,51 @@ function renderSpeeldagen() {
     // Body
     if(!isCollapsed){
       const body=div("sd-body "+(sdOpen&&!allLocked?"":"closed-body"));
+      // Group matches by date
+      const matchesByDay = {};
       sd.matches.forEach(m=>{
-        const t1=sd.knockout&&r32res[m.id+"_t1"]||m.t1;
-        const t2=sd.knockout&&r32res[m.id+"_t2"]||m.t2;
-        const editable=sdOpen&&!isLocked(m.id);
-        body.appendChild(renderMatchCard({...m,t1,t2}, editable, !!m.knockout));
+        const iso=MATCH_ISO[m.id];
+        const dayKey = iso ? new Date(iso).toLocaleDateString("nl-BE",{weekday:"short",day:"numeric",month:"short"}) : "Onbekend";
+        if(!matchesByDay[dayKey]) matchesByDay[dayKey]=[];
+        matchesByDay[dayKey].push(m);
+      });
+      const today=getTodayStr();
+      Object.entries(matchesByDay).forEach(([dayLabel,dayMatches])=>{
+        // Check if this day has any open matches
+        const dayHasOpen=dayMatches.some(m=>{
+          const iso=MATCH_ISO[m.id];
+          if(!iso) return false;
+          const matchDate=new Date(iso).toISOString().split("T")[0];
+          return matchDate===today&&sdOpen&&!isLocked(m.id);
+        });
+        const dayKey="day_"+sd.id+"_"+dayLabel.replace(/ /g,"_");
+        if(collapsed[dayKey]===undefined) collapsed[dayKey]=!dayHasOpen;
+        const isDayCollapsed=collapsed[dayKey]===true;
+
+        // Day header
+        const dayHdr=div(""); dayHdr.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(255,255,255,.03);border-radius:8px;cursor:pointer;margin-bottom:4px;border:1px solid rgba(255,255,255,.06);user-select:none";
+        const dayLeft=div(""); dayLeft.style.cssText="display:flex;align-items:center;gap:6px";
+        const dayArrow=span("","▾"); dayArrow.style.cssText="font-size:.75rem;color:var(--muted);transition:transform .2s;"+(isDayCollapsed?"transform:rotate(-90deg)":"");
+        const dayTitle=span("",""); dayTitle.style.cssText="font-size:.78rem;font-weight:600;color:var(--muted)";
+        dayTitle.textContent=dayLabel;
+        if(dayHasOpen){const dot=span("",""); dot.style.cssText="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"; dayLeft.appendChild(dot);}
+        dayLeft.appendChild(dayArrow); dayLeft.appendChild(dayTitle);
+        const dayCount=span("",""); dayCount.style.cssText="font-size:.65rem;color:var(--muted)"; dayCount.textContent=dayMatches.length+" wedstrijden";
+        dayHdr.appendChild(dayLeft); dayHdr.appendChild(dayCount);
+        dayHdr.addEventListener("click",()=>{
+          collapsed[dayKey]=!collapsed[dayKey];
+          renderSpeeldagen();
+        });
+        body.appendChild(dayHdr);
+
+        if(!isDayCollapsed){
+          dayMatches.forEach(m=>{
+            const t1=sd.knockout&&r32res[m.id+"_t1"]||m.t1;
+            const t2=sd.knockout&&r32res[m.id+"_t2"]||m.t2;
+            const editable=sdOpen&&(state.sdStatus[sd.id+"_override"]===true||!isLocked(m.id));
+            body.appendChild(renderMatchCard({...m,t1,t2}, editable, !!m.knockout));
+          });
+        }
       });
       if(sdOpen&&!allLocked){
         const saveBtn=e("button",{class:"btn btn-gold",style:"margin:6px auto;display:flex",onclick:()=>savePreds()},"💾 Opslaan");
@@ -876,63 +1234,135 @@ function renderSpecials() {
   container.innerHTML="";
   const p=state.participants[currentUser]||{};
 
-  const card=div("card"); card.innerHTML="<div class='card-title'>🏆 Speciale Voorspellingen</div>";
+  const card=div("card"); 
+  const specTitle=div("card-title"); specTitle.textContent="🏆 Speciale Voorspellingen"; card.appendChild(specTitle);
 
-  function teamPicker(label,field,bonusPts,actual,exclude=[]) {
-    const wrap=div("");
-    const titleRow=div(""); titleRow.style.cssText="display:flex;align-items:center;gap:10px;margin-bottom:8px";
-    const ttl=div(""); ttl.style.cssText="font-family:'Bebas Neue',cursive;font-size:1.3rem;color:var(--gold);letter-spacing:2px"; ttl.textContent=label;
-    const ptsBadge=div(""); ptsBadge.style.cssText="background:rgba(0,200,255,.1);border:1px solid var(--accent);border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:700;color:var(--accent)"; ptsBadge.textContent="+"+bonusPts+"pt";
-    titleRow.appendChild(ttl); titleRow.appendChild(ptsBadge); wrap.appendChild(titleRow);
-
-    if(p[field]){
-      const cur=div(""); cur.style.cssText="background:rgba(245,166,35,.08);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:.8rem;display:flex;align-items:center;gap:8px";
-      cur.textContent="Jouw keuze: "; const bold=e("strong",{}); bold.style.color="var(--gold)"; bold.textContent=p[field]; cur.appendChild(bold);
-      if(actual&&p[field]===actual){const bdg=e("span",{class:"badge badge-correct"},"+"+bonusPts+" ✓"); cur.appendChild(bdg);}
-      if(actual&&p[field]!==actual){const bdg=e("span",{class:"badge badge-wrong"},"✗"); cur.appendChild(bdg);}
-      wrap.appendChild(cur);
-    }
-
-    const grid=div("team-grid");
-    ALL_TEAMS.filter(t=>!exclude.includes(t)).forEach(t=>{
-      const btn=e("button",{class:"team-btn"+(p[field]===t?" sel":"")});
-      btn.textContent=t;
-      btn.addEventListener("click",()=>{ setSpecial(field,p[field]===t?"":t); renderSpecials(); });
-      grid.appendChild(btn);
-    });
-    wrap.appendChild(grid);
+  // Section headers
+  function sectionHeader(title, deadline, isOpen, color="gold") {
+    const wrap=div(""); wrap.style.cssText="margin-bottom:10px;";
+    const hdr=div(""); hdr.style.cssText=`background:${isOpen?"rgba(245,166,35,.08)":"rgba(107,130,168,.06)"};border:1px solid ${isOpen?"rgba(245,166,35,.25)":"rgba(107,130,168,.2)"};border-radius:10px;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;`;
+    const ttl=div(""); ttl.style.cssText=`font-family:'Bebas Neue',cursive;font-size:.95rem;color:${isOpen?"#F5A623":"#6b82a8"};letter-spacing:2px`; ttl.textContent=title;
+    const dl=div(""); dl.style.cssText=`font-size:.62rem;color:${isOpen?"#6b82a8":"#4a5568"};`; dl.textContent=deadline;
+    hdr.appendChild(ttl); hdr.appendChild(dl); wrap.appendChild(hdr);
     return wrap;
   }
 
-  card.appendChild(teamPicker("🥇 Wereldkampioen","winner",state.pts.champion,state.actualWinner));
-  const div1=div("divider"); card.appendChild(div1);
-  card.appendChild(teamPicker("🥈 Runner-up","runnerUp",state.pts.runnerUp,state.actualRunnerUp,[p.winner].filter(Boolean)));
-  const div2=div("divider"); card.appendChild(div2);
-  card.appendChild(teamPicker("🥉 Derde Plaats","third",state.pts.third,state.actualThird,[p.winner,p.runnerUp].filter(Boolean)));
+  function teamPicker(label,field,bonusPts,actual,exclude=[],isOpen=true) {
+    const wrap=div("");
+    const titleRow=div(""); titleRow.style.cssText="display:flex;align-items:center;gap:10px;margin-bottom:8px";
+    const ttl=div(""); ttl.style.cssText="font-family:Bebas Neue,cursive;font-size:1.1rem;color:"+(isOpen?"var(--gold)":"var(--muted)")+";letter-spacing:2px"; ttl.textContent=label;
+    const ptsBadge=div(""); ptsBadge.style.cssText="background:rgba(0,200,255,.1);border:1px solid var(--accent);border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:700;color:var(--accent)"; ptsBadge.textContent="+"+bonusPts+"pt";
+    titleRow.appendChild(ttl); titleRow.appendChild(ptsBadge); wrap.appendChild(titleRow);
+    if(p[field]){
+      const cur=div(""); cur.style.cssText="background:rgba(245,166,35,.08);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:.8rem;display:flex;align-items:center;gap:8px";
+      cur.textContent="Jouw keuze: "; const bold=e("strong",{}); bold.style.color="var(--gold)"; bold.textContent=p[field]; cur.appendChild(bold);
+      if(actual&&p[field]===actual){cur.appendChild(e("span",{class:"badge badge-correct"},"+"+bonusPts+" ✓"));}
+      if(actual&&p[field]!==actual){cur.appendChild(e("span",{class:"badge badge-wrong"},"✗"));}
+      wrap.appendChild(cur);
+    } else if(!isOpen){
+      const nf=div(""); nf.style.cssText="font-size:.72rem;color:var(--muted);font-style:italic;padding:4px 0"; nf.textContent="Niet ingevuld"; wrap.appendChild(nf);
+    }
+    if(isOpen){
+      const grid=div("team-grid");
+      ALL_TEAMS.filter(t=>!exclude.includes(t)).forEach(t=>{
+        const btn=e("button",{class:"team-btn"+(p[field]===t?" sel":"")});
+        btn.textContent=t;
+        btn.addEventListener("click",()=>{setSpecial(field,p[field]===t?"":t);renderSpecials();});
+        grid.appendChild(btn);
+      });
+      wrap.appendChild(grid);
+    }
+    return wrap;
+  }
+
+  const sec1Open = specialsOpen();
+  card.appendChild(sectionHeader("📅 Voor het WK · Sluit 11 juni 21:00", sec1Open?"🟢 Open":"🔒 Gesloten", sec1Open));
+  card.appendChild(teamPicker("🥇 Wereldkampioen","winner",state.pts.champion,state.actualWinner,[],sec1Open));
+  card.appendChild(teamPicker("🥈 Runner-up","runnerUp",state.pts.runnerUp,state.actualRunnerUp,[p.winner].filter(Boolean),sec1Open));
+  card.appendChild(teamPicker("🥉 Derde Plaats","third",state.pts.third,state.actualThird,[p.winner,p.runnerUp].filter(Boolean),sec1Open));
   const div3=div("divider"); card.appendChild(div3);
 
+  // SECTION 2: Toernooi specials
+  card.appendChild(sectionHeader("🏅 Toernooi Specials · Sluit 11 juni 21:00", sec1Open?"🟢 Open":"🔒 Gesloten", sec1Open));
+  const div4=div("divider"); card.appendChild(div4);
+
+  const topscorerWrap=div("");
+  const tsTitleRow=div(""); tsTitleRow.style.cssText="display:flex;align-items:center;gap:10px;margin-bottom:8px";
+  const tsTtl=div(""); tsTtl.style.cssText="font-family:Bebas Neue,cursive;font-size:1.1rem;color:"+(sec1Open?"var(--gold)":"var(--muted)")+";letter-spacing:2px"; tsTtl.textContent="⚽ Topschutter";
+  const tsPts=div(""); tsPts.style.cssText="background:rgba(0,200,255,.1);border:1px solid var(--accent);border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:700;color:var(--accent)"; tsPts.textContent="+"+state.pts.topscorer+"pt";
+  tsTitleRow.appendChild(tsTtl); tsTitleRow.appendChild(tsPts); topscorerWrap.appendChild(tsTitleRow);
+  if(p.topscorer){const cur=div(""); cur.style.cssText="background:rgba(245,166,35,.08);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:.8rem"; cur.textContent="Jouw keuze: "; const b=e("strong",{}); b.style.color="var(--gold)"; b.textContent=p.topscorer; cur.appendChild(b); topscorerWrap.appendChild(cur);}
+  if(sec1Open){
+    const tsInp=e("input",{class:"inp",value:p.topscorer||"",placeholder:"Naam van de topschutter…",style:"margin-bottom:0"});
+    tsInp.addEventListener("input",ev=>{setSpecial("topscorer",ev.target.value);});
+    topscorerWrap.appendChild(tsInp);
+  } else if(p.topscorer){
+    const tsVal=div(""); tsVal.style.cssText="font-size:.8rem;color:var(--gold);padding:6px 0;"; tsVal.textContent=p.topscorer; topscorerWrap.appendChild(tsVal);
+  }
+  card.appendChild(topscorerWrap);
+
+  [["playerTournament","⭐ Speler van het toernooi",state.pts.playerTournament,"Naam van de beste speler…"],
+   ["keeperTournament","🧤 Keeper van het toernooi",state.pts.keeperTournament,"Naam van de beste keeper…"]].forEach(([field,label,pts,ph])=>{
+    const wrap=div(""); wrap.style.cssText="margin-bottom:14px";
+    const tRow=div(""); tRow.style.cssText="display:flex;align-items:center;gap:10px;margin-bottom:6px";
+    const ttl=div(""); ttl.style.cssText="font-family:Bebas Neue,cursive;font-size:1.1rem;color:"+(sec1Open?"var(--gold)":"var(--muted)")+";letter-spacing:2px"; ttl.textContent=label;
+    const tPts=div(""); tPts.style.cssText="background:rgba(0,200,255,.1);border:1px solid var(--accent);border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:700;color:var(--accent)"; tPts.textContent="+"+pts+"pt";
+    tRow.appendChild(ttl); tRow.appendChild(tPts); wrap.appendChild(tRow);
+    if(p[field]){const cur=div(""); cur.style.cssText="background:rgba(245,166,35,.08);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:.8rem"; cur.textContent="Jouw keuze: "; const b=e("strong",{}); b.style.color="var(--gold)"; b.textContent=p[field]; cur.appendChild(b); wrap.appendChild(cur);}
+    if(sec1Open){const inp=e("input",{class:"inp",value:p[field]||"",placeholder:ph,style:"margin-bottom:0"});inp.addEventListener("input",ev=>{setSpecial(field,ev.target.value);});wrap.appendChild(inp);}
+    card.appendChild(wrap);
+  });
+
+  const rcWrap=div("");
+  const rcTitleRow=div(""); rcTitleRow.style.cssText="display:flex;align-items:center;gap:10px;margin-bottom:8px";
+  const rcTtl=div(""); rcTtl.style.cssText="font-family:Bebas Neue,cursive;font-size:1.1rem;color:"+(sec1Open?"var(--gold)":"var(--muted)")+";letter-spacing:2px"; rcTtl.textContent="🟥 Aantal rode kaarten (heel toernooi)";
+  const rcPts=div(""); rcPts.style.cssText="background:rgba(0,200,255,.1);border:1px solid var(--accent);border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:700;color:var(--accent)"; rcPts.textContent="+"+state.pts.redCards+"pt";
+  rcTitleRow.appendChild(rcTtl); rcTitleRow.appendChild(rcPts); rcWrap.appendChild(rcTitleRow);
+  if(p.redCards!=null&&p.redCards!==""){const cur=div(""); cur.style.cssText="background:rgba(245,166,35,.08);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:.8rem"; cur.textContent="Jouw keuze: "; const b=e("strong",{}); b.style.color="var(--gold)"; b.textContent=p.redCards+" rode kaarten"; cur.appendChild(b); rcWrap.appendChild(cur);}
+  if(sec1Open){
+    const rcInp=e("input",{type:"number",min:"0",max:"100",class:"inp",value:p.redCards!==undefined&&p.redCards!==null&&p.redCards!==""?p.redCards:"",placeholder:"Vul een getal in, bv. 12",style:"max-width:180px;margin-bottom:0"});
+    rcInp.addEventListener("input",ev=>{setSpecial("redCards",ev.target.value===""?"":parseInt(ev.target.value));});
+    rcWrap.appendChild(rcInp);
+  } else if(p.redCards!==undefined&&p.redCards!==null&&p.redCards!==""){
+    const rcVal=div(""); rcVal.style.cssText="font-size:.8rem;color:var(--gold);padding:4px 0"; rcVal.textContent=p.redCards+" rode kaarten"; rcWrap.appendChild(rcVal);
+  }
+  card.appendChild(rcWrap);
+
   // Belgium round
+  const div6=div("divider"); card.appendChild(div6);
   const belWrap=div("");
   const belTitleRow=div(""); belTitleRow.style.cssText="display:flex;align-items:center;gap:10px;margin-bottom:8px";
-  const belTtl=div(""); belTtl.style.cssText="font-family:'Bebas Neue',cursive;font-size:1.3rem;color:var(--gold);letter-spacing:2px"; belTtl.textContent="🇧🇪 Ronde België";
+  const belTtl=div(""); belTtl.style.cssText="font-family:Bebas Neue,cursive;font-size:1.3rem;color:var(--gold);letter-spacing:2px"; belTtl.textContent="🇧🇪 In welke ronde strandt België?";
   const belPts=div(""); belPts.style.cssText="background:rgba(0,200,255,.1);border:1px solid var(--accent);border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:700;color:var(--accent)"; belPts.textContent="+"+state.pts.belgiumRound+"pt";
   belTitleRow.appendChild(belTtl); belTitleRow.appendChild(belPts); belWrap.appendChild(belTitleRow);
-  if(p.belgiumRound){
-    const cur=div(""); cur.style.cssText="background:rgba(245,166,35,.08);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:.8rem;display:flex;align-items:center;gap:8px";
-    cur.textContent="Jouw keuze: "; const bold=e("strong",{}); bold.style.color="var(--gold)"; bold.textContent=p.belgiumRound; cur.appendChild(bold);
-    if(state.actualBelgiumRound&&p.belgiumRound===state.actualBelgiumRound){cur.appendChild(e("span",{class:"badge badge-correct"},"+"+state.pts.belgiumRound+" ✓"));}
-    if(state.actualBelgiumRound&&p.belgiumRound!==state.actualBelgiumRound){cur.appendChild(e("span",{class:"badge badge-wrong"},"✗"));}
-    belWrap.appendChild(cur);
-  }
+  if(p.belgiumRound){const cur=div(""); cur.style.cssText="background:rgba(245,166,35,.08);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:.8rem;display:flex;align-items:center;gap:8px"; cur.textContent="Jouw keuze: "; const b=e("strong",{}); b.style.color="var(--gold)"; b.textContent=p.belgiumRound; cur.appendChild(b); if(state.actualBelgiumRound&&p.belgiumRound===state.actualBelgiumRound){cur.appendChild(e("span",{class:"badge badge-correct"},"+"+state.pts.belgiumRound+" ✓"));}else if(state.actualBelgiumRound&&p.belgiumRound!==state.actualBelgiumRound){cur.appendChild(e("span",{class:"badge badge-wrong"},"✗"));} belWrap.appendChild(cur);}
   const roundBtns=div(""); roundBtns.style.cssText="display:flex;flex-wrap:wrap;gap:6px";
   KO_ROUNDS.forEach(r=>{
     const btn=e("button",{class:"round-btn"+(p.belgiumRound===r?" sel":"")});
-    btn.textContent=r;
-    btn.addEventListener("click",()=>{ setSpecial("belgiumRound",p.belgiumRound===r?"":r); renderSpecials(); });
+    btn.textContent=r; btn.addEventListener("click",()=>{setSpecial("belgiumRound",p.belgiumRound===r?"":r);renderSpecials();});
     roundBtns.appendChild(btn);
   });
-  belWrap.appendChild(roundBtns);
-  card.appendChild(belWrap);
+  belWrap.appendChild(roundBtns); card.appendChild(belWrap);
+
+  // R32 re-prediction - always shown, locked until July 2
+  const r32PredStart = new Date("2026-07-02T00:00+02:00");
+  const r32Open = (new Date() >= r32PredStart || state.r32PredOverrideOpen) && r16PredOpen();
+  // Always show this section
+  const r32SectionDiv=div(""); r32SectionDiv.style.cssText="margin-top:6px";
+  card.appendChild(sectionHeader("🔄 Hervoorspelling na Ronde van 32 · Opent 2 juli", r32Open?"🟢 Open":"🔒 Opent op 2 juli", r32Open));
+  if(!r32Open){
+    const r32LockedMsg=div(""); r32LockedMsg.style.cssText="font-size:.74rem;color:var(--muted);font-style:italic;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:10px;border:1px solid var(--border)";
+    r32LockedMsg.textContent="🔒 Deze sectie opent op 2 juli (dag na de laatste groepswedstrijd). Voorspel opnieuw de top 3 voor "+state.pts.champion2+" pt elk.";
+    card.appendChild(r32LockedMsg);
+  }
+  card.appendChild(teamPicker("🥇 Winnaar (2e kans)","winner2",state.pts.champion2,state.actualWinner,[],r32Open));
+  const d1=div("divider"); card.appendChild(d1);
+  card.appendChild(teamPicker("🥈 Runner-up (2e kans)","runnerUp2",state.pts.runnerUp2,state.actualRunnerUp,[p.winner2].filter(Boolean),r32Open));
+  const d2=div("divider"); card.appendChild(d2);
+  card.appendChild(teamPicker("🥉 Derde (2e kans)","third2",state.pts.third2,state.actualThird,[p.winner2,p.runnerUp2].filter(Boolean),r32Open));
+  const d3b=div("divider"); card.appendChild(d3b);
+
+
 
   const saveBtn=e("div",{style:"margin-top:18px;text-align:center"});
   saveBtn.appendChild(e("button",{class:"btn btn-gold",onclick:()=>savePreds()},"💾 Opslaan"));
@@ -941,157 +1371,135 @@ function renderSpecials() {
 }
 
 // ══════════════════════════════════════════════════
-// KLASSEMENT
+// PUNTEN INSTELLINGEN
 // ══════════════════════════════════════════════════
-function renderKlassement(isAdminView=false) {
-  const container=document.getElementById(isAdminView?"admin-page-klassement":"page-klassement");
+function renderPunten() {
+  const container=document.getElementById("admin-page-punten");
   container.innerHTML="";
-  const card=div("card"); card.innerHTML="<div class='card-title'>📊 Klassement</div>";
+  const card=div("card");
+  card.innerHTML="<div class='card-title'>⚙️ Puntenverdeling aanpassen</div><p style='font-size:.78rem;color:var(--muted);margin-bottom:6px;line-height:1.6'>Wijzigingen worden meteen verrekend in het klassement.</p>";
 
-  // Legend
-  const leg=div("pts-legend");
-  [[state.pts.perfectScore,"Exacte score"],[state.pts.winner,"Juiste winnaar"],[state.pts.champion,"Eindwinnaar"],[state.pts.belgiumRound,"Ronde België"]].forEach(([p,l])=>{
-    const item=div("pts-legend-item"); item.appendChild(e("span",{class:"pts-pill"},p+"pt")); item.appendChild(txt(" "+l)); leg.appendChild(item);
-  });
-  card.appendChild(leg);
+  const sections=[
+    {label:"⚽ Wedstrijden (groepsfase + knockout)",fields:[
+      ["winner","✓ Juiste winnaar / gelijkspel"],
+      ["perfectScore","🎯 Perfecte score"],
+      ["goalSlot","⏱ Juist tijdslot eerste goal"],
+      ["firstScorer","🥅 Juiste eerste scorer"],
+    ]},
+    {label:"⚡ Knockout — bij gelijkspel + penalty's",fields:[
+      ["pkBoth","🎯 Juiste score + juiste penalty-winnaar"],
+      ["pkScoreOnly","⚡ Juiste score, penalty-winnaar fout"],
+      ["pkWinnerOnly","⚡ Score fout, penalty-winnaar juist"],
+      ["pkDrawOnly","✅ Gelijkspel voorspeld (score + penalty fout)"],
+    ]},
+    {label:"🏆 Specials — voor het WK",fields:[
+      ["champion","🥇 Eindwinnaar (voor R32)"],
+      ["runnerUp","🥈 Runner-up (voor R32)"],
+      ["third","🥉 Derde (voor R32)"],
+      ["belgiumRound","🇧🇪 In welke ronde strandt België?"],
+      ["topscorer","⚽ Topschutter"],
+      ["playerTournament","⭐ Speler toernooi"],
+      ["keeperTournament","🧤 Keeper toernooi"],
+      ["redCards","🟥 Rode kaarten (aantal)"],
+    ]},
+    {label:"🔄 Hervoorspelling — na Ronde van 32",fields:[
+      ["champion2","🥇 Eindwinnaar (na R32)"],
+      ["runnerUp2","🥈 Runner-up (na R32)"],
+      ["third2","🥉 Derde (na R32)"],
+    ]},
+  ];
 
-  const medals=["🥇","🥈","🥉"];
-  const participants=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a));
-  if(participants.length===0){const p=div(""); p.style.cssText="color:var(--muted);font-size:.8rem"; p.textContent="Nog geen deelnemers."; card.appendChild(p);}
-
-  participants.forEach((name,i)=>{
-    const p=state.participants[name]||{};
-    const total=calcTotal(name);
-    const isMe=name===currentUser;
-    const row=div("lb-row"+(isMe?" me":""));
-    const rankDiv=div("lb-rank"); rankDiv.style.color=i===0?"var(--gold2)":i===1?"#94a3b8":i===2?"#c77b30":"var(--muted)"; rankDiv.textContent=medals[i]||(i+1);
-    const infoDiv=div(""); infoDiv.style.flex="1";
-    const nameDiv=div("lb-name"); nameDiv.textContent=name; if(isMe){const you=e("span",{style:"font-size:.6rem;color:var(--gold);margin-left:5px"}," (jij)"); nameDiv.appendChild(you);}
-    const subDiv=div("lb-sub");
-    const aW=state.actualWinner, aR=state.actualRunnerUp, aT=state.actualThird, aB=state.actualBelgiumRound;
-    [["🥇",p.winner,aW],["🥈",p.runnerUp,aR],["🥉",p.third,aT],["🇧🇪",p.belgiumRound,aB]].forEach(([icon,val,actual])=>{
-      const s=e("span",{}); s.textContent=icon+" "+(val||"—"); s.style.color=actual&&val===actual?"var(--green)":"inherit"; subDiv.appendChild(s);
+  sections.forEach(sec=>{
+    const secHdr=div(""); secHdr.style.cssText="font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)";
+    secHdr.textContent=sec.label; card.appendChild(secHdr);
+    sec.fields.forEach(([key,lbl])=>{
+      const row=div("pts-setting-row");
+      const nm=div("pts-setting-name"); nm.textContent=lbl;
+      const counter=div(""); counter.style.cssText="display:flex;align-items:center;gap:7px";
+      const curVal=(state.pts[key]!==undefined)?state.pts[key]:(DEFAULT_PTS[key]||0);
+      const minBtn=e("button",{class:"counter-btn"},"−");
+      minBtn.addEventListener("click",()=>{state.pts[key]=Math.max(0,curVal-1);saveState();renderPunten();});
+      const val=div("counter-val"); val.textContent=curVal;
+      const plusBtn=e("button",{class:"counter-btn"},"+");
+      plusBtn.addEventListener("click",()=>{state.pts[key]=curVal+1;saveState();renderPunten();});
+      counter.append(minBtn,val,plusBtn);
+      row.appendChild(nm); row.appendChild(counter); card.appendChild(row);
     });
-    infoDiv.appendChild(nameDiv); infoDiv.appendChild(subDiv);
-    const ptsDiv=div(""); const ptsNum=div("lb-pts"); ptsNum.textContent=total; const ptsLbl=div("lb-pts-lbl"); ptsLbl.textContent="punten"; ptsDiv.appendChild(ptsNum); ptsDiv.appendChild(ptsLbl);
-    row.appendChild(rankDiv); row.appendChild(infoDiv); row.appendChild(ptsDiv);
-    // Delete button for admin
-    if(isAdminView){
-      const delBtn=e("button",{style:"background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:.65rem;margin-left:6px;flex-shrink:0;font-family:'DM Sans',sans-serif;"},"🗑");
-      delBtn.title="Verwijder "+name;
-      delBtn.addEventListener("click",()=>{
-        if(confirm("Verwijder '"+name+"' uit het klassement?'")) {
-          delete state.participants[name];
-          saveState();
-          renderKlassement(true);
-          showToast("🗑 "+name+" verwijderd");
-        }
-      });
-      row.appendChild(delBtn);
-    }
-    card.appendChild(row);
   });
+
+  const btnRow=div(""); btnRow.style.cssText="margin-top:14px;display:flex;gap:8px";
+  const resetBtn=e("button",{class:"btn btn-outline"},"↩️ Standaard herstellen");
+  resetBtn.addEventListener("click",()=>{state.pts={...DEFAULT_PTS};saveState();renderPunten();showToast("↩️ Standaard hersteld!");});
+  btnRow.appendChild(resetBtn); card.appendChild(btnRow);
   container.appendChild(card);
+
+  // Info box: penalty scoring is dynamic now
+  const infoCard=div("card"); infoCard.style.cssText="margin-top:10px;border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.04)";
+  const infoTitle=div("card-title"); infoTitle.style.color="#a855f7"; infoTitle.textContent="⚡ Penalty's — hoe het werkt";
+  const infoTxt=div(""); infoTxt.style.cssText="font-size:.72rem;color:var(--muted);line-height:1.6;margin-bottom:8px"; infoTxt.textContent="De bovenstaande waarden voor penalty's worden automatisch gebruikt bij knockout wedstrijden die via penalty's beslist worden. Vergeet niet 'Naar penalty's?' aan te vinken bij scores invoer!";
+  infoCard.appendChild(infoTitle); infoCard.appendChild(infoTxt);
+  container.appendChild(infoCard);
 }
+
 
 // ══════════════════════════════════════════════════
 // ADMIN PRONOSTIEKEN VIEW
 // ══════════════════════════════════════════════════
+let selectedPronostiekUser = "";
 function renderAdminPronostieken() {
   const container = document.getElementById("admin-page-pronostieken");
+  if(!container) return;
   container.innerHTML = "";
-
   const participants = Object.keys(state.participants);
   if(participants.length === 0) {
     const card = div("card");
     card.innerHTML = "<div class='card-title'>👥 Pronostieken</div><p style='color:var(--muted);font-size:.8rem'>Nog geen deelnemers ingelogd.</p>";
-    container.appendChild(card);
-    return;
+    container.appendChild(card); return;
   }
-
-  // Filter selector
-  const filterCard = div("card");
-  filterCard.innerHTML = "<div class='card-title'>👥 Pronostieken per deelnemer</div>";
-
-  const filterRow = div(""); filterRow.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px";
+  const card = div("card"); card.innerHTML = "<div class='card-title'>👥 Pronostieken per deelnemer</div>";
+  const filterRow = div(""); filterRow.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px";
   participants.forEach(name => {
     const btn = e("button", {class:"round-btn"+(selectedPronostiekUser===name?" sel":"")});
     btn.textContent = name;
     btn.addEventListener("click", () => { selectedPronostiekUser = name; renderAdminPronostieken(); });
     filterRow.appendChild(btn);
   });
-  filterCard.appendChild(filterRow);
-
+  card.appendChild(filterRow);
   if(selectedPronostiekUser && state.participants[selectedPronostiekUser]) {
     const p = state.participants[selectedPronostiekUser];
     const totalPts = calcTotal(selectedPronostiekUser);
-
-    // Header info
-    const infoRow = div(""); infoRow.style.cssText = "display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--dark3);border-radius:9px;margin-bottom:14px;border:1px solid var(--gold)";
+    const infoRow = div(""); infoRow.style.cssText = "display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--dark3);border-radius:9px;margin-bottom:12px;border:1px solid var(--gold)";
     const nameDiv = div(""); nameDiv.style.cssText = "font-weight:700;font-size:.95rem"; nameDiv.textContent = "👤 "+selectedPronostiekUser;
-    const ptsDiv = div(""); ptsDiv.style.cssText = "font-family:'Bebas Neue',cursive;font-size:1.5rem;color:var(--accent)"; ptsDiv.textContent = totalPts+" pt";
-    infoRow.appendChild(nameDiv); infoRow.appendChild(ptsDiv);
-    filterCard.appendChild(infoRow);
-
-    // Specials
-    const specialsDiv = div(""); specialsDiv.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px";
-    [["🥇",p.winner||"—",state.actualWinner],["🥈",p.runnerUp||"—",state.actualRunnerUp],["🥉",p.third||"—",state.actualThird],["🇧🇪",p.belgiumRound||"—",state.actualBelgiumRound]].forEach(([icon,val,actual])=>{
-      const chip = div(""); chip.style.cssText = `background:${actual&&val===actual?"rgba(34,197,94,.1)":"var(--dark3)"};border:1px solid ${actual&&val===actual?"var(--green)":"var(--border)"};border-radius:8px;padding:6px 10px;font-size:.75rem;`;
-      chip.textContent = icon+" "+val+(actual&&val===actual?" ✓":"");
-      specialsDiv.appendChild(chip);
-    });
-    filterCard.appendChild(specialsDiv);
-
-    // Matches per speeldag
+    const ptsDiv = div(""); ptsDiv.style.cssText = "font-family:Bebas Neue,cursive;font-size:1.5rem;color:var(--accent)"; ptsDiv.textContent = totalPts+" pt";
+    infoRow.appendChild(nameDiv); infoRow.appendChild(ptsDiv); card.appendChild(infoRow);
     SPEELDAGEN.forEach(sd => {
-      const sdTitle = div(""); sdTitle.style.cssText = "font-family:'Bebas Neue',cursive;font-size:.95rem;color:var(--gold);letter-spacing:2px;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)";
-      sdTitle.textContent = sd.emoji+" "+sd.label;
-      filterCard.appendChild(sdTitle);
-
+      const sdTitle = div(""); sdTitle.style.cssText = "font-family:Bebas Neue,cursive;font-size:.95rem;color:var(--gold);letter-spacing:2px;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)";
+      sdTitle.textContent = sd.emoji+" "+sd.label; card.appendChild(sdTitle);
+      let hasAny = false;
       sd.matches.forEach(m => {
         const pred = (p.predictions||{})[m.id]||{};
         const actual = state.actualScores[m.id]||{};
-        const hasPred = pred.h!==undefined && pred.h!=="";
-        if(!hasPred) return; // skip unfilled
-
-        const {total:matchPts, bd} = calcMatchPts(pred, actual);
+        if(pred.h===undefined||pred.h==="") return;
+        hasAny = true;
+        const {total:matchPts,bd} = calcMatchPts(pred,actual);
         const hasActual = actual.h!==""&&actual.a!=="";
-
-        const row = div(""); row.style.cssText = `display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;margin-bottom:5px;background:${hasActual?(matchPts>0?"rgba(34,197,94,.06)":"rgba(239,68,68,.05)"):"var(--dark3)"};border:1px solid ${hasActual?(matchPts>0?"rgba(34,197,94,.2)":"rgba(239,68,68,.15)"):"var(--border)"}`;
-
-        const matchInfo = div("");
-        const matchName = div(""); matchName.style.cssText = "font-size:.75rem;font-weight:600"; matchName.textContent = m.t1+" - "+m.t2;
-        const predScore = div(""); predScore.style.cssText = "font-size:.68rem;color:var(--muted);margin-top:2px";
-        predScore.textContent = "Pronostiek: "+pred.h+" – "+pred.a+(pred.goalSlot?" · "+pred.goalSlot:"")+(pred.firstScorer?" · "+pred.firstScorer:"");
-        if(hasActual){
-          const actScore = div(""); actScore.style.cssText = "font-size:.68rem;color:var(--gold);margin-top:1px";
-          actScore.textContent = "Uitslag: "+actual.h+" – "+actual.a;
-          matchInfo.appendChild(matchName); matchInfo.appendChild(predScore); matchInfo.appendChild(actScore);
-        } else {
-          matchInfo.appendChild(matchName); matchInfo.appendChild(predScore);
-        }
-
+        const row = div(""); row.style.cssText = "display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;margin-bottom:5px;background:"+(hasActual?(matchPts>0?"rgba(34,197,94,.06)":"rgba(239,68,68,.05)"):"var(--dark3)")+";border:1px solid "+(hasActual?(matchPts>0?"rgba(34,197,94,.2)":"rgba(239,68,68,.15)"):"var(--border)");
+        const info = div("");
+        const mn = div(""); mn.style.cssText = "font-size:.75rem;font-weight:600"; mn.textContent = m.t1+" – "+m.t2;
+        const ps = div(""); ps.style.cssText = "font-size:.68rem;color:var(--muted);margin-top:2px"; ps.textContent = "Pronostiek: "+pred.h+" – "+pred.a+(pred.goalSlot?" · "+pred.goalSlot:"")+(pred.firstScorer?" · "+pred.firstScorer:"");
+        info.appendChild(mn); info.appendChild(ps);
+        if(hasActual){const as2=div(""); as2.style.cssText="font-size:.68rem;color:var(--gold);margin-top:1px"; as2.textContent="Uitslag: "+actual.h+" – "+actual.a; info.appendChild(as2);}
         const timeDiv = div(""); timeDiv.style.cssText = "font-size:.6rem;color:var(--muted);text-align:right"; timeDiv.textContent = m.time||"";
-
-        const ptsDiv2 = div(""); ptsDiv2.style.cssText = "text-align:right;min-width:40px";
-        if(hasActual){
-          const n = div(""); n.style.cssText = `font-family:'Bebas Neue',cursive;font-size:1.3rem;color:${matchPts>=state.pts.perfectScore?"var(--green)":matchPts>0?"var(--orange)":"var(--red)"}`;
-          n.textContent = matchPts>0?"+"+matchPts:"0";
-          ptsDiv2.appendChild(n);
-        } else {
-          const n = div(""); n.style.cssText = "font-size:.65rem;color:var(--muted)"; n.textContent = "Afwachten";
-          ptsDiv2.appendChild(n);
-        }
-
-        row.appendChild(matchInfo); row.appendChild(timeDiv); row.appendChild(ptsDiv2);
-        filterCard.appendChild(row);
+        const ptsDiv2 = div(""); ptsDiv2.style.cssText = "text-align:right;min-width:36px";
+        if(hasActual){const n=div(""); n.style.cssText="font-family:Bebas Neue,cursive;font-size:1.3rem;color:"+(matchPts>=state.pts.perfectScore?"var(--green)":matchPts>0?"var(--orange)":"var(--red)"); n.textContent=matchPts>0?"+"+matchPts:"0"; ptsDiv2.appendChild(n);}
+        row.appendChild(info); row.appendChild(timeDiv); row.appendChild(ptsDiv2);
+        card.appendChild(row);
       });
+      if(!hasAny){const nf=div(""); nf.style.cssText="font-size:.72rem;color:var(--muted);font-style:italic;padding:4px 0"; nf.textContent="Niets ingevuld"; card.appendChild(nf);}
     });
   }
-
-  container.appendChild(filterCard);
+  container.appendChild(card);
 }
-let selectedPronostiekUser = "";
 
 // ══════════════════════════════════════════════════
 // ADMIN SCORES
@@ -1106,8 +1514,25 @@ function renderAdminScores() {
   syncBtn.addEventListener("click",async()=>{
     syncBtn.innerHTML='<span class="spinner"></span> Bezig…'; syncBtn.disabled=true;
     try{
-      const prompt = "Search FIFA World Cup 2026 latest official match results. Return ONLY a JSON object. Match IDs: A11=Mexico vs ZuidAfrika, A21=ZuidKorea vs Tsjechie, B11=Canada vs Bosnie, B21=Qatar vs Zwitserland, C11=Brazilie vs Marokko, C21=Haiti vs Schotland, D11=VerStaten vs Paraguay, D21=Australie vs Turkije, E11=Duitsland vs Curacao, E21=Ivoorkust vs Ecuador, F11=Nederland vs Japan, F21=Zweden vs Tunesie, G11=Belgie vs Egypte, G21=Iran vs NieuwZeeland, H11=Spanje vs Kaapverdie, H21=SaoediArabie vs Uruguay, I11=Frankrijk vs Senegal, I21=Irak vs Noorwegen, J11=Argentinie vs Algerije, J21=Oostenrijk vs Jordanie, K11=Portugal vs DRCongo, K21=Oezbekistan vs Colombia, L11=Engeland vs Kroatie, L21=Ghana vs Panama. Format each result as matchID with h and a properties. Only played matches.";
-      const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]})});
+      const prompt = "Search FIFA World Cup 2026 latest official match results. " +
+        "Return ONLY a JSON object mapping match IDs to scores. " +
+        "Match IDs: A11=Mexico vs ZuidAfrika, A21=ZuidKorea vs Tsjechie, " +
+        "B11=Canada vs Bosnie, B21=Qatar vs Zwitserland, " +
+        "C11=Brazilie vs Marokko, C21=Haiti vs Schotland, " +
+        "D11=VerStaten vs Paraguay, D21=Australie vs Turkije, " +
+        "E11=Duitsland vs Curacao, E21=Ivoorkust vs Ecuador, " +
+        "F11=Nederland vs Japan, F21=Zweden vs Tunesie, " +
+        "G11=Belgie vs Egypte, G21=Iran vs NieuwZeeland, " +
+        "H11=Spanje vs Kaapverdie, H21=SaoediArabie vs Uruguay, " +
+        "I11=Frankrijk vs Senegal, I21=Irak vs Noorwegen, " +
+        "J11=Argentinie vs Algerije, J21=Oostenrijk vs Jordanie, " +
+        "K11=Portugal vs DRCongo, K21=Oezbekistan vs Colombia, " +
+        "L11=Engeland vs Kroatie, L21=Ghana vs Panama. " +
+        "Only include played matches. If none return empty object.";
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]})
+      });
       const data=await res.json();
       const txt2=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
       const m=txt2.match(/\{[\s\S]*?\}/);
@@ -1120,29 +1545,65 @@ function renderAdminScores() {
   syncRow.appendChild(syncBtn); syncRow.appendChild(syncLbl); syncCard.appendChild(syncRow);
 
   SPEELDAGEN.slice(0,3).forEach(sd=>{
-    const sdTitle=div(""); sdTitle.style.cssText="font-family:'Bebas Neue',cursive;font-size:1rem;color:var(--gold);letter-spacing:2px;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border)"; sdTitle.textContent=sd.emoji+" "+sd.label;
+    const sdTitle=div(""); sdTitle.style.cssText="font-family:Bebas Neue,cursive;font-size:1rem;color:var(--gold);letter-spacing:2px;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border)"; sdTitle.textContent=sd.emoji+" "+sd.label;
     syncCard.appendChild(sdTitle);
     sd.matches.forEach(m=>syncCard.appendChild(renderAdminMatch(m)));
   });
   container.appendChild(syncCard);
 
-  // End results
   const endCard=div("card"); endCard.innerHTML="<div class='card-title'>🏆 Eindresultaten</div>";
-  [["🥇 Winnaar","actualWinner"],["🥈 Runner-up","actualRunnerUp"],["🥉 Derde","actualThird"]].forEach(([lbl,field])=>{
+  [["actualTopscorer","⚽ Topschutter"],["actualPlayerTournament","⭐ Speler toernooi"],["actualKeeperTournament","🧤 Keeper toernooi"]].forEach(([key,lbl])=>{
     const row=div(""); row.style.cssText="margin-bottom:10px";
     const l=e("label",{class:"lbl"},lbl);
-    const inp=e("input",{class:"inp",value:state[field]||"",placeholder:"bijv. Spanje",style:"margin-bottom:0;flex:1"});
-    inp.addEventListener("input",ev=>{state[field]=ev.target.value;saveState();});
+    const inp=e("input",{class:"inp",value:state[key]||"",placeholder:"Naam…",style:"margin-bottom:0;flex:1"});
+    inp.addEventListener("input",ev=>{state[key]=ev.target.value;saveState();});
     const irow=div(""); irow.style.cssText="display:flex;gap:8px;align-items:center";
-    irow.appendChild(inp);
-    row.appendChild(l); row.appendChild(irow); endCard.appendChild(row);
+    irow.appendChild(inp); row.appendChild(l); row.appendChild(irow); endCard.appendChild(row);
   });
-  const belLbl=e("label",{class:"lbl"},"🇧🇪 Ronde België");
+  const rcAdminRow=div(""); rcAdminRow.style.cssText="margin-bottom:10px";
+  const rcAdminLbl=e("label",{class:"lbl"},"🟥 Aantal rode kaarten (totaal toernooi)");
+  const rcAdminInp=e("input",{type:"number",min:"0",max:"200",class:"inp",value:state.actualRedCards!==undefined&&state.actualRedCards!==""?state.actualRedCards:"",placeholder:"Vul het totaal in, bv. 12",style:"max-width:200px;margin-bottom:0"});
+  rcAdminInp.addEventListener("input",ev=>{state.actualRedCards=ev.target.value===""?"":parseInt(ev.target.value);saveState();refreshKlassementIfVisible();});
+  rcAdminRow.appendChild(rcAdminLbl); rcAdminRow.appendChild(rcAdminInp); endCard.appendChild(rcAdminRow);
+  // Manual open/close for tournament specials deadline
+  const specRow=div(""); specRow.style.cssText="margin-bottom:14px;padding:12px 14px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:9px;";
+  const specTitle2=div(""); specTitle2.style.cssText="font-size:.82rem;font-weight:700;margin-bottom:4px;color:var(--gold)"; specTitle2.textContent="⏰ Specials deadline beheren";
+  const specSub=div(""); specSub.style.cssText="font-size:.68rem;color:var(--muted);margin-bottom:10px;line-height:1.5"; specSub.textContent="Standaard sluit Sectie 1 + 2 op 11 juni 21:00. Hervoorspelling opent op 2 juli.";
+  specRow.appendChild(specTitle2); specRow.appendChild(specSub);
+  // Row 1: Specials (section 1+2)
+  const specBtnRow1=div(""); specBtnRow1.style.cssText="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px";
+  const specLbl1=div(""); specLbl1.style.cssText="font-size:.74rem;font-weight:600"; specLbl1.textContent="Eindwinnaar · Topschutter · Specials";
+  const specOverrideBtn=e("button",{class:"btn btn-sm",style:"border:1.5px solid "+(state.specialsOverrideOpen?"var(--red)":"var(--green)")+";background:transparent;color:"+(state.specialsOverrideOpen?"var(--red)":"var(--green)")},state.specialsOverrideOpen?"🔒 Sluiten":"🔓 Openen");
+  specOverrideBtn.addEventListener("click",()=>{
+    state.specialsOverrideOpen=!state.specialsOverrideOpen;
+    saveState();renderAdminScores();showToast(state.specialsOverrideOpen?"🔓 Specials geopend":"🔒 Specials gesloten");
+  });
+  specBtnRow1.appendChild(specLbl1); specBtnRow1.appendChild(specOverrideBtn); specRow.appendChild(specBtnRow1);
+  // Row 2: R32 re-prediction
+  const specBtnRow2=div(""); specBtnRow2.style.cssText="display:flex;align-items:center;justify-content:space-between;";
+  const specLbl2=div(""); specLbl2.style.cssText="font-size:.74rem;font-weight:600"; specLbl2.textContent="Hervoorspelling top 3 (na R32)";
+  const r32OverrideBtn=e("button",{class:"btn btn-sm",style:"border:1.5px solid "+(state.r32PredOverrideOpen?"var(--red)":"var(--green)")+";background:transparent;color:"+(state.r32PredOverrideOpen?"var(--red)":"var(--green)")},state.r32PredOverrideOpen?"🔒 Sluiten":"🔓 Openen");
+  r32OverrideBtn.addEventListener("click",()=>{
+    state.r32PredOverrideOpen=!state.r32PredOverrideOpen;
+    saveState();renderAdminScores();showToast(state.r32PredOverrideOpen?"🔓 Hervoorspelling geopend":"🔒 Hervoorspelling gesloten");
+  });
+  specBtnRow2.appendChild(specLbl2); specBtnRow2.appendChild(r32OverrideBtn); specRow.appendChild(specBtnRow2);
+  endCard.appendChild(specRow);
+
+  [{"label":"🥇 Winnaar","key":"actualWinner"},{"label":"🥈 Runner-up","key":"actualRunnerUp"},{"label":"🥉 Derde","key":"actualThird"}].forEach(({label,key})=>{
+    const row=div(""); row.style.cssText="margin-bottom:10px";
+    const l=e("label",{class:"lbl"},label);
+    const inp=e("input",{class:"inp",value:state[key]||"",placeholder:"bijv. Spanje",style:"margin-bottom:0"});
+    inp.addEventListener("input",ev=>{state[key]=ev.target.value;saveState();});
+    const irow=div(""); irow.style.cssText="display:flex;gap:8px;align-items:center";
+    irow.appendChild(inp); row.appendChild(l); row.appendChild(irow); endCard.appendChild(row);
+  });
+  const belLbl=e("label",{class:"lbl"},"🇧🇪 In welke ronde strandt België?");
   endCard.appendChild(belLbl);
   const belBtns=div(""); belBtns.style.cssText="display:flex;flex-wrap:wrap;gap:5px;margin-top:3px";
   KO_ROUNDS.forEach(r=>{
     const btn=e("button",{class:"round-btn"+(state.actualBelgiumRound===r?" sel":"")});
-    btn.textContent=r; btn.addEventListener("click",()=>{state.actualBelgiumRound=state.actualBelgiumRound===r?"":r;saveState();renderAdminScores();});
+    btn.textContent=r; btn.addEventListener("click",()=>{state.actualBelgiumRound=state.actualBelgiumRound===r?"":r;saveState();renderAdminScores();showToast("✅ België: "+r);});
     belBtns.appendChild(btn);
   });
   endCard.appendChild(belBtns);
@@ -1153,17 +1614,24 @@ function renderAdminMatch(match) {
   const actual=state.actualScores[match.id]||{};
   const card=div("admin-match");
   const timeDiv=div(""); timeDiv.style.cssText="font-size:.58rem;color:var(--accent);margin-bottom:4px;font-weight:600"; timeDiv.textContent="🕐 "+match.time;
-  const scoreRow=div(""); scoreRow.style.cssText="display:grid;grid-template-columns:1fr 32px 10px 32px 1fr;align-items:center;gap:4px;margin-bottom:7px";
+  const scoreRow=div(""); scoreRow.style.cssText="display:grid;grid-template-columns:1fr 34px 10px 34px 1fr;align-items:center;gap:4px;margin-bottom:7px";
   const t1=span("",match.t1); t1.style.cssText="font-size:.74rem;font-weight:600";
   const hIn=e("input",{type:"number",min:"0",max:"30",class:"score-inp admin-inp",value:actual.h||""});
   hIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].h=ev.target.value;saveState();refreshKlassementIfVisible();});
   const vs=span("vsep","–");
   const aIn=e("input",{type:"number",min:"0",max:"30",class:"score-inp admin-inp",value:actual.a||""});
-  aIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].a=ev.target.value;saveState();});
+  aIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].a=ev.target.value;saveState();renderAdminScores();refreshKlassementIfVisible();});
   const t2=span("",match.t2); t2.style.cssText="font-size:.74rem;font-weight:600;text-align:right";
   scoreRow.append(t1,hIn,vs,aIn,t2);
-
   const extras=div("extra-row");
+  const matchSd=SPEELDAGEN.find(sd=>sd.matches.some(m=>m.id===match.id));
+  if(matchSd&&matchSd.knockout){
+    const pkRow=div(""); pkRow.style.cssText="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 8px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:7px";
+    const pkLbl=div(""); pkLbl.style.cssText="font-size:.7rem;color:#a855f7;font-weight:600;flex:1"; pkLbl.textContent="⚡ Naar penalty's?";
+    const pkChk=e("input",{type:"checkbox"}); pkChk.style.cssText="width:16px;height:16px;cursor:pointer"; pkChk.checked=!!actual.pk;
+    pkChk.addEventListener("change",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].pk=ev.target.checked;saveState();refreshKlassementIfVisible();});
+    pkRow.appendChild(pkLbl); pkRow.appendChild(pkChk); extras.appendChild(pkRow);
+  }
   const gsDiv=div(""); gsDiv.style.cssText="flex:1 1 165px";
   const gsLbl=div("extra-label"); gsLbl.textContent="⏱ Tijdslot eerste goal";
   const gsChips=div("chips");
@@ -1173,18 +1641,16 @@ function renderAdminMatch(match) {
     gsChips.appendChild(c);
   });
   gsDiv.appendChild(gsLbl); gsDiv.appendChild(gsChips); extras.appendChild(gsDiv);
-
   const fsDiv=div(""); fsDiv.style.cssText="flex:1 1 105px";
   const fsLbl=div("extra-label"); fsLbl.textContent="🥅 Eerste scorer";
   const fsChips=div("chips");
   [match.t1,match.t2,"Geen"].forEach(t=>{
     const c=e("button",{class:"chip chip-gold chip-sm"+(actual.firstScorer===t?" sel":"")});
     c.textContent=t==="Geen"?"Geen":t.length>6?t.substring(0,5)+"…":t;
-    c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].firstScorer=actual.firstScorer===t?"":t;saveState();renderAdminScores();refreshKlassementIfVisible();});
+    c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].firstScorer=actual.firstScorer===t?"":t;saveState();renderAdminScores();});
     fsChips.appendChild(c);
   });
   fsDiv.appendChild(fsLbl); fsDiv.appendChild(fsChips); extras.appendChild(fsDiv);
-
   card.append(timeDiv,scoreRow,extras);
   return card;
 }
@@ -1197,24 +1663,23 @@ function renderAdminSpeeldagen() {
   container.innerHTML="";
   const card=div("card"); card.innerHTML="<div class='card-title'>📅 Speeldagen beheren</div><p style='font-size:.76rem;color:var(--muted);margin-bottom:12px;line-height:1.6'>Sluit manueel. Wedstrijden vergrendelen automatisch op aftrapmoment.</p>";
   SPEELDAGEN.forEach(sd=>{
-    const isOpen=state.sdStatus[sd.id]==="open";
     const anyLocked=sd.matches.some(m=>isLocked(m.id));
     const allLocked=sd.matches.every(m=>isLocked(m.id));
+    const isOpen=state.sdStatus[sd.id]==="open";
     const row=div(""); row.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--dark3);border:1px solid var(--border);border-radius:9px;margin-bottom:6px;gap:10px;flex-wrap:wrap";
     const info=div("");
-    const title=div(""); title.style.cssText="font-family:'Bebas Neue',cursive;font-size:1.05rem;letter-spacing:1px"; title.textContent=sd.emoji+" "+sd.label;
+    const title=div(""); title.style.cssText="font-family:Bebas Neue,cursive;font-size:1.05rem;letter-spacing:1px"; title.textContent=sd.emoji+" "+sd.label;
     const sub=div(""); sub.style.cssText="font-size:.6rem;color:var(--muted);margin-top:1px"; sub.textContent=sd.sub;
     info.appendChild(title); info.appendChild(sub);
     if(anyLocked&&!allLocked){const note=div(""); note.style.cssText="font-size:.58rem;color:var(--orange);margin-top:1px"; note.textContent="⏰ Sommige wedstrijden al vergrendeld"; info.appendChild(note);}
     if(allLocked){const note=div(""); note.style.cssText="font-size:.58rem;color:var(--muted);margin-top:1px"; note.textContent="⏰ Alle wedstrijden vergrendeld"; info.appendChild(note);}
-    const btn=e("button",{class:"btn btn-sm",style:`border:1.5px solid ${isOpen?"var(--red)":"var(--green)"};background:transparent;color:${isOpen?"var(--red)":"var(--green)"}`},isOpen?"🔒 Sluiten":"🔓 Openen");
+    const btn=e("button",{class:"btn btn-sm",style:"border:1.5px solid "+(isOpen?"var(--red)":"var(--green)")+";background:transparent;color:"+(isOpen?"var(--red)":"var(--green)")},isOpen?"🔒 Sluiten":"🔓 Openen");
     btn.addEventListener("click",()=>{
-    const newStatus = isOpen?"closed":"open";
-    state.sdStatus[sd.id]=newStatus;
-    // When admin opens, set override to bypass time lock
-    state.sdStatus[sd.id+"_override"] = newStatus==="open";
-    saveState();renderAdminSpeeldagen();showToast(isOpen?"🔒 Gesloten":"🔓 Geopend");
-  });
+      const newStatus=isOpen?"closed":"open";
+      state.sdStatus[sd.id]=newStatus;
+      state.sdStatus[sd.id+"_override"]=newStatus==="open";
+      saveState();renderAdminSpeeldagen();showToast(isOpen?"🔒 Gesloten":"🔓 Geopend");
+    });
     row.appendChild(info); row.appendChild(btn); card.appendChild(row);
   });
   container.appendChild(card);
@@ -1229,7 +1694,6 @@ function renderGroepen() {
   const standings=computeStandings();
   const best8=getBest8(standings);
   const r32res=resolveR32();
-
   const card1=div("card"); card1.innerHTML="<div class='card-title'>🗂 Groepsklassementen</div>";
   const grid=div("groups-grid");
   Object.entries(standings).forEach(([grp,teams])=>{
@@ -1239,7 +1703,7 @@ function renderGroepen() {
       const row=div("group-row"+(i<2?" q":i===2?" p":""));
       const rnk=span("",i+1+""); rnk.style.cssText="color:"+(i===0?"var(--gold2)":i===1?"#94a3b8":"var(--muted)")+";font-weight:700;text-align:center;font-size:.66rem";
       const nm=span("",t.name); nm.style.cssText="font-weight:600;color:"+(i<2?"var(--text)":"var(--muted)")+";font-size:.66rem";
-      const gd=span("",( t.gd>0?"+":"")+t.gd); gd.style.cssText="text-align:center;color:var(--muted);font-size:.66rem";
+      const gd=span("",(t.gd>0?"+":"")+t.gd); gd.style.cssText="text-align:center;color:var(--muted);font-size:.66rem";
       const gf=span("",t.gf+""); gf.style.cssText="text-align:center;color:var(--muted);font-size:.66rem";
       const pts=span("",t.pts+""); pts.style.cssText="text-align:center;font-weight:700;color:var(--accent);font-size:.66rem";
       row.append(rnk,nm,gd,gf,pts); gc.appendChild(row);
@@ -1247,79 +1711,248 @@ function renderGroepen() {
     grid.appendChild(gc);
   });
   card1.appendChild(grid); container.appendChild(card1);
-
   const card2=div("card"); card2.innerHTML="<div class='card-title'>🥉 Beste 8 derde-geplaatsten</div>";
   if(best8.length===0){const p=div(""); p.style.cssText="font-size:.76rem;color:var(--muted)"; p.textContent="Nog geen scores ingevoerd."; card2.appendChild(p);}
   const b8grid=div(""); b8grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:7px";
-  best8.forEach((t,i)=>{
-    const bc=div(""); bc.style.cssText="background:var(--dark4);border:1px solid var(--green);border-radius:8px;padding:6px 8px";
-    const n1=div(""); n1.style.cssText="font-size:.54rem;color:var(--muted)"; n1.textContent="#"+(i+1)+" ✅";
-    const n2=div(""); n2.style.cssText="font-size:.76rem;font-weight:700"; n2.textContent=t.name;
-    const n3=div(""); n3.style.cssText="font-size:.6rem;color:var(--gold)"; n3.textContent="Groep "+t.grp;
-    const n4=div(""); n4.style.cssText="font-size:.58rem;color:var(--accent)"; n4.textContent=t.pts+"pt · "+(t.gd>0?"+":"")+t.gd;
-    bc.append(n1,n2,n3,n4); b8grid.appendChild(bc);
-  });
+  best8.forEach((t,i)=>{const bc=div(""); bc.style.cssText="background:var(--dark4);border:1px solid var(--green);border-radius:8px;padding:6px 8px";const n1=div(""); n1.style.cssText="font-size:.54rem;color:var(--muted)"; n1.textContent="#"+(i+1)+" ✅";const n2=div(""); n2.style.cssText="font-size:.76rem;font-weight:700"; n2.textContent=t.name;const n3=div(""); n3.style.cssText="font-size:.6rem;color:var(--gold)"; n3.textContent="Groep "+t.grp;const n4=div(""); n4.style.cssText="font-size:.58rem;color:var(--accent)"; n4.textContent=t.pts+"pt · "+(t.gd>0?"+":"")+t.gd;bc.append(n1,n2,n3,n4); b8grid.appendChild(bc);});
   card2.appendChild(b8grid); container.appendChild(card2);
-
   const card3=div("card"); card3.innerHTML="<div class='card-title'>⚽ Ronde van 32 koppelingen</div>";
   const r32grid=div(""); r32grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:5px";
-  R32_SLOTS.forEach(s=>{
-    const row=div(""); row.style.cssText="background:var(--dark4);border:1px solid var(--border);border-radius:7px;padding:6px 9px;display:flex;align-items:center;gap:5px";
-    const id=span("",s.id); id.style.cssText="font-size:.58rem;color:var(--gold);font-weight:700;min-width:24px";
-    const t1=span("",r32res[s.id+"_t1"]||s.t1); t1.style.cssText="font-size:.68rem;font-weight:600;flex:1;text-align:right;color:var(--text)";
-    const vs=span("","vs"); vs.style.cssText="font-size:.54rem;color:var(--muted)";
-    const t2=span("",r32res[s.id+"_t2"]||s.t2); t2.style.cssText="font-size:.68rem;font-weight:600;flex:1;color:var(--text)";
-    row.append(id,t1,vs,t2); r32grid.appendChild(row);
-  });
+  R32_SLOTS.forEach(s=>{const row=div(""); row.style.cssText="background:var(--dark4);border:1px solid var(--border);border-radius:7px;padding:6px 9px;display:flex;align-items:center;gap:5px";const id=span("",s.id); id.style.cssText="font-size:.58rem;color:var(--gold);font-weight:700;min-width:24px";const t1=span("",r32res[s.id+"_t1"]||s.t1); t1.style.cssText="font-size:.68rem;font-weight:600;flex:1;text-align:right;color:var(--text)";const vs=span("","vs"); vs.style.cssText="font-size:.54rem;color:var(--muted)";const t2=span("",r32res[s.id+"_t2"]||s.t2); t2.style.cssText="font-size:.68rem;font-weight:600;flex:1;color:var(--text)";row.append(id,t1,vs,t2); r32grid.appendChild(row);});
   card3.appendChild(r32grid); container.appendChild(card3);
 }
 
 // ══════════════════════════════════════════════════
-// PUNTEN INSTELLINGEN
+// KLASSEMENT
 // ══════════════════════════════════════════════════
-function renderPunten() {
-  const container=document.getElementById("admin-page-punten");
+function renderKlassement(isAdminView=false) {
+  const container=document.getElementById(isAdminView?"admin-page-klassement":"page-klassement");
   container.innerHTML="";
-  const card=div("card"); card.innerHTML="<div class='card-title'>⚙️ Puntenverdeling aanpassen</div><p style='font-size:.78rem;color:var(--muted);margin-bottom:14px;line-height:1.6'>Wijzigingen worden meteen verrekend.</p>";
-  const fields=[["winner","✓ Juiste winnaar / gelijkspel"],["perfectScore","🎯 Perfecte score"],["goalSlot","⏱ Juist tijdslot eerste goal"],["firstScorer","🥅 Juiste eerste scorer"],["champion","🥇 Juiste eindwinnaar"],["runnerUp","🥈 Juiste runner-up"],["third","🥉 Juiste derde"],["belgiumRound","🇧🇪 Juiste ronde België"]];
-  fields.forEach(([key,lbl])=>{
-    const row=div("pts-setting-row");
-    const nm=div("pts-setting-name"); nm.textContent=lbl;
-    const counter=div(""); counter.style.cssText="display:flex;align-items:center;gap:7px";
-    const minBtn=e("button",{class:"counter-btn"},"−"); minBtn.addEventListener("click",()=>{state.pts[key]=Math.max(0,state.pts[key]-1);saveState();renderPunten();});
-    const val=div("counter-val"); val.textContent=state.pts[key];
-    const plusBtn=e("button",{class:"counter-btn"},"+"); plusBtn.addEventListener("click",()=>{state.pts[key]++;saveState();renderPunten();});
-    counter.append(minBtn,val,plusBtn);
-    row.appendChild(nm); row.appendChild(counter); card.appendChild(row);
+  const card=div("card"); card.innerHTML="<div class='card-title'>📊 Klassement</div>";
+  const leg=div("pts-legend");
+  [[state.pts.perfectScore,"Exacte score"],[state.pts.winner,"Juiste winnaar"],[state.pts.champion,"Eindwinnaar"],[state.pts.belgiumRound,"In welke ronde strandt België?"]].forEach(([p,l])=>{
+    const item=div("pts-legend-item"); item.appendChild(e("span",{class:"pts-pill"},p+"pt")); item.appendChild(txt(" "+l)); leg.appendChild(item);
   });
-  const btnRow=div(""); btnRow.style.cssText="margin-top:12px;display:flex;gap:8px";
-  const resetBtn=e("button",{class:"btn btn-outline"},"↩️ Standaard herstellen");
-  resetBtn.addEventListener("click",()=>{state.pts={...DEFAULT_PTS};saveState();renderPunten();showToast("↩️ Hersteld!");});
-  btnRow.appendChild(resetBtn); card.appendChild(btnRow);
+  card.appendChild(leg);
+  const medals=["🥇","🥈","🥉"];
+  const participants=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a));
+  if(participants.length===0){const p=div(""); p.style.cssText="color:var(--muted);font-size:.8rem"; p.textContent="Nog geen deelnemers."; card.appendChild(p);}
+  participants.forEach((name,i)=>{
+    const p=state.participants[name]||{};
+    const total=calcTotal(name);
+    const isMe=name===currentUser;
+    const row=div("lb-row"+(isMe?" me":""));
+    const rankDiv=div("lb-rank"); rankDiv.style.color=i===0?"var(--gold2)":i===1?"#94a3b8":i===2?"#c77b30":"var(--muted)"; rankDiv.textContent=medals[i]||(i+1);
+    const infoDiv=div(""); infoDiv.style.flex="1";
+    const nameDiv=div("lb-name"); nameDiv.textContent=name; if(isMe){const you=e("span",{style:"font-size:.6rem;color:var(--gold);margin-left:5px"}," (jij)"); nameDiv.appendChild(you);}
+    const subDiv=div("lb-sub");
+    const aW=state.actualWinner,aR=state.actualRunnerUp,aT=state.actualThird,aB=state.actualBelgiumRound;
+    [["🥇",p.winner,aW],["🥈",p.runnerUp,aR],["🥉",p.third,aT],["🇧🇪",p.belgiumRound,aB]].forEach(([icon,val,actual])=>{
+      const s=e("span",{}); s.textContent=icon+" "+(val||"—"); s.style.color=actual&&val===actual?"var(--green)":"inherit"; subDiv.appendChild(s);
+    });
+    infoDiv.appendChild(nameDiv); infoDiv.appendChild(subDiv);
+    const ptsDiv=div(""); const ptsNum=div("lb-pts"); ptsNum.textContent=total; const ptsLbl=div("lb-pts-lbl"); ptsLbl.textContent="punten"; ptsDiv.appendChild(ptsNum); ptsDiv.appendChild(ptsLbl);
+    row.appendChild(rankDiv); row.appendChild(infoDiv); row.appendChild(ptsDiv);
+    if(isAdminView){
+      const delBtn=e("button",{style:"background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:.65rem;margin-left:6px;flex-shrink:0;font-family:'DM Sans',sans-serif;"},"🗑");
+      delBtn.addEventListener("click",()=>{if(confirm("Verwijder '"+name+"'?")){
+  delete state.participants[name];
+  if(state.passwords) delete state.passwords[name];
+  // Remove all popup keys for this user so they get fresh onboarding next login
+  state.shownPopups = (state.shownPopups||[]).filter(k=>!k.endsWith(":"+name));
+  if(state.r32PredDone) delete state.r32PredDone[name];
+  saveState();renderKlassement(true);showToast("🗑 "+name+" verwijderd");
+}});
+      row.appendChild(delBtn);
+    }
+    card.appendChild(row);
+  });
   container.appendChild(card);
 }
 
 // ══════════════════════════════════════════════════
-// SPEELDAG POPUP
+// NOTIFICATION SYSTEM
 // ══════════════════════════════════════════════════
-function checkSdPopups() {
-  for(const sd of SPEELDAGEN) {
-    const sdOpen=state.sdStatus[sd.id]==="open";
+function countOpenTasks() {
+  const p=state.participants[currentUser]||{};
+  let count=0;
+  const open=specialsOpen();
+  if(open&&!p.winner)count++;
+  if(open&&!p.topscorer)count++;
+  if(open&&!p.playerTournament)count++;
+  if(open&&!p.keeperTournament)count++;
+  if(open&&!p.redCards&&p.redCards!==0)count++;
+  const today=getTodayStr();
+  SPEELDAGEN.forEach(sd=>{
+    if(state.sdStatus[sd.id]!=="open")return;
+    sd.matches.forEach(m=>{
+      const iso=MATCH_ISO[m.id];if(!iso)return;
+      const matchDate=new Date(iso).toISOString().split("T")[0];
+      if(matchDate===today&&!isLocked(m.id)){
+        const pred=(p.predictions||{})[m.id];
+        if(!pred||pred.h===undefined||pred.h==="")count++;
+      }
+    });
+  });
+  return count;
+}
+
+function updateBellBadge() {
+  const count=countOpenTasks();
+  const badge=document.getElementById("bell-badge");
+  if(badge){badge.textContent=count;badge.style.display=count>0?"flex":"none";}
+}
+
+function getTodayMatches() {
+  const today=getTodayStr();
+  const p=state.participants[currentUser]||{};
+  const matches=[];
+  SPEELDAGEN.forEach(sd=>{
+    sd.matches.forEach(m=>{
+      const iso=MATCH_ISO[m.id];if(!iso)return;
+      const matchDate=new Date(iso).toISOString().split("T")[0];
+      if(matchDate===today){
+        const pred=(p.predictions||{})[m.id];
+        const filled=pred&&pred.h!==undefined&&pred.h!=="";
+        const editable=state.sdStatus[sd.id]==="open"&&!isLocked(m.id);
+        matches.push({...m,filled,editable});
+      }
+    });
+  });
+  return matches;
+}
+
+function showNotifPopup() {
+  const popup=document.getElementById("notif-popup");
+  const body=document.getElementById("notif-body");
+  const sub=document.getElementById("notif-sub");
+  const todayMatches=getTodayMatches();
+  const ydayPts=calcDayPts(currentUser,getYesterdayStr());
+  const myRank=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a)).indexOf(currentUser)+1;
+  let tabActive="today";
+  function render(){
+    sub.textContent=new Date().toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long"});
+    const openCount=countOpenTasks();
+    let html='<div class="dp-tabs">';
+    html+='<button class="dp-tab'+(tabActive==="today"?" active":"")+'" data-tab="today">Vandaag ('+todayMatches.length+')</button>';
+    html+='<button class="dp-tab'+(tabActive==="open"?" active":"")+'" data-tab="open">Openstaand ('+openCount+')</button>';
+    html+='</div>';
+    if(ydayPts>0){
+      html+='<div class="dp-yday-strip"><span style="font-size:1.4rem">🏆</span><div style="flex:1;font-size:.75rem;color:#e8f0ff;line-height:1.4">Gisteren scoorde je<br><strong style="color:#FFD700">+'+ydayPts+' punten</strong></div><div style="text-align:right"><div style="font-size:.62rem;color:#6b82a8">Positie</div><div style="font-family:Bebas Neue,cursive;font-size:1.3rem;color:#00C8FF">#'+myRank+'</div></div></div>';
+    }
+    if(tabActive==="today"){
+      if(todayMatches.length===0) html+='<div style="font-size:.75rem;color:#6b82a8;text-align:center;padding:12px 0">Geen wedstrijden vandaag</div>';
+      todayMatches.forEach(m=>{
+        html+='<div class="dp-match-row"><span class="dp-match-flag">'+flag(m.t1)+'</span><span class="dp-match-name">'+m.t1+' – '+m.t2+'</span><span class="dp-match-flag">'+flag(m.t2)+'</span><span class="dp-match-time">'+(MATCH_TIMES[m.id]||"")+'</span>'+(m.g?'<span class="dp-match-grp">Gr.'+m.g+'</span>':'')+'<div class="'+(m.filled?"dp-dot-on":"dp-dot-off")+'"></div></div>';
+      });
+      if(todayMatches.some(m=>!m.filled&&m.editable)) html+='<button class="dp-btn-main blue" onclick="closeNotifPopup();document.querySelector(&quot;#app-tabs .tab-btn&quot;).click()">Invullen</button>';
+    } else {
+      const p2=state.participants[currentUser]||{};
+      const open2=specialsOpen();
+      const tasks=[
+        {done:!open2||!!p2.winner,name:"Eindwinnaar voorspellen",pts:"10 pt",icon:"🏆",color:"gold"},
+        {done:!open2||!!p2.runnerUp,name:"Runner-up voorspellen",pts:"10 pt",icon:"🥈",color:"gold"},
+        {done:!open2||!!p2.third,name:"Derde plaats voorspellen",pts:"10 pt",icon:"🥉",color:"gold"},
+        {done:!open2||!!p2.topscorer,name:"Topschutter voorspellen",pts:"7 pt",icon:"⚽",color:"blue"},
+        {done:!open2||!!p2.playerTournament,name:"Speler van het toernooi",pts:"7 pt",icon:"⭐",color:"blue"},
+        {done:!open2||!!p2.keeperTournament,name:"Keeper van het toernooi",pts:"7 pt",icon:"🧤",color:"blue"},
+        {done:!open2||(p2.redCards!=null&&p2.redCards!==""),name:"Aantal rode kaarten",pts:"7 pt",icon:"🟥",color:"gold"},
+        {done:!!p2.belgiumRound,name:"In welke ronde strandt België?",pts:"5 pt",icon:"🇧🇪",color:"blue"},
+      ];
+      tasks.forEach(t=>{
+        html+='<div class="dp-task'+(t.done?" done":"")+'">';
+        html+='<div class="dp-task-icon ticon-'+t.color+'">'+t.icon+'</div>';
+        html+='<div style="flex:1"><div class="dp-task-name">'+t.name+'</div></div>';
+        html+='<span class="dp-pill dp-pill-'+(t.done?"green":t.color)+'">'+(t.done?"✓ Ingevuld":t.pts)+'</span></div>';
+      });
+      if(!tasks.every(t=>t.done)) html+='<button class="dp-btn-main gold" onclick="closeNotifPopup();document.querySelectorAll(&quot;#app-tabs .tab-btn&quot;)[1].click()">Specials invullen</button>';
+    }
+    body.innerHTML=html;
+    body.querySelectorAll(".dp-tab[data-tab]").forEach(btn=>{
+      btn.addEventListener("click",()=>{tabActive=btn.dataset.tab;render();});
+    });
+  }
+  render();
+  popup.style.display="flex";
+}
+function closeNotifPopup(){document.getElementById("notif-popup").style.display="none";}
+
+function showWelcomePopup(){
+  const p=state.participants[currentUser]||{};
+  const tasks=[
+    {done:!!p.winner,name:"Eindwinnaar · runner-up · derde",sub:"Voorspel de top 3",pts:"10 pt",icon:"🏆",color:"gold"},
+    {done:!!p.topscorer,name:"Topschutter",sub:"Wie scoort de meeste goals?",pts:"7 pt",icon:"⚽",color:"blue"},
+    {done:!!p.playerTournament,name:"Speler van het toernooi",sub:"Beste individuele prestatie",pts:"7 pt",icon:"⭐",color:"blue"},
+    {done:!!p.keeperTournament,name:"Keeper van het toernooi",sub:"Beste keeper",pts:"7 pt",icon:"🧤",color:"blue"},
+    {done:p.redCards!=null&&p.redCards!=="",name:"Aantal rode kaarten totaal",sub:"Voorspel het totaal",pts:"7 pt",icon:"🟥",color:"gold"},
+    {done:!!p.belgiumRound,name:"België · in welke ronde?",sub:"Wanneer gaat België eruit?",pts:"5 pt",icon:"🇧🇪",color:"blue"},
+  ];
+  let html="";
+  tasks.forEach(t=>{
+    html+='<div class="dp-task'+(t.done?" done":"")+'">';
+    html+='<div class="dp-task-icon ticon-'+t.color+'">'+t.icon+'</div>';
+    html+='<div style="flex:1"><div class="dp-task-name">'+t.name+'</div><div class="dp-task-sub">'+t.sub+'</div></div>';
+    html+='<span class="dp-pill dp-pill-'+(t.done?"green":t.color)+'">'+(t.done?"✓":t.pts)+'</span></div>';
+  });
+  if(!tasks.every(t=>t.done)){
+    html+='<button class="dp-btn-main gold" onclick="closeWelcomePopup();document.querySelectorAll(&quot;#app-tabs .tab-btn&quot;)[1].click()">Nu invullen</button>';
+    html+='<button class="dp-btn-main outline" style="margin-top:6px" onclick="closeWelcomePopup()">Later</button>';
+  } else {
+    html+='<button class="dp-btn-main gold" onclick="closeWelcomePopup()">Alles ingevuld ✓</button>';
+  }
+  document.getElementById("welcome-body").innerHTML=html;
+  document.getElementById("welcome-popup").style.display="flex";
+}
+function closeWelcomePopup(){document.getElementById("welcome-popup").style.display="none";}
+
+function showYdayPopup(){
+  const yday=getYesterdayStr();
+  const pts=calcDayPts(currentUser,yday);
+  const allPts=Object.keys(state.participants).map(n=>({n,p:calcDayPts(n,yday)})).sort((a,b)=>b.p-a.p);
+  const rank=allPts.findIndex(x=>x.n===currentUser)+1;
+  const isWinner=rank===1&&pts>0;
+  const myTotal=calcTotal(currentUser);
+  const myTotalRank=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a)).indexOf(currentUser)+1;
+  const p=state.participants[currentUser]||{};
+  const bd={};
+  SPEELDAGEN.forEach(sd=>{sd.matches.forEach(m=>{const iso=MATCH_ISO[m.id];if(!iso)return;const matchDate=new Date(iso).toISOString().split("T")[0];if(matchDate!==yday)return;const{bd:tags}=calcMatchPts((p.predictions||{})[m.id]||{},state.actualScores[m.id]||{});tags.forEach(t=>{bd[t]=(bd[t]||0)+1;});});});
+  const box=document.getElementById("yday-popup").querySelector(".dp-box");
+  box.className="dp-box "+(isWinner?"gold":"blue");
+  document.getElementById("yday-title").textContent=isWinner?"🥇 Winnaar van de dag!":"Resultaat van gisteren";
+  document.getElementById("yday-title").className="dp-title "+(isWinner?"gold":"blue");
+  document.getElementById("yday-sub").textContent=new Date(yday+"T12:00").toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long"});
+  let html='<div class="dp-pts-display"><span style="font-size:1.8rem">🏆</span><div style="text-align:center"><div class="dp-pts-num '+(isWinner?"gold":"blue")+'">+'+pts+'</div><div class="dp-pts-lbl">punten gisteren</div></div></div>';
+  if(Object.keys(bd).length>0){html+='<div class="dp-pts-breakdown">';Object.entries(bd).forEach(([tag,count])=>{html+='<span class="dp-pts-tag">'+tag+(count>1?" (×"+count+")":"")+'</span>';});html+='</div>';}
+  html+='<div style="display:flex;gap:8px;margin-bottom:12px">';
+  html+='<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:8px;text-align:center"><div style="font-size:.58rem;color:#6b82a8">Positie gisteren</div><div style="font-family:Bebas Neue,cursive;font-size:1.4rem;color:#00C8FF">#'+rank+'</div></div>';
+  html+='<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:8px;text-align:center"><div style="font-size:.58rem;color:#6b82a8">Totaal klassement</div><div style="font-family:Bebas Nieuwe,cursive;font-size:1.4rem;color:#FFD700">#'+myTotalRank+'</div></div>';
+  html+='<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:8px;text-align:center"><div style="font-size:.58rem;color:#6b82a8">Totaal punten</div><div style="font-family:Bebas Neue,cursive;font-size:1.4rem;color:#F5A623">'+myTotal+'</div></div>';
+  html+='</div>';
+  html+='<div class="dp-btn-row"><button class="dp-btn-main '+(isWinner?"gold":"blue")+'" onclick="closeYdayPopup();document.querySelectorAll(&quot;#app-tabs .tab-btn&quot;)[2].click()">Bekijk klassement</button><button class="dp-btn-main outline" onclick="closeYdayPopup()">Sluiten</button></div>';
+  document.getElementById("yday-body").innerHTML=html;
+  document.getElementById("yday-popup").style.display="flex";
+}
+function closeYdayPopup(){document.getElementById("yday-popup").style.display="none";}
+function closeWkWelcome(){document.getElementById("wk-welcome-popup").style.display="none";}
+
+function checkSdPopups(){
+  // Check if any speeldag popup needs showing after results come in
+  for(const sd of SPEELDAGEN){
     const allLocked=sd.matches.every(m=>isLocked(m.id));
-    const sdHasResults=sd.matches.some(m=>{const a=state.actualScores[m.id];return a&&a.h!==""&&a.a!=="";});
+    const sdHasResults=sd.matches.some(m=>{const a=state.actualScores[m.id];return a&&a.h!=""&&a.a!="";});
     const popupKey=sd.id+":"+currentUser;
     if(sdHasResults&&allLocked&&!state.shownPopups.includes(popupKey)){
       const myPts=sd.matches.reduce((s,m)=>s+calcMatchPts((state.participants[currentUser]?.predictions||{})[m.id]||{},state.actualScores[m.id]||{}).total,0);
       const allPts=Object.keys(state.participants).map(name=>sd.matches.reduce((s,m)=>s+calcMatchPts((state.participants[name]?.predictions||{})[m.id]||{},state.actualScores[m.id]||{}).total,0));
       const maxPts=Math.max(...allPts,0);
       const isWinner=myPts===maxPts&&maxPts>0;
-      state.shownPopups.push(popupKey); saveState();
+      state.shownPopups.push(popupKey);saveState();
       setTimeout(()=>showSdPopup(sd.label,myPts,isWinner),400);
-      break; // show one at a time
+      break;
     }
   }
 }
-function showSdPopup(label,pts,isWinner) {
+function showSdPopup(label,pts,isWinner){
   const popup=document.getElementById("popup");
   const box=document.getElementById("popup-box");
   document.getElementById("popup-icon").textContent=isWinner?"🏆":"⚽";
@@ -1328,46 +1961,86 @@ function showSdPopup(label,pts,isWinner) {
   document.getElementById("popup-sub").textContent=isWinner?"🥇 Winnaar van de speeldag! Jij scoorde het meest!":"Jouw resultaat voor deze speeldag";
   document.getElementById("popup-pts").textContent=pts;
   document.getElementById("popup-pts").style.color=isWinner?"var(--gold)":"var(--accent)";
-  box.style.border=`2px solid ${isWinner?"var(--gold)":"var(--accent)"}`;
-  box.style.boxShadow=`0 0 50px rgba(${isWinner?"245,166,35":"0,200,255"},.3)`;
+  box.style.border="2px solid "+(isWinner?"var(--gold)":"var(--accent)");
+  box.style.boxShadow="0 0 50px rgba("+(isWinner?"245,166,35":"0,200,255")+",.3)";
   popup.style.display="flex";
 }
-function closePopup() { document.getElementById("popup").style.display="none"; }
 
-function doChangePw() {
-  const p1 = document.getElementById("new-pw-1").value;
-  const p2 = document.getElementById("new-pw-2").value;
-  if(!p1) { showToast("Vul een wachtwoord in!"); return; }
-  if(p1 !== p2) { showToast("❌ Wachtwoorden komen niet overeen!"); return; }
-  if(p1.length < 4) { showToast("Wachtwoord moet minstens 4 tekens zijn!"); return; }
-  state.passwords[currentUser] = p1;
-  saveState();
-  document.getElementById("changepw-popup").style.display="none";
-  showToast("✅ Wachtwoord gewijzigd!");
+function checkAndShowStartupPopups(){
+  const today=getTodayStr();
+  const wkStartDate="2026-06-11";
+  const dayBeforeWK="2026-06-10";
+  const r32PredStartDate="2026-07-02";
+
+  // 1. First ever login: WK welcome popup (always, once)
+  const wkWelcomeKey="wk-welcome:"+currentUser;
+  if(!state.shownPopups.includes(wkWelcomeKey)){
+    state.shownPopups.push(wkWelcomeKey);saveState();
+    setTimeout(()=>{document.getElementById("wk-welcome-popup").style.display="flex";},400);
+    return;
+  }
+
+  // 2. Day before WK: groepsfase rules (once)
+  const groupRulesKey="rules-group:"+currentUser;
+  if(today>=dayBeforeWK&&today<wkStartDate&&!state.shownPopups.includes(groupRulesKey)){
+    state.shownPopups.push(groupRulesKey);saveState();
+    setTimeout(()=>{document.getElementById("rules-group-popup").style.display="flex";},400);
+    return;
+  }
+
+  // 3. When R32 opens: knockout rules popup (once)
+  const koRulesKey="rules-ko:"+currentUser;
+  const r32isOpen=state.sdStatus["SD_R32"]==="open";
+  if(r32isOpen&&!state.shownPopups.includes(koRulesKey)){
+    state.shownPopups.push(koRulesKey);saveState();
+    setTimeout(()=>{document.getElementById("rules-ko-popup").style.display="flex";},400);
+    return;
+  }
+
+  // 4. Daily: yesterday score popup
+  const ydayPts=calcDayPts(currentUser,getYesterdayStr());
+  if(ydayPts>0&&state.shownYesterdayPopup!==today){
+    state.shownYesterdayPopup=today;saveState();
+    setTimeout(()=>showYdayPopup(),600);
+    return;
+  }
+
+  // 5. Unfilled specials reminder (once, after welcome)
+  const p=state.participants[currentUser]||{};
+  const popupKey="welcome:"+currentUser;
+  const hasUnfilled=specialsOpen()&&(!p.winner||!p.topscorer||!p.playerTournament||!p.keeperTournament||(p.redCards==null||p.redCards==="")||!p.belgiumRound);
+  if(hasUnfilled&&!state.shownPopups.includes(popupKey)){
+    state.shownPopups.push(popupKey);saveState();
+    setTimeout(()=>showWelcomePopup(),600);
+    return;
+  }
+
+  // 6. From July 2 onwards: R32 re-prediction reminder (once)
+  const r32done=state.r32PredDone&&state.r32PredDone[currentUser];
+  const r32timeOk=today>=r32PredStartDate;
+  const r32popupKey="r32pred:"+currentUser;
+  if(r32timeOk&&!r32done&&!state.shownPopups.includes(r32popupKey)){
+    state.shownPopups.push(r32popupKey);saveState();
+    setTimeout(()=>{document.getElementById("r32pred-popup").style.display="flex";},600);
+  }
 }
 
 // ══════════════════════════════════════════════════
 // AUTO-REFRESH KLASSEMENT WHEN SCORES CHANGE
 // ══════════════════════════════════════════════════
-function refreshKlassementIfVisible() {
-  // If admin klassement tab is active, re-render it
-  const klassPage = document.getElementById("admin-page-klassement");
-  if(klassPage && klassPage.classList.contains("active")) {
-    renderKlassement(true);
-  }
-  // Also refresh pronostieken if visible
-  const pronPage = document.getElementById("admin-page-pronostieken");
-  if(pronPage && pronPage.classList.contains("active")) {
-    renderAdminPronostieken();
-  }
+function refreshKlassementIfVisible(){
+  const kp=document.getElementById("admin-page-klassement");
+  if(kp&&kp.classList.contains("active"))renderKlassement(true);
+  const pp=document.getElementById("admin-page-pronostieken");
+  if(pp&&pp.classList.contains("active"))renderAdminPronostieken();
 }
 
 // ══════════════════════════════════════════════════
 // AUTO-REFRESH & INIT
 // ══════════════════════════════════════════════════
-setInterval(()=>{ renderCurrentView(); updateHeaderPts(); }, 30000);
-
+setInterval(()=>{renderCurrentView();updateHeaderPts();},30000);
 loadState();
+
 </script>
 </body>
 </html>
