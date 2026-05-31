@@ -718,26 +718,57 @@ function flag(team){ return FLAGS[team]||"🏳"; }
 let currentUser = "";
 let isAdmin = false;
 let collapsed = {};
-let scriptUrl = "https://script.google.com/macros/s/AKfycbwVE_aDb17oxVx1OldlbQFlaCD27U-LPsspirM43dIBJCDDsujtdFusHuJXsUVEA2mF/exec";
+let scriptUrl = "https://script.google.com/macros/s/AKfycbyyKTYt9ne2z5XTDe8klBbHDsQCuiWaVFPz-uNSodtR7Uh0JXd2eXm9fwWB_OjTsXKL/exec";
 
 // ══════════════════════════════════════════════════
 // PERSISTENCE
 // ══════════════════════════════════════════════════
 function saveState() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
-  if (scriptUrl) {
-    fetch(scriptUrl, {method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"save",data:state})}).catch(()=>{});
-  }
+  // Save to JSONBin
+  fetch(JSONBIN_URL, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Master-Key": JSONBIN_KEY
+    },
+    body: JSON.stringify(state)
+  }).catch(()=>{});
 }
+// JSONBin config
+const JSONBIN_ID = "6a1c21e121f9ee59d2a0e515";
+const JSONBIN_KEY = "$2a$10$sPEUxOro9Lv2uCqZb0i0xO6MC4I/7BZiW5d2w9w1bWxlNbhz5g89m";
+const JSONBIN_URL = "https://api.jsonbin.io/v3/b/" + JSONBIN_ID;
+
+function loadFromServer(callback) {
+  fetch(JSONBIN_URL + "/latest", {
+    headers: {
+      "X-Master-Key": JSONBIN_KEY,
+      "X-Bin-Meta": "false"
+    }
+  })
+  .then(r => r.json())
+  .then(j => {
+    // JSONBin wraps data in "record" key
+    const data = j.record || j;
+    if(data && data.participants !== undefined) {
+      callback({data: data});
+    } else {
+      callback(null);
+    }
+  })
+  .catch(() => callback(null));
+}
+
 function loadState() {
   try {
     const s = localStorage.getItem(STORAGE_KEY);
     if (s) { const d = JSON.parse(s); state = {...state,...d}; state.pts={...DEFAULT_PTS,...(state.pts||{})}; if(!state.shownPopups) state.shownPopups=[]; }
   } catch(e) {}
   if (scriptUrl) {
-    fetch(scriptUrl+"?action=load").then(r=>r.json()).then(j=>{
-      if(j.data){state={...state,...j.data};state.pts={...DEFAULT_PTS,...(state.pts||{})};if(!state.shownPopups)state.shownPopups=[];renderCurrentView();}
-    }).catch(()=>{});
+    loadFromServer(function(j){
+      if(j&&j.data){state={...state,...j.data};state.pts={...DEFAULT_PTS,...(state.pts||{})};if(!state.shownPopups)state.shownPopups=[];renderCurrentView();}
+    });
   }
 }
 
@@ -2129,27 +2160,21 @@ function manualSync(){
   const btn=document.getElementById("sync-btn");
   if(btn) btn.textContent="⏳";
   if(!scriptUrl){ showToast("Geen Google koppeling ingesteld"); if(btn) btn.textContent="🔄"; return; }
-  fetch(scriptUrl+"?action=load&t="+Date.now())
-    .then(r=>r.json())
-    .then(j=>{
-      if(j.data){
-        state={...state,...j.data};
-        state.pts={...DEFAULT_PTS,...(state.pts||{})};
-        if(!state.shownPopups) state.shownPopups=[];
-        try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
-        renderCurrentView();
-        updateHeaderPts();
-        updateBellBadge();
-        showToast("✅ Gesynchroniseerd!");
-      } else {
-        showToast("⚠️ Geen data ontvangen");
-      }
-      if(btn) btn.textContent="🔄";
-    })
-    .catch(err=>{
-      showToast("❌ Sync mislukt: "+err.message);
-      if(btn) btn.textContent="🔄";
-    });
+  loadFromServer(function(j){
+    if(j&&j.data){
+      state={...state,...j.data};
+      state.pts={...DEFAULT_PTS,...(state.pts||{})};
+      if(!state.shownPopups) state.shownPopups=[];
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+      renderCurrentView();
+      updateHeaderPts();
+      updateBellBadge();
+      showToast("✅ Gesynchroniseerd!");
+    } else {
+      showToast("⚠️ Geen data ontvangen");
+    }
+    if(btn) btn.textContent="🔄";
+  });
 }
 
 function goToSpecials(){
