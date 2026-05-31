@@ -569,17 +569,22 @@ input[type=number]{-moz-appearance:textfield;}
   </div>
 </div>
 
-<!-- CHANGE PASSWORD POPUP -->
-<div class="popup-overlay" id="changepw-popup" style="display:none">
-  <div class="popup-box" onclick="event.stopPropagation()" style="max-width:340px">
-    <div style="font-size:2rem;margin-bottom:6px">🔑</div>
-    <div class="popup-title" style="color:var(--gold)">Wachtwoord wijzigen</div>
-    <p style="font-size:.76rem;color:var(--muted);margin:8px 0 16px;line-height:1.6">Je gebruikt nog het standaard wachtwoord <strong style="color:var(--gold)">user2026</strong>. Stel een persoonlijk wachtwoord in!</p>
-    <input class="inp" type="password" id="new-pw-1" placeholder="Nieuw wachtwoord…" style="margin-bottom:8px">
-    <input class="inp" type="password" id="new-pw-2" placeholder="Herhaal wachtwoord…" style="margin-bottom:14px">
-    <div style="display:flex;gap:8px;justify-content:center">
-      <button class="btn btn-gold" onclick="doChangePw()">✅ Opslaan</button>
-      <button class="btn btn-outline" onclick="document.getElementById('changepw-popup').style.display='none';if(window._pendingStartupCheck){window._pendingStartupCheck=false;setTimeout(()=>{checkSdPopups();checkAndShowStartupPopups();},300);}">Later</button>
+<!-- CHANGE PASSWORD POPUP <!-- CHANGE PASSWORD POPUP -->
+<div id="changepw-popup" style="display:none" class="dp-overlay">
+  <div class="dp-box gold" onclick="event.stopPropagation()" style="max-width:340px">
+    <div class="dp-header">
+      <div class="dp-icon-big">🔑</div>
+      <div class="dp-title gold">Wachtwoord wijzigen</div>
+      <div class="dp-sub-txt">Stel een persoonlijk wachtwoord in voor jouw account</div>
+    </div>
+    <div class="dp-body">
+      <p style="font-size:.76rem;color:var(--muted);margin-bottom:14px;line-height:1.6">Je gebruikt nog het standaard wachtwoord <strong style="color:var(--gold)">user2026</strong>. Wijzig dit nu!</p>
+      <label class="lbl">Nieuw wachtwoord</label>
+      <input class="inp" type="password" id="new-pw-1" placeholder="Nieuw wachtwoord…">
+      <label class="lbl">Herhaal wachtwoord</label>
+      <input class="inp" type="password" id="new-pw-2" placeholder="Herhaal wachtwoord…">
+      <button class="dp-btn-main gold" onclick="doChangePw()">✅ Opslaan</button>
+      <button class="dp-btn-main outline" style="margin-top:6px" onclick="skipChangePw()">Later</button>
     </div>
   </div>
 </div>
@@ -712,7 +717,7 @@ function flag(team){ return FLAGS[team]||"🏳"; }
 let currentUser = "";
 let isAdmin = false;
 let collapsed = {};
-let scriptUrl = "https://script.google.com/macros/s/AKfycbxiM_9by2ncIsz3jy4A4d4OeJE7GKeRj7_WBY3p6MeUtaenQnYfNWcT9GMbZJnvCHkS/exec";
+let scriptUrl = "https://script.google.com/macros/s/AKfycbxkgsFKnQXLoh8Bu-731u2IN6sGR1EOcUahtmzb91MoUaXgSvg9Whqpi7jGyaeM3kqx/exec";
 
 // ══════════════════════════════════════════════════
 // PERSISTENCE
@@ -726,11 +731,11 @@ function saveState() {
 function loadState() {
   try {
     const s = localStorage.getItem(STORAGE_KEY);
-    if (s) { const d = JSON.parse(s); state = {...state,...d}; if(!state.pts) state.pts={...DEFAULT_PTS}; if(!state.shownPopups) state.shownPopups=[]; }
+    if (s) { const d = JSON.parse(s); state = {...state,...d}; state.pts={...DEFAULT_PTS,...(state.pts||{})}; if(!state.shownPopups) state.shownPopups=[]; }
   } catch(e) {}
   if (scriptUrl) {
     fetch(scriptUrl+"?action=load").then(r=>r.json()).then(j=>{
-      if(j.data){state={...state,...j.data};if(!state.pts)state.pts={...DEFAULT_PTS};if(!state.shownPopups)state.shownPopups=[];renderCurrentView();}
+      if(j.data){state={...state,...j.data};state.pts={...DEFAULT_PTS,...(state.pts||{})};if(!state.shownPopups)state.shownPopups=[];renderCurrentView();}
     }).catch(()=>{});
   }
 }
@@ -980,6 +985,29 @@ function doLogin() {
 function showChangePwPrompt(name) {
   const popup = document.getElementById("changepw-popup");
   if(popup) popup.style.display="flex";
+}
+function doChangePw() {
+  const p1 = document.getElementById("new-pw-1").value;
+  const p2 = document.getElementById("new-pw-2").value;
+  if(!p1) { showToast("Vul een wachtwoord in!"); return; }
+  if(p1 !== p2) { showToast("❌ Wachtwoorden komen niet overeen!"); return; }
+  if(p1.length < 4) { showToast("Wachtwoord moet minstens 4 tekens zijn!"); return; }
+  if(!state.passwords) state.passwords = {};
+  state.passwords[currentUser] = p1;
+  saveState();
+  document.getElementById("changepw-popup").style.display = "none";
+  showToast("✅ Wachtwoord gewijzigd!");
+  if(window._pendingStartupCheck) {
+    window._pendingStartupCheck = false;
+    setTimeout(()=>{ checkSdPopups(); checkAndShowStartupPopups(); }, 300);
+  }
+}
+function skipChangePw() {
+  document.getElementById("changepw-popup").style.display = "none";
+  if(window._pendingStartupCheck) {
+    window._pendingStartupCheck = false;
+    setTimeout(()=>{ checkSdPopups(); checkAndShowStartupPopups(); }, 300);
+  }
 }
 function doAdminLogin() {
   const pw = document.getElementById("admin-pw-input").value;
@@ -1611,7 +1639,7 @@ function renderAdminPronostieken() {
         const mn = div(""); mn.style.cssText = "font-size:.75rem;font-weight:600"; mn.textContent = m.t1+" – "+m.t2;
         const ps = div(""); ps.style.cssText = "font-size:.68rem;color:var(--muted);margin-top:2px"; ps.textContent = "Pronostiek: "+pred.h+" – "+pred.a+(pred.goalSlot?" · "+pred.goalSlot:"")+(pred.firstScorer?" · "+pred.firstScorer:"");
         info.appendChild(mn); info.appendChild(ps);
-        if(hasActual){const as2=div(""); as2.style.cssText="font-size:.68rem;color:var(--gold);margin-top:1px"; as2.textContent="Uitslag: "+actual.h+" – "+actual.a; info.appendChild(as2);}
+        if(hasActual&&actual.h!==undefined&&actual.h!==""){const as2=div(""); as2.style.cssText="font-size:.68rem;color:var(--gold);margin-top:1px"; as2.textContent="Uitslag: "+actual.h+" – "+actual.a; info.appendChild(as2);}
         const timeDiv = div(""); timeDiv.style.cssText = "font-size:.6rem;color:var(--muted);text-align:right"; timeDiv.textContent = m.time||"";
         const ptsDiv2 = div(""); ptsDiv2.style.cssText = "text-align:right;min-width:36px";
         if(hasActual){const n=div(""); n.style.cssText="font-family:Bebas Neue,cursive;font-size:1.3rem;color:"+(matchPts>=state.pts.perfectScore?"var(--green)":matchPts>0?"var(--orange)":"var(--red)"); n.textContent=matchPts>0?"+"+matchPts:"0"; ptsDiv2.appendChild(n);}
@@ -1620,6 +1648,37 @@ function renderAdminPronostieken() {
       });
       if(!hasAny){const nf=div(""); nf.style.cssText="font-size:.72rem;color:var(--muted);font-style:italic;padding:4px 0"; nf.textContent="Niets ingevuld"; card.appendChild(nf);}
     });
+  }
+  if(selectedPronostiekUser && state.participants[selectedPronostiekUser]) {
+    const p2 = state.participants[selectedPronostiekUser];
+    const specCard=div("card"); specCard.style.cssText="margin-top:12px";
+    specCard.innerHTML="<div class='card-title' style='font-size:.9rem'>🏆 Specials van "+selectedPronostiekUser+"</div>";
+    const specFields=[
+      ["winner","🥇 Eindwinnaar",state.actualWinner],
+      ["runnerUp","🥈 Runner-up",state.actualRunnerUp],
+      ["third","🥉 Derde",state.actualThird],
+      ["topscorer","⚽ Topschutter",state.actualTopscorer],
+      ["playerTournament","⭐ Speler toernooi",state.actualPlayerTournament],
+      ["keeperTournament","🧤 Keeper toernooi",state.actualKeeperTournament],
+      ["belgiumRound","🇧🇪 In welke ronde strandt België?",state.actualBelgiumRound],
+      ["redCards","🟥 Rode kaarten",state.actualRedCards!=null&&state.actualRedCards!==""?state.actualRedCards+"":null],
+      ["winner2","🔄 Winnaar (2e kans)",state.actualWinner],
+      ["runnerUp2","🔄 Runner-up (2e kans)",state.actualRunnerUp],
+      ["third2","🔄 Derde (2e kans)",state.actualThird],
+    ];
+    specFields.forEach(([field,label,actual])=>{
+      const val=p2[field];
+      if(!val&&val!==0) return;
+      const row=div(""); row.style.cssText="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:7px;margin-bottom:4px;background:"+(actual&&String(val)===String(actual)?"rgba(34,197,94,.06)":"var(--dark3)")+";border:1px solid "+(actual&&String(val)===String(actual)?"rgba(34,197,94,.2)":"var(--border)");
+      const lbl=div(""); lbl.style.cssText="font-size:.74rem;font-weight:600;color:var(--muted)"; lbl.textContent=label;
+      const valDiv=div(""); valDiv.style.cssText="display:flex;align-items:center;gap:6px";
+      const valTxt=span("",""); valTxt.style.cssText="font-size:.78rem;font-weight:700;color:"+(actual&&String(val)===String(actual)?"var(--green)":"var(--gold)"); valTxt.textContent=String(val);
+      valDiv.appendChild(valTxt);
+      if(actual&&String(val)===String(actual)){const bdg=span("","✓"); bdg.style.cssText="font-size:.6rem;color:var(--green)"; valDiv.appendChild(bdg);}
+      row.appendChild(lbl); row.appendChild(valDiv);
+      specCard.appendChild(row);
+    });
+    container.appendChild(specCard);
   }
   container.appendChild(card);
 }
@@ -1941,14 +2000,17 @@ function renderKlassement(isAdminView=false) {
     row.appendChild(rankDiv); row.appendChild(infoDiv); row.appendChild(ptsDiv);
     if(isAdminView){
       const delBtn=e("button",{style:"background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:.65rem;margin-left:6px;flex-shrink:0;font-family:'DM Sans',sans-serif;"},"🗑");
-      delBtn.addEventListener("click",()=>{if(confirm("Verwijder '"+name+"'?")){
-  delete state.participants[name];
-  if(state.passwords) delete state.passwords[name];
-  // Remove all popup keys for this user so they get fresh onboarding next login
-  state.shownPopups = (state.shownPopups||[]).filter(k=>!k.endsWith(":"+name));
-  if(state.r32PredDone) delete state.r32PredDone[name];
-  saveState();renderKlassement(true);showToast("🗑 "+name+" verwijderd");
-}});
+      delBtn.addEventListener("click",()=>{
+        if(confirm("Verwijder '"+name+"'?")){
+          delete state.participants[name];
+          if(state.passwords) delete state.passwords[name];
+          state.shownPopups = (state.shownPopups||[]).filter(k=>!k.endsWith(":"+name));
+          if(state.r32PredDone) delete state.r32PredDone[name];
+          saveState();
+          renderKlassement(true);
+          showToast("🗑 "+name+" verwijderd");
+        }
+      });
       row.appendChild(delBtn);
     }
     card.appendChild(row);
@@ -2375,6 +2437,8 @@ function refreshKlassementIfVisible(){
 // ══════════════════════════════════════════════════
 setInterval(()=>{renderCurrentView();updateHeaderPts();},30000);
 loadState();
+
+
 
 </script>
 </body>
