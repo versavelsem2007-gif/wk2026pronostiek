@@ -659,7 +659,7 @@ function calcDayPts(name, dateStr) {
   Object.keys(p.predictions||{}).forEach(mid=>{
     const iso = MATCH_ISO[mid]; if(!iso) return;
     const matchDate = new Date(iso).toISOString().split("T")[0];
-    if(matchDate===dateStr) t+=calcMatchPts(p.predictions[mid],state.actualScores[mid]).total;
+    if(matchDate===dateStr) t+=calcMatchPts(p.predictions[mid],state.actualScores[mid],mid,name).total;
   });
   return t;
 }
@@ -680,6 +680,7 @@ let state = {
   specialsOverrideOpen: false,
   r32PredOverrideOpen: false,   // "YYYY-MM-DD" last shown
   r32PredDone: {},           // name -> bool
+  jokers: {},               // name -> {round: matchId} e.g. {"Sem": {"SD_R32": "M73"}}
 };
 // Extra specials deadline: SD1 start = 2026-06-11T21:00+02:00
 const SPECIALS_DEADLINE = new Date("2026-06-11T21:00+02:00");
@@ -723,17 +724,49 @@ let scriptUrl = "https://script.google.com/macros/s/AKfycbyyKTYt9ne2z5XTDe8klBbH
 // ══════════════════════════════════════════════════
 // PERSISTENCE
 // ══════════════════════════════════════════════════
+function compressState(s) {
+  const c={
+    participants:{},passwords:s.passwords||{},
+    actualScores:s.actualScores||{},
+    actualWinner:s.actualWinner||"",actualRunnerUp:s.actualRunnerUp||"",actualThird:s.actualThird||"",
+    actualBelgiumRound:s.actualBelgiumRound||"",actualTopscorer:s.actualTopscorer||"",
+    actualPlayerTournament:s.actualPlayerTournament||"",actualKeeperTournament:s.actualKeeperTournament||"",
+    actualRedCards:s.actualRedCards!=null?s.actualRedCards:"",
+    sdStatus:s.sdStatus||{},pts:s.pts||{},
+    shownPopups:s.shownPopups||[],shownYesterdayPopup:s.shownYesterdayPopup||"",
+    specialsOverrideOpen:s.specialsOverrideOpen||false,r32PredOverrideOpen:s.r32PredOverrideOpen||false,
+    r32PredDone:s.r32PredDone||{},
+  };
+  Object.keys(s.participants||{}).forEach(name=>{
+    const p=s.participants[name];
+    const fp={};
+    Object.keys(p.predictions||{}).forEach(mid=>{
+      const pr=p.predictions[mid];
+      if(pr&&pr.h!==undefined&&pr.h!=="") fp[mid]=pr;
+    });
+    c.participants[name]={
+      predictions:fp,
+      winner:p.winner||"",runnerUp:p.runnerUp||"",third:p.third||"",
+      belgiumRound:p.belgiumRound||"",topscorer:p.topscorer||"",
+      playerTournament:p.playerTournament||"",keeperTournament:p.keeperTournament||"",
+      redCards:p.redCards!=null?p.redCards:"",
+      winner2:p.winner2||"",runnerUp2:p.runnerUp2||"",third2:p.third2||"",
+    };
+  });
+  c.jokers = s.jokers||{};
+  return c;
+}
+
 function saveState() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
-  // Save to JSONBin
-  fetch(JSONBIN_URL, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Master-Key": JSONBIN_KEY
-    },
-    body: JSON.stringify(state)
-  }).catch(()=>{});
+  clearTimeout(window._saveTimer);
+  window._saveTimer = setTimeout(()=>{
+    fetch(JSONBIN_URL, {
+      method: "PUT",
+      headers: {"Content-Type":"application/json","X-Master-Key":JSONBIN_KEY},
+      body: JSON.stringify(compressState(state))
+    }).catch(()=>{});
+  }, 1500);
 }
 // JSONBin config
 const JSONBIN_ID = "6a1c21e121f9ee59d2a0e515";
@@ -747,29 +780,48 @@ function loadFromServer(callback) {
       "X-Bin-Meta": "false"
     }
   })
-  .then(r => r.json())
+  .then(r => {
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return r.json();
+  })
   .then(j => {
-    // JSONBin wraps data in "record" key
-    const data = j.record || j;
-    if(data && data.participants !== undefined) {
+    const data = j.record !== undefined ? j.record : j;
+    if(data && typeof data === "object" && !data.message) {
       callback({data: data});
     } else {
       callback(null);
     }
   })
-  .catch(() => callback(null));
+  .catch(err => {
+    console.warn("Sync error:", err.message);
+    callback(null);
+  });
 }
 
 function loadState() {
+  // Always load from localStorage first so app works immediately
   try {
     const s = localStorage.getItem(STORAGE_KEY);
-    if (s) { const d = JSON.parse(s); state = {...state,...d}; state.pts={...DEFAULT_PTS,...(state.pts||{})}; if(!state.shownPopups) state.shownPopups=[]; }
+    if (s) {
+      const d = JSON.parse(s);
+      state = {...state,...d};
+      state.pts = {...DEFAULT_PTS,...(state.pts||{})};
+      if(!state.shownPopups) state.shownPopups=[];
+      if(!state.jokers) state.jokers={};
+    }
   } catch(e) {}
-  if (scriptUrl) {
-    loadFromServer(function(j){
-      if(j&&j.data){state={...state,...j.data};state.pts={...DEFAULT_PTS,...(state.pts||{})};if(!state.shownPopups)state.shownPopups=[];renderCurrentView();}
-    });
-  }
+
+  // Then try to sync from server in background
+  loadFromServer(function(j){
+    if(j&&j.data){
+      state={...state,...j.data};
+      state.pts={...DEFAULT_PTS,...(state.pts||{})};
+      if(!state.shownPopups) state.shownPopups=[];
+      if(!state.jokers) state.jokers={};
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+      if(currentUser) renderCurrentView();
+    }
+  });
 }
 
 // ══════════════════════════════════════════════════
@@ -789,7 +841,45 @@ function matchEditable(mid) {
 function myPreds() { return (state.participants[currentUser]||{}).predictions||{}; }
 function mySpecials() { const p=state.participants[currentUser]||{}; return {winner:p.winner||"",runnerUp:p.runnerUp||"",third:p.third||"",belgiumRound:p.belgiumRound||""}; }
 
-function calcMatchPts(pred, actual) {
+// ── JOKER HELPERS ────────────────────────────────────────────
+function getJokerRound(matchId) {
+  // Returns the speeldag id for a given match
+  for(const sd of SPEELDAGEN) {
+    if(sd.matches.some(m=>m.id===matchId)) return sd.id;
+  }
+  return null;
+}
+function getUserJokerForRound(userName, roundId) {
+  return (state.jokers[userName]||{})[roundId] || null;
+}
+function setJoker(matchId) {
+  const roundId = getJokerRound(matchId);
+  if(!roundId) return;
+  if(!state.jokers) state.jokers={};
+  if(!state.jokers[currentUser]) state.jokers[currentUser]={};
+  const current = state.jokers[currentUser][roundId];
+  if(current===matchId) {
+    // Toggle off
+    delete state.jokers[currentUser][roundId];
+  } else {
+    state.jokers[currentUser][roundId] = matchId;
+  }
+  saveState();
+  renderSpeeldagen();
+}
+function hasJoker(userName, matchId) {
+  const roundId = getJokerRound(matchId);
+  if(!roundId) return false;
+  return (state.jokers[userName]||{})[roundId]===matchId;
+}
+function jokerUsedElsewhere(userName, matchId) {
+  const roundId = getJokerRound(matchId);
+  if(!roundId) return null;
+  const used = (state.jokers[userName]||{})[roundId];
+  return used && used!==matchId ? used : null;
+}
+
+function calcMatchPtsBase(pred, actual) {
   const pts = state.pts;
   if(!actual||actual.h===""||actual.a==="") return {total:0,bd:[]};
   const ph=parseInt(pred?.h??""),pa=parseInt(pred?.a??""),ah=parseInt(actual.h),aa=parseInt(actual.a);
@@ -824,12 +914,25 @@ function calcTotal(participant) {
   const p = state.participants[participant]||{};
   const pts = state.pts;
   let t=0;
-  Object.keys(p.predictions||{}).forEach(mid=>{ t+=calcMatchPts(p.predictions[mid],state.actualScores[mid]).total; });
+  Object.keys(p.predictions||{}).forEach(mid=>{ t+=calcMatchPts(p.predictions[mid],state.actualScores[mid],mid,name).total; });
   if(state.actualWinner&&p.winner===state.actualWinner)t+=pts.champion;
   if(state.actualRunnerUp&&p.runnerUp===state.actualRunnerUp)t+=pts.runnerUp;
   if(state.actualThird&&p.third===state.actualThird)t+=pts.third;
   if(state.actualBelgiumRound&&p.belgiumRound===state.actualBelgiumRound)t+=pts.belgiumRound;
   return t;
+}
+
+function calcMatchPts(pred, actual, matchId, userName) {
+  const base = calcMatchPtsBase(pred, actual);
+  if(matchId && userName && hasJoker(userName, matchId) && base.total > 0) {
+    return {
+      total: base.total * 2,
+      bd: [...base.bd, "×2 joker"],
+      jokerApplied: true,
+      baseTotal: base.total
+    };
+  }
+  return base;
 }
 
 function computeStandings() {
@@ -1217,6 +1320,15 @@ function renderMatchCard(match, editable, isKO) {
 
   const card=div("match-card"+(editable?"":" locked"));
 
+  // Joker banner at top
+  const jokerOnThisMatch = hasJoker(currentUser, match.id);
+  if(jokerOnThisMatch) {
+    const jBanner = div(""); jBanner.style.cssText = "background:rgba(245,166,35,.1);border-bottom:1px solid rgba(245,166,35,.2);padding:5px 12px;display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;color:#F5A623;margin:-11px -12px 9px;border-radius:10px 10px 0 0";
+    jBanner.innerHTML = "🃏 Joker actief — punten worden verdubbeld!";
+    card.appendChild(jBanner);
+    card.style.borderColor = "#F5A623";
+  }
+
   // Top row
   const topRow=div(""); topRow.style.cssText="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px";
   const timeDiv=div("");
@@ -1326,20 +1438,135 @@ function renderMatchCard(match, editable, isKO) {
     card.appendChild(koRow);
   }
 
+  // ── JOKER BUTTON (knockout only, user view) ──────────────
+  if(isKO && !isAdmin) {
+    const roundId = getJokerRound(match.id);
+    const isKnockoutRound = roundId && ["SD_R32","SD_R16","SD_QF","SD_SF","SD_3RD","SD_F"].includes(roundId);
+    if(isKnockoutRound) {
+      const jokerOnThis = hasJoker(currentUser, match.id);
+      const usedElsewhere = jokerUsedElsewhere(currentUser, match.id);
+      const matchLocked = !editable;
+      const jokerRow = div("");
+      jokerRow.style.cssText = "display:flex;align-items:center;justify-content:space-between;padding:8px 11px;border-radius:9px;margin-top:7px;cursor:"+(matchLocked?"default":"pointer")+";";
+      if(jokerOnThis) {
+        jokerRow.style.cssText += "border:1.5px solid #F5A623;background:rgba(245,166,35,.06);";
+      } else if(usedElsewhere) {
+        jokerRow.style.cssText += "border:1.5px dashed #1e3050;opacity:.5;";
+      } else {
+        jokerRow.style.cssText += "border:1.5px dashed #6b82a8;";
+      }
+      const jLeft = div(""); jLeft.style.cssText = "display:flex;align-items:center;gap:8px";
+      const jIcon = span("","🃏"); jIcon.style.cssText = "font-size:18px;line-height:1";
+      const jInfo = div("");
+      const jTitle = div(""); jTitle.style.cssText = "font-size:.78rem;font-weight:600;color:#e8f0ff";
+      jTitle.textContent = jokerOnThis ? "Joker actief" : usedElsewhere ? "Joker" : "Joker inzetten";
+      const jSub = div(""); jSub.style.cssText = "font-size:.65rem;color:#6b82a8;margin-top:1px";
+      if(usedElsewhere) {
+        // Find match name
+        const usedMatch = SPEELDAGEN.flatMap(s=>s.matches).find(m=>m.id===usedElsewhere);
+        jSub.textContent = "Al ingezet op "+(usedMatch?usedMatch.t1+" – "+usedMatch.t2:usedElsewhere);
+      } else {
+        jSub.textContent = jokerOnThis ? "Punten worden verdubbeld!" : "Punten verdubbelen voor deze wedstrijd";
+      }
+      jInfo.appendChild(jTitle); jInfo.appendChild(jSub);
+      jLeft.appendChild(jIcon); jLeft.appendChild(jInfo);
+      const jBadge = span("","");
+      jBadge.style.cssText = "font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:10px;white-space:nowrap;";
+      if(jokerOnThis){ jBadge.textContent="Actief ✓"; jBadge.style.cssText+="background:rgba(245,166,35,.2);color:#FFD700;border:1px solid #F5A623;"; }
+      else if(usedElsewhere){ jBadge.textContent="Gebruikt"; jBadge.style.cssText+="background:rgba(107,130,168,.1);color:#6b82a8;border:1px solid #1e3050;"; }
+      else{ jBadge.textContent="1 beschikbaar"; jBadge.style.cssText+="background:rgba(245,166,35,.15);color:#F5A623;border:1px solid rgba(245,166,35,.3);"; }
+      jokerRow.appendChild(jLeft); jokerRow.appendChild(jBadge);
+      if(!matchLocked && !usedElsewhere) {
+        jokerRow.addEventListener("click", ()=>setJoker(match.id));
+      }
+      card.appendChild(jokerRow);
+    }
+  }
+
   // Result row
   if(hasActual&&ph!==""){
-    const ptsRow=div("match-pts-row "+(matchPts>=state.pts.perfectScore?"pts-good":matchPts>=state.pts.winner?"pts-med":"pts-bad"));
+    const matchResult = calcMatchPts(pred, actual, match.id, currentUser);
+    const mPts = matchResult.total;
+    const mBd = matchResult.bd;
+    const isJokerMatch = matchResult.jokerApplied;
+    const ptsRow=div("match-pts-row "+(isJokerMatch?"":mPts>=state.pts.perfectScore?"pts-good":mPts>=state.pts.winner?"pts-med":"pts-bad"));
+    if(isJokerMatch) ptsRow.style.cssText="background:rgba(245,166,35,.08);border:1.5px solid rgba(245,166,35,.3);border-radius:7px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:7px";
     const tags=div("match-pts-tags");
-    if(bd.length>0) bd.forEach(b=>{const t=span("pts-tag",b); tags.appendChild(t);});
+    if(mBd.length>0) mBd.forEach(b=>{
+      const t=span(b==="×2 joker"?"":"pts-tag",""); t.textContent=b;
+      if(b==="×2 joker") t.style.cssText="font-size:.6rem;background:rgba(245,166,35,.15);color:#F5A623;padding:1px 7px;border-radius:8px;border:1px solid rgba(245,166,35,.3)";
+      tags.appendChild(t);
+    });
     else tags.appendChild(span("pts-tag","✗ Geen punten"));
-    const numDiv=div("");
-    const num=span("pts-num-big "+(matchPts>=state.pts.perfectScore?"good":matchPts>=state.pts.winner?"med":"bad"),matchPts>0?"+"+matchPts:"0");
+    const numDiv=div(""); numDiv.style.cssText="text-align:right";
+    const num=span("pts-num-big "+(isJokerMatch?"":mPts>=state.pts.perfectScore?"good":mPts>=state.pts.winner?"med":"bad"),mPts>0?"+"+mPts:"0");
+    if(isJokerMatch) num.style.cssText="font-family:'Bebas Neue',cursive;font-size:1.35rem;color:#FFD700;line-height:1";
     const numLbl=e("span",{style:"font-size:.58rem;color:var(--muted);margin-left:2px"},"pt");
     numDiv.appendChild(num); numDiv.appendChild(numLbl);
+    if(isJokerMatch && matchResult.baseTotal) {
+      const baseLbl=div(""); baseLbl.style.cssText="font-size:.55rem;color:#6b82a8;text-align:right"; baseLbl.textContent="ipv +"+matchResult.baseTotal; numDiv.appendChild(baseLbl);
+    }
     ptsRow.appendChild(tags); ptsRow.appendChild(numDiv);
     card.appendChild(ptsRow);
   } else if(hasActual&&ph===""){
     const nf=div("not-filled"); nf.textContent="Niet ingevuld — 0 punten"; card.appendChild(nf);
+  }
+
+  // ── OTHERS PREDICTIONS (shown after result is known) ──────
+  if(hasActual && !isAdmin) {
+    const others = Object.entries(state.participants)
+      .filter(([n])=>n && n!==currentUser)
+      .map(([n,p])=>{
+        const pred2=(p.predictions||{})[match.id]||{};
+        const res=calcMatchPts(pred2,actual,match.id,n);
+        const jok=hasJoker(n,match.id);
+        return {name:n,pred:pred2,pts:res.total,joker:jok,filled:pred2.h!==undefined&&pred2.h!==""};
+      })
+      .sort((a,b)=>b.pts-a.pts);
+
+    if(others.length>0){
+      const othersDiv=div(""); othersDiv.style.cssText="border-top:1px solid #1e3050;padding-top:8px;margin-top:8px";
+      const othersLbl=div(""); othersLbl.style.cssText="font-size:.58rem;color:#6b82a8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px"; othersLbl.textContent="Voorspellingen van anderen";
+      othersDiv.appendChild(othersLbl);
+
+      // Current user row first
+      const myPred=pred;
+      const myRes=calcMatchPts(myPred,actual,match.id,currentUser);
+      const myJok=hasJoker(currentUser,match.id);
+      const myRow=div(""); myRow.style.cssText="display:flex;align-items:center;gap:7px;padding:5px 8px;background:rgba(255,255,255,.04);border-radius:7px;margin-bottom:4px;";
+      const myAv=div(""); myAv.style.cssText="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0;background:rgba(245,166,35,.15);color:#F5A623";
+      myAv.textContent=(currentUser||"?").substring(0,2).toUpperCase();
+      const myName=div(""); myName.style.cssText="font-size:.72rem;font-weight:600;color:#e8f0ff;flex:1"; myName.textContent=currentUser+" (jij)";
+      if(myJok){const jc=span("","🃏"); jc.style.cssText="font-size:.65rem;background:rgba(245,166,35,.12);color:#F5A623;padding:1px 4px;border-radius:6px;border:1px solid rgba(245,166,35,.25);margin-left:3px"; myName.appendChild(jc);}
+      const myScore=div(""); myScore.style.cssText="font-size:.72rem;font-weight:600;color:#e8f0ff;min-width:32px;text-align:center";
+      myScore.textContent=ph!==""?ph+"–"+pa:"—";
+      const myPts2=span("",""); myPts2.style.cssText="font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:7px;white-space:nowrap;";
+      if(myJok&&myRes.total>0){myPts2.textContent="+"+myRes.total+"pt";myPts2.style.cssText+="background:rgba(245,166,35,.15);color:#FFD700;border:1px solid rgba(245,166,35,.3)";}
+      else if(myRes.total>=state.pts.perfectScore){myPts2.textContent="+"+myRes.total+"pt";myPts2.style.cssText+="background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.25)";}
+      else if(myRes.total>0){myPts2.textContent="+"+myRes.total+"pt";myPts2.style.cssText+="background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.2)";}
+      else{myPts2.textContent="0 pt";myPts2.style.cssText+="background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.15)";}
+      myRow.append(myAv,myName,myScore,myPts2); othersDiv.appendChild(myRow);
+
+      others.forEach(o=>{
+        const oRow=div(""); oRow.style.cssText="display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid #162038;";
+        const colors=[["rgba(34,197,94,.12)","#22c55e"],["rgba(0,200,255,.1)","#00C8FF"],["rgba(168,85,247,.1)","#a855f7"],["rgba(249,115,22,.12)","#f97316"],["rgba(239,68,68,.1)","#ef4444"]];
+        const ci=Object.keys(state.participants).indexOf(o.name)%colors.length;
+        const oAv=div(""); oAv.style.cssText="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0;background:"+colors[ci][0]+";color:"+colors[ci][1];
+        oAv.textContent=o.name.substring(0,2).toUpperCase();
+        const oName=div(""); oName.style.cssText="font-size:.72rem;color:#e8f0ff;flex:1"; oName.textContent=o.name;
+        if(o.joker){const jc=span("","🃏"); jc.style.cssText="font-size:.65rem;background:rgba(245,166,35,.12);color:#F5A623;padding:1px 4px;border-radius:6px;border:1px solid rgba(245,166,35,.25);margin-left:3px"; oName.appendChild(jc);}
+        const oScore=div(""); oScore.style.cssText="font-size:.72rem;font-weight:600;color:#e8f0ff;min-width:32px;text-align:center";
+        oScore.textContent=o.filled?(o.pred.h+"–"+o.pred.a):"—";
+        const oPts=span("",""); oPts.style.cssText="font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:7px;white-space:nowrap;";
+        if(!o.filled){oPts.textContent="—";oPts.style.cssText+="color:#6b82a8";}
+        else if(o.joker&&o.pts>0){oPts.textContent="+"+o.pts+"pt";oPts.style.cssText+="background:rgba(245,166,35,.15);color:#FFD700;border:1px solid rgba(245,166,35,.3)";}
+        else if(o.pts>=state.pts.perfectScore){oPts.textContent="+"+o.pts+"pt";oPts.style.cssText+="background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.25)";}
+        else if(o.pts>0){oPts.textContent="+"+o.pts+"pt";oPts.style.cssText+="background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.2)";}
+        else{oPts.textContent="0 pt";oPts.style.cssText+="background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.15)";}
+        oRow.append(oAv,oName,oScore,oPts); othersDiv.appendChild(oRow);
+      });
+      card.appendChild(othersDiv);
+    }
   }
 
   return card;
@@ -2176,6 +2403,7 @@ function manualSync(){
     if(btn) btn.textContent="🔄";
   });
 }
+
 
 function goToSpecials(){
   const tabs=document.querySelectorAll("#app-tabs .tab-btn");
