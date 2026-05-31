@@ -276,6 +276,7 @@ input[type=number]{-moz-appearance:textfield;}
     <p>FIFA World Cup · 11 juni – 19 juli · USA · Canada · Mexico</p>
     <div class="user-bar" id="user-bar" style="display:none">
       <span id="user-name-display"></span>
+      <button id="sync-btn" onclick="manualSync()" title="Sync" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.6rem;padding:2px 7px;cursor:pointer;font-family:'DM Sans',sans-serif;">🔄</button>
       <div class="bell-wrap">
         <button class="bell-notification-btn" onclick="showNotifPopup()" id="bell-btn">
           🔔
@@ -717,7 +718,7 @@ function flag(team){ return FLAGS[team]||"🏳"; }
 let currentUser = "";
 let isAdmin = false;
 let collapsed = {};
-let scriptUrl = "https://script.google.com/macros/s/AKfycbxkgsFKnQXLoh8Bu-731u2IN6sGR1EOcUahtmzb91MoUaXgSvg9Whqpi7jGyaeM3kqx/exec";
+let scriptUrl = "https://script.google.com/macros/s/AKfycbwVE_aDb17oxVx1OldlbQFlaCD27U-LPsspirM43dIBJCDDsujtdFusHuJXsUVEA2mF/exec";
 
 // ══════════════════════════════════════════════════
 // PERSISTENCE
@@ -2124,6 +2125,33 @@ function showNotifPopup() {
   popup.style.display="flex";
 }
 function closeNotifPopup(){document.getElementById("notif-popup").style.display="none";}
+function manualSync(){
+  const btn=document.getElementById("sync-btn");
+  if(btn) btn.textContent="⏳";
+  if(!scriptUrl){ showToast("Geen Google koppeling ingesteld"); if(btn) btn.textContent="🔄"; return; }
+  fetch(scriptUrl+"?action=load&t="+Date.now())
+    .then(r=>r.json())
+    .then(j=>{
+      if(j.data){
+        state={...state,...j.data};
+        state.pts={...DEFAULT_PTS,...(state.pts||{})};
+        if(!state.shownPopups) state.shownPopups=[];
+        try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+        renderCurrentView();
+        updateHeaderPts();
+        updateBellBadge();
+        showToast("✅ Gesynchroniseerd!");
+      } else {
+        showToast("⚠️ Geen data ontvangen");
+      }
+      if(btn) btn.textContent="🔄";
+    })
+    .catch(err=>{
+      showToast("❌ Sync mislukt: "+err.message);
+      if(btn) btn.textContent="🔄";
+    });
+}
+
 function goToSpecials(){
   const tabs=document.querySelectorAll("#app-tabs .tab-btn");
   let btn=null;
@@ -2435,7 +2463,64 @@ function refreshKlassementIfVisible(){
 // ══════════════════════════════════════════════════
 // AUTO-REFRESH & INIT
 // ══════════════════════════════════════════════════
-setInterval(()=>{renderCurrentView();updateHeaderPts();},30000);
+// Auto-sync from Google Sheets every 30 seconds
+setInterval(()=>{
+  if(scriptUrl && currentUser){
+    fetch(scriptUrl+"?action=load&t="+Date.now())
+      .then(r=>r.json())
+      .then(j=>{
+        if(!j.data) return;
+        const d=j.data;
+        // Merge remote data - remote is leading
+        let changed=false;
+        if(d.participants){
+          // Merge each participant - don't overwrite current user's unsaved changes
+          Object.keys(d.participants).forEach(name=>{
+            if(name!==currentUser){
+              if(JSON.stringify(state.participants[name])!==JSON.stringify(d.participants[name])){
+                state.participants[name]=d.participants[name];
+                changed=true;
+              }
+            }
+          });
+          // Also add new participants
+          Object.keys(d.participants).forEach(name=>{
+            if(!state.participants[name]&&name!==currentUser){
+              state.participants[name]=d.participants[name];
+              changed=true;
+            }
+          });
+        }
+        if(d.actualScores&&JSON.stringify(d.actualScores)!==JSON.stringify(state.actualScores)){
+          state.actualScores=d.actualScores; changed=true;
+        }
+        if(d.actualWinner!==undefined&&d.actualWinner!==state.actualWinner){state.actualWinner=d.actualWinner;changed=true;}
+        if(d.actualRunnerUp!==undefined&&d.actualRunnerUp!==state.actualRunnerUp){state.actualRunnerUp=d.actualRunnerUp;changed=true;}
+        if(d.actualThird!==undefined&&d.actualThird!==state.actualThird){state.actualThird=d.actualThird;changed=true;}
+        if(d.actualBelgiumRound!==undefined&&d.actualBelgiumRound!==state.actualBelgiumRound){state.actualBelgiumRound=d.actualBelgiumRound;changed=true;}
+        if(d.actualTopscorer!==undefined&&d.actualTopscorer!==state.actualTopscorer){state.actualTopscorer=d.actualTopscorer;changed=true;}
+        if(d.sdStatus&&JSON.stringify(d.sdStatus)!==JSON.stringify(state.sdStatus)){
+          state.sdStatus=d.sdStatus; changed=true;
+        }
+        if(d.pts&&JSON.stringify(d.pts)!==JSON.stringify(state.pts)){
+          state.pts={...DEFAULT_PTS,...d.pts}; changed=true;
+        }
+        if(d.passwords&&JSON.stringify(d.passwords)!==JSON.stringify(state.passwords)){
+          state.passwords=d.passwords; changed=true;
+        }
+        if(changed){
+          try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+          renderCurrentView();
+          updateHeaderPts();
+          if(currentUser&&!isAdmin) updateBellBadge();
+        }
+      })
+      .catch(()=>{});
+  } else {
+    renderCurrentView();
+    updateHeaderPts();
+  }
+}, 30000);
 loadState();
 
 
