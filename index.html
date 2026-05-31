@@ -167,10 +167,11 @@ input[type=number]{-moz-appearance:textfield;}
 /* DARK POPUPS */
 .dp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;display:flex;align-items:center;justify-content:center;padding:16px;}
 .dp-box{background:linear-gradient(135deg,#0f1a2e,#162038);border-radius:20px;overflow:hidden;max-width:340px;width:100%;animation:popIn .35s ease;display:flex;flex-direction:column;max-height:88vh;}
-.dp-box.gold{border:2px solid #F5A623;box-shadow:0 0 30px rgba(245,166,35,.2);}
+.dp-box.gold{border:2px solid #F5A623;box-shadow:0 0 30px rgba(245,166,35,.2);}.dp-box.red{border:2px solid #ef4444;box-shadow:0 0 20px rgba(239,68,68,.15);}
 .dp-box.blue{border:2px solid #00C8FF;box-shadow:0 0 30px rgba(0,200,255,.2);}
 .dp-box.red{border:2px solid #ef4444;box-shadow:0 0 20px rgba(239,68,68,.15);}
 .dp-box.green{border:2px solid #22c55e;box-shadow:0 0 20px rgba(34,197,94,.15);}
+.dp-box.red{border:2px solid #ef4444;box-shadow:0 0 20px rgba(239,68,68,.15);}
 .dp-header{padding:20px 22px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08);}
 .dp-icon-big{font-size:2.8rem;margin-bottom:5px;line-height:1;}
 .dp-title{font-family:Bebas Neue,cursive;font-size:1.15rem;letter-spacing:3px;margin-bottom:3px;}
@@ -300,6 +301,7 @@ input[type=number]{-moz-appearance:textfield;}
   <button class="tab-btn active" onclick="switchTab('speeldagen',this)">📅 Speeldagen</button>
   <button class="tab-btn" onclick="switchTab('specials',this)">🏆 Specials</button>
   <button class="tab-btn" onclick="switchTab('klassement',this)">📊 Klassement</button>
+  <button class="tab-btn" onclick="switchTab('schema',this)">🗂 Schema</button>
 </div>
 <div class="tabs" id="admin-tabs" style="display:none">
   <button class="tab-btn active" onclick="switchAdminTab('scores',this)">⚽ Scores</button>
@@ -355,6 +357,8 @@ input[type=number]{-moz-appearance:textfield;}
   <div id="page-speeldagen" class="page active"></div>
   <div id="page-specials" class="page"></div>
   <div id="page-klassement" class="page"></div>
+  <div id="page-schema" class="page"></div>
+  <div id="page-schema" class="page"></div>
 </div>
 
 <!-- ADMIN SCREEN -->
@@ -397,8 +401,8 @@ input[type=number]{-moz-appearance:textfield;}
         <div style="display:flex;gap:8px;padding:5px 0;"><div style="width:8px;height:8px;border-radius:50%;background:#F5A623;flex-shrink:0;margin-top:4px;"></div><div><div style="font-size:.76rem;font-weight:600;color:#e8f0ff;">🏆 Finale</div><div style="font-size:.62rem;color:#6b82a8;">19 juli · MetLife Stadium, New Jersey</div></div></div>
       </div>
       <div class="dp-tip">💡 <strong style="color:#e8f0ff">Jouw doel:</strong> Voorspel zo veel mogelijk wedstrijden correct en scoor punten. Bekijk de spelregels voor het volledige puntensysteem!</div>
-      <button class="dp-btn-main gold" onclick="closeWkWelcome();setTimeout(()=>document.getElementById('rules-group-popup').style.display='flex',300)">📋 Bekijk de spelregels</button>
-      <button class="dp-btn-main outline" style="margin-top:6px" onclick="closeWkWelcome()">Later bekijken</button>
+      <button class="dp-btn-main gold" onclick="closeWkWelcome();setTimeout(()=>{document.getElementById('rules-group-popup').style.display='flex';},300)">📋 Bekijk de spelregels</button>
+      <button class="dp-btn-main outline" style="margin-top:6px" onclick="closeWkWelcome()">Sluiten</button>
     </div>
   </div>
 </div>
@@ -491,6 +495,55 @@ input[type=number]{-moz-appearance:textfield;}
       <div class="dp-sub-txt" id="yday-sub"></div>
     </div>
     <div class="dp-body" id="yday-body"></div>
+  </div>
+</div>
+
+<!-- TODAY MATCHES POPUP -->
+<div id="today-popup" style="display:none" class="dp-overlay" onclick="closeTodayPopup()">
+  <div class="dp-box green" onclick="event.stopPropagation()">
+    <div class="dp-header">
+      <div class="dp-icon-big">📅</div>
+      <div class="dp-title green" id="today-popup-title">Vandaag speelt</div>
+      <div class="dp-sub-txt" id="today-popup-sub"></div>
+    </div>
+    <div class="dp-body" id="today-popup-body"></div>
+  </div>
+</div>
+
+<!-- DAILY SPECIALS REMINDER POPUP -->
+<div id="specials-reminder-popup" style="display:none" class="dp-overlay" onclick="closeSpecialsReminder()">
+  <div class="dp-box red" onclick="event.stopPropagation()">
+    <div class="dp-header">
+      <div class="dp-icon-big">⏰</div>
+      <div class="dp-title red">Specials niet ingevuld!</div>
+      <div class="dp-sub-txt">Je hebt nog openstaande voorspellingen</div>
+    </div>
+    <div class="dp-body" id="specials-reminder-body"></div>
+  </div>
+</div>
+
+
+<!-- TODAY MATCHES POPUP -->
+<div id="today-popup" style="display:none" class="dp-overlay" onclick="document.getElementById('today-popup').style.display='none'">
+  <div class="dp-box green" onclick="event.stopPropagation()" style="max-width:340px">
+    <div class="dp-header">
+      <div class="dp-icon-big">📅</div>
+      <div class="dp-title green" id="today-popup-title">Vandaag speelt</div>
+      <div class="dp-sub-txt" id="today-popup-sub"></div>
+    </div>
+    <div class="dp-body" id="today-popup-body"></div>
+  </div>
+</div>
+
+<!-- SPECIALS REMINDER POPUP -->
+<div id="specials-reminder-popup" style="display:none" class="dp-overlay" onclick="document.getElementById('specials-reminder-popup').style.display='none'">
+  <div class="dp-box red" onclick="event.stopPropagation()" style="max-width:340px">
+    <div class="dp-header">
+      <div class="dp-icon-big">⏰</div>
+      <div class="dp-title red">Specials niet ingevuld!</div>
+      <div class="dp-sub-txt">Je hebt nog openstaande voorspellingen</div>
+    </div>
+    <div class="dp-body" id="specials-reminder-body"></div>
   </div>
 </div>
 
@@ -791,13 +844,25 @@ function showScreen(id) {
 function showSetup() { showScreen("setup"); }
 
 function switchTab(id, btn) {
-  document.querySelectorAll("#app-tabs .tab-btn").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
+  if(btn) {
+    document.querySelectorAll("#app-tabs .tab-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+  }
   document.querySelectorAll("#screen-app .page").forEach(p=>p.classList.remove("active"));
-  document.getElementById("page-"+id).classList.add("active");
+  const pg = document.getElementById("page-"+id);
+  if(pg) pg.classList.add("active");
   if(id==="speeldagen") renderSpeeldagen();
   if(id==="specials") renderSpecials();
   if(id==="klassement") renderKlassement();
+  if(id==="schema") renderSchema();
+}
+window._goSpecials = function(){ goToTab("specials"); };
+window._goSpeeldagen = function(){ goToTab("speeldagen"); };
+window._goSchema = function(){ goToTab("schema"); };
+window._goKlassement = function(){ goToTab("klassement"); };
+function goToTab(id) {
+  const btn = Array.from(document.querySelectorAll("#app-tabs .tab-btn")).find(b=>b.textContent.toLowerCase().includes(id==="schema"?"schema":id==="specials"?"special":id==="klassement"?"klassement":"speeldag"));
+  switchTab(id, btn||null);
 }
 function switchAdminTab(id, btn) {
   document.querySelectorAll("#admin-tabs .tab-btn").forEach(b=>b.classList.remove("active"));
@@ -1224,6 +1289,64 @@ function refreshMatchCard(match, editable, isKO, card) {
   // Re-render just this card in-place
   const newCard = renderMatchCard(match, editable, isKO);
   card.replaceWith(newCard);
+}
+
+// ══════════════════════════════════════════════════
+// SCHEMA (groups + standings for regular users)
+// ══════════════════════════════════════════════════
+function renderSchema() {
+  const container = document.getElementById("page-schema");
+  container.innerHTML = "";
+  const standings = computeStandings();
+  const best8 = getBest8(standings);
+  const r32res = resolveR32();
+
+  const card1=div("card"); card1.innerHTML="<div class='card-title'>🗂 Groepsklassementen</div>";
+  const grid=div("groups-grid");
+  Object.entries(standings).forEach(([grp,teams])=>{
+    const gc=div("group-card");
+    const gt=div("group-title"); gt.textContent="Groep "+grp; gc.appendChild(gt);
+    // Header row
+    const hdr=div("group-row"); hdr.style.cssText="opacity:.5;font-size:.58rem;";
+    ["#","Team","±","D","Pt"].forEach(h=>{const s=span("",h);s.style.cssText="text-align:center;color:var(--muted)";hdr.appendChild(s);});
+    gc.appendChild(hdr);
+    teams.forEach((t,i)=>{
+      const row=div("group-row"+(i<2?" q":i===2?" p":""));
+      const rnk=span("",i+1+""); rnk.style.cssText="color:"+(i===0?"var(--gold2)":i===1?"#94a3b8":"var(--muted)")+";font-weight:700;text-align:center;font-size:.66rem";
+      const nm=span("",t.name); nm.style.cssText="font-weight:600;color:"+(i<2?"var(--text)":"var(--muted)")+";font-size:.66rem";
+      const gd=span("",(t.gd>0?"+":"")+t.gd); gd.style.cssText="text-align:center;color:var(--muted);font-size:.66rem";
+      const gf=span("",t.p+""); gf.style.cssText="text-align:center;color:var(--muted);font-size:.66rem";
+      const pts=span("",t.pts+""); pts.style.cssText="text-align:center;font-weight:700;color:var(--accent);font-size:.66rem";
+      row.append(rnk,nm,gd,gf,pts); gc.appendChild(row);
+    });
+    grid.appendChild(gc);
+  });
+  card1.appendChild(grid); container.appendChild(card1);
+
+  if(best8.length>0){
+    const card2=div("card"); card2.innerHTML="<div class='card-title'>🥉 Beste 8 derde-geplaatsten</div>";
+    const b8=div(""); b8.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:7px";
+    best8.forEach((t,i)=>{
+      const bc=div(""); bc.style.cssText="background:var(--dark4);border:1px solid var(--green);border-radius:8px;padding:6px 8px";
+      const n1=div(""); n1.style.cssText="font-size:.54rem;color:var(--muted)"; n1.textContent="#"+(i+1)+" ✅";
+      const n2=div(""); n2.style.cssText="font-size:.76rem;font-weight:700"; n2.textContent=t.name;
+      const n3=div(""); n3.style.cssText="font-size:.6rem;color:var(--gold)"; n3.textContent="Groep "+t.grp;
+      bc.append(n1,n2,n3); b8.appendChild(bc);
+    });
+    card2.appendChild(b8); container.appendChild(card2);
+  }
+
+  const card3=div("card"); card3.innerHTML="<div class='card-title'>⚽ Ronde van 32 — koppelingen</div>";
+  const r32g=div(""); r32g.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:5px";
+  R32_SLOTS.forEach(s=>{
+    const row=div(""); row.style.cssText="background:var(--dark4);border:1px solid var(--border);border-radius:7px;padding:6px 9px;display:flex;align-items:center;gap:5px";
+    const id=span("",s.id); id.style.cssText="font-size:.58rem;color:var(--gold);font-weight:700;min-width:26px";
+    const t1=span("",r32res[s.id+"_t1"]||s.t1); t1.style.cssText="font-size:.68rem;font-weight:600;flex:1;text-align:right;color:var(--text)";
+    const vs=span("","vs"); vs.style.cssText="font-size:.54rem;color:var(--muted)";
+    const t2=span("",r32res[s.id+"_t2"]||s.t2); t2.style.cssText="font-size:.68rem;font-weight:600;flex:1;color:var(--text)";
+    row.append(id,t1,vs,t2); r32g.appendChild(row);
+  });
+  card3.appendChild(r32g); container.appendChild(card3);
 }
 
 // ══════════════════════════════════════════════════
@@ -1723,6 +1846,69 @@ function renderGroepen() {
 }
 
 // ══════════════════════════════════════════════════
+// SCHEMA (for regular users - same as admin groepen)
+// ══════════════════════════════════════════════════
+function renderSchema() {
+  const container=document.getElementById("page-schema");
+  container.innerHTML="";
+  const standings=computeStandings();
+  const best8=getBest8(standings);
+  const r32res=resolveR32();
+
+  const card1=div("card"); card1.innerHTML="<div class='card-title'>🗂 Groepsklassementen</div>";
+  const grid=div("groups-grid");
+  Object.entries(standings).forEach(([grp,teams])=>{
+    const gc=div("group-card");
+    const gt=div("group-title"); gt.textContent="Groep "+grp; gc.appendChild(gt);
+    // Header row
+    const hdr=div("group-row"); hdr.style.cssText="font-size:.55rem;color:var(--muted);font-weight:700;padding-bottom:3px;border-bottom:1px solid var(--border);margin-bottom:2px";
+    ["#","Team","±","GF","Pt"].forEach((h,i)=>{const c=span("",h); c.style.cssText="text-align:"+(i===1?"left":"center"); hdr.appendChild(c);}); gc.appendChild(hdr);
+    teams.forEach((t,i)=>{
+      const row=div("group-row"+(i<2?" q":i===2?" p":""));
+      const rnk=span("",i+1+""); rnk.style.cssText="color:"+(i===0?"var(--gold2)":i===1?"#94a3b8":"var(--muted)")+";font-weight:700;text-align:center;font-size:.66rem";
+      const nm=span("",t.name); nm.style.cssText="font-weight:600;color:"+(i<2?"var(--text)":"var(--muted)")+";font-size:.66rem";
+      const gd=span("",(t.gd>0?"+":"")+t.gd); gd.style.cssText="text-align:center;color:var(--muted);font-size:.66rem";
+      const gf=span("",t.gf+""); gf.style.cssText="text-align:center;color:var(--muted);font-size:.66rem";
+      const pts=span("",t.pts+""); pts.style.cssText="text-align:center;font-weight:700;color:var(--accent);font-size:.66rem";
+      row.append(rnk,nm,gd,gf,pts); gc.appendChild(row);
+    });
+    // Legend
+    const leg=div(""); leg.style.cssText="font-size:.52rem;color:var(--muted);margin-top:5px;display:flex;gap:8px";
+    const l1=div(""); l1.style.cssText="display:flex;align-items:center;gap:3px"; const d1=div(""); d1.style.cssText="width:6px;height:6px;border-radius:50%;background:rgba(34,197,94,.4)"; l1.appendChild(d1); l1.appendChild(document.createTextNode("door")); leg.appendChild(l1);
+    const l2=div(""); l2.style.cssText="display:flex;align-items:center;gap:3px"; const d2=div(""); d2.style.cssText="width:6px;height:6px;border-radius:50%;background:rgba(245,166,35,.4)"; l2.appendChild(d2); l2.appendChild(document.createTextNode("mogelijk door")); leg.appendChild(l2);
+    gc.appendChild(leg);
+    grid.appendChild(gc);
+  });
+  card1.appendChild(grid); container.appendChild(card1);
+
+  if(best8.length>0){
+    const card2=div("card"); card2.innerHTML="<div class='card-title'>🥉 Beste 8 derde-geplaatsten</div>";
+    const b8grid=div(""); b8grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:7px";
+    best8.forEach((t,i)=>{
+      const bc=div(""); bc.style.cssText="background:var(--dark4);border:1px solid var(--green);border-radius:8px;padding:6px 8px";
+      const n1=div(""); n1.style.cssText="font-size:.54rem;color:var(--muted)"; n1.textContent="#"+(i+1)+" ✅";
+      const n2=div(""); n2.style.cssText="font-size:.76rem;font-weight:700"; n2.textContent=t.name;
+      const n3=div(""); n3.style.cssText="font-size:.6rem;color:var(--gold)"; n3.textContent="Groep "+t.grp;
+      const n4=div(""); n4.style.cssText="font-size:.58rem;color:var(--accent)"; n4.textContent=t.pts+"pt · "+(t.gd>0?"+":"")+t.gd;
+      bc.append(n1,n2,n3,n4); b8grid.appendChild(bc);
+    });
+    card2.appendChild(b8grid); container.appendChild(card2);
+  }
+
+  const card3=div("card"); card3.innerHTML="<div class='card-title'>⚽ Ronde van 32 — koppelingen</div>";
+  const r32grid=div(""); r32grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:5px";
+  R32_SLOTS.forEach(s=>{
+    const row=div(""); row.style.cssText="background:var(--dark4);border:1px solid var(--border);border-radius:7px;padding:6px 9px;display:flex;align-items:center;gap:5px";
+    const id=span("",s.id); id.style.cssText="font-size:.58rem;color:var(--gold);font-weight:700;min-width:24px";
+    const t1=span("",r32res[s.id+"_t1"]||s.t1); t1.style.cssText="font-size:.68rem;font-weight:600;flex:1;text-align:right;color:var(--text)";
+    const vs=span("","vs"); vs.style.cssText="font-size:.54rem;color:var(--muted)";
+    const t2=span("",r32res[s.id+"_t2"]||s.t2); t2.style.cssText="font-size:.68rem;font-weight:600;flex:1;color:var(--text)";
+    row.append(id,t1,vs,t2); r32grid.appendChild(row);
+  });
+  card3.appendChild(r32grid); container.appendChild(card3);
+}
+
+// ══════════════════════════════════════════════════
 // KLASSEMENT
 // ══════════════════════════════════════════════════
 function renderKlassement(isAdminView=false) {
@@ -1845,7 +2031,7 @@ function showNotifPopup() {
       todayMatches.forEach(m=>{
         html+='<div class="dp-match-row"><span class="dp-match-flag">'+flag(m.t1)+'</span><span class="dp-match-name">'+m.t1+' – '+m.t2+'</span><span class="dp-match-flag">'+flag(m.t2)+'</span><span class="dp-match-time">'+(MATCH_TIMES[m.id]||"")+'</span>'+(m.g?'<span class="dp-match-grp">Gr.'+m.g+'</span>':'')+'<div class="'+(m.filled?"dp-dot-on":"dp-dot-off")+'"></div></div>';
       });
-      if(todayMatches.some(m=>!m.filled&&m.editable)) html+='<button class="dp-btn-main blue" onclick="closeNotifPopup();document.querySelector(&quot;#app-tabs .tab-btn&quot;).click()">Invullen</button>';
+      if(todayMatches.some(m=>!m.filled&&m.editable)) html+='<button class="dp-btn-main blue" onclick="closeNotifPopup();goToSpeeldagen()">Invullen</button>';
     } else {
       const p2=state.participants[currentUser]||{};
       const open2=specialsOpen();
@@ -1865,7 +2051,7 @@ function showNotifPopup() {
         html+='<div style="flex:1"><div class="dp-task-name">'+t.name+'</div></div>';
         html+='<span class="dp-pill dp-pill-'+(t.done?"green":t.color)+'">'+(t.done?"✓ Ingevuld":t.pts)+'</span></div>';
       });
-      if(!tasks.every(t=>t.done)) html+='<button class="dp-btn-main gold" onclick="closeNotifPopup();document.querySelectorAll(&quot;#app-tabs .tab-btn&quot;)[1].click()">Specials invullen</button>';
+      if(!tasks.every(t=>t.done)) html+='<button class="dp-btn-main gold" onclick="closeNotifPopup();goToSpecials()">Specials invullen</button>';
     }
     body.innerHTML=html;
     body.querySelectorAll(".dp-tab[data-tab]").forEach(btn=>{
@@ -1876,6 +2062,18 @@ function showNotifPopup() {
   popup.style.display="flex";
 }
 function closeNotifPopup(){document.getElementById("notif-popup").style.display="none";}
+function goToSpecials(){
+  const tabs=document.querySelectorAll("#app-tabs .tab-btn");
+  let btn=null;
+  tabs.forEach(b=>{ if(b.textContent.includes("Specials")) btn=b; });
+  if(btn) switchTab("specials",btn);
+}
+function goToSpeeldagen(){
+  const tabs=document.querySelectorAll("#app-tabs .tab-btn");
+  let btn=null;
+  tabs.forEach(b=>{ if(b.textContent.includes("Speeldag")) btn=b; });
+  if(btn) switchTab("speeldagen",btn);
+}
 
 function showWelcomePopup(){
   const p=state.participants[currentUser]||{};
@@ -1895,7 +2093,7 @@ function showWelcomePopup(){
     html+='<span class="dp-pill dp-pill-'+(t.done?"green":t.color)+'">'+(t.done?"✓":t.pts)+'</span></div>';
   });
   if(!tasks.every(t=>t.done)){
-    html+='<button class="dp-btn-main gold" onclick="closeWelcomePopup();document.querySelectorAll(&quot;#app-tabs .tab-btn&quot;)[1].click()">Nu invullen</button>';
+    html+='<button class="dp-btn-main gold" onclick="closeWelcomePopup();window._goSpecials()">Nu invullen</button>';
     html+='<button class="dp-btn-main outline" style="margin-top:6px" onclick="closeWelcomePopup()">Later</button>';
   } else {
     html+='<button class="dp-btn-main gold" onclick="closeWelcomePopup()">Alles ingevuld ✓</button>';
@@ -1928,12 +2126,131 @@ function showYdayPopup(){
   html+='<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:8px;text-align:center"><div style="font-size:.58rem;color:#6b82a8">Totaal klassement</div><div style="font-family:Bebas Nieuwe,cursive;font-size:1.4rem;color:#FFD700">#'+myTotalRank+'</div></div>';
   html+='<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:8px;text-align:center"><div style="font-size:.58rem;color:#6b82a8">Totaal punten</div><div style="font-family:Bebas Neue,cursive;font-size:1.4rem;color:#F5A623">'+myTotal+'</div></div>';
   html+='</div>';
-  html+='<div class="dp-btn-row"><button class="dp-btn-main '+(isWinner?"gold":"blue")+'" onclick="closeYdayPopup();document.querySelectorAll(&quot;#app-tabs .tab-btn&quot;)[2].click()">Bekijk klassement</button><button class="dp-btn-main outline" onclick="closeYdayPopup()">Sluiten</button></div>';
+  html+='<div class="dp-btn-row"><button class="dp-btn-main '+(isWinner?"gold":"blue")+'" onclick="closeYdayPopup();document.querySelectorAll("#app-tabs .tab-btn")[2].click()">Bekijk klassement</button><button class="dp-btn-main outline" onclick="closeYdayPopup()">Sluiten</button></div>';
   document.getElementById("yday-body").innerHTML=html;
   document.getElementById("yday-popup").style.display="flex";
 }
 function closeYdayPopup(){document.getElementById("yday-popup").style.display="none";}
+
+function showTodayMatchesPopup(){
+  const today=getTodayStr();
+  const todayMatches=getTodayMatches();
+  const ydayPts=calcDayPts(currentUser,getYesterdayStr());
+  const myRank=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a)).indexOf(currentUser)+1;
+  const d=new Date(); const dayStr=d.toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long"});
+  document.getElementById("today-popup-sub").textContent=dayStr+" · "+todayMatches.length+" wedstrijden";
+  let html="";
+  if(ydayPts>0){
+    html+='<div class="dp-yday-strip"><span style="font-size:1.4rem">🏆</span><div style="flex:1;font-size:.75rem;color:#e8f0ff;line-height:1.4">Gisteren scoorde je<br><strong style="color:#FFD700">+'+ydayPts+' punten</strong></div><div style="text-align:right"><div style="font-size:.58rem;color:#6b82a8">Positie</div><div style="font-family:Bebas Neue,cursive;font-size:1.3rem;color:#00C8FF">#'+myRank+'</div></div></div>';
+  }
+  todayMatches.forEach(m=>{
+    html+='<div class="dp-match-row">';
+    html+='<span class="dp-match-name">'+m.t1+' – '+m.t2+'</span>';
+    html+='<span class="dp-match-time">'+(MATCH_TIMES[m.id]||"")+'</span>';
+    if(m.g) html+='<span class="dp-match-grp">Gr.'+m.g+'</span>';
+    html+='<div class="'+(m.filled?"dp-dot-on":"dp-dot-off")+'"></div>';
+    html+='</div>';
+  });
+  html+='<div class="legend" style="display:flex;gap:10px;margin-top:8px;">';
+  html+='<div style="display:flex;align-items:center;gap:4px;font-size:.62rem;color:#6b82a8"><div class="dp-dot-on"></div> ingevuld</div>';
+  html+='<div style="display:flex;align-items:center;gap:4px;font-size:.62rem;color:#6b82a8"><div class="dp-dot-off"></div> nog te doen</div>';
+  html+='</div>';
+  if(todayMatches.some(m=>!m.filled&&m.editable)){
+    html+='<button class="dp-btn-main blue" style="margin-top:10px" id="today-invullen-btn">⚽ Invullen</button>';
+  }
+  html+='<button class="dp-btn-main outline" style="margin-top:6px" id="today-sluiten-btn">Sluiten</button>';
+  document.getElementById("today-popup-body").innerHTML=html;
+  document.getElementById("today-popup").style.display="flex";
+  const tib=document.getElementById("today-invullen-btn");
+  if(tib) tib.addEventListener("click",()=>{ document.getElementById("today-popup").style.display="none"; goToSpeeldagen(); });
+  const tsb=document.getElementById("today-sluiten-btn");
+  if(tsb) tsb.addEventListener("click",()=>{ document.getElementById("today-popup").style.display="none"; });
+}
+
+function showSpecialsReminderPopup(){
+  const p=state.participants[currentUser]||{};
+  const tasks=[
+    {done:!!p.winner,name:"Eindwinnaar",icon:"🏆"},
+    {done:!!p.runnerUp,name:"Runner-up",icon:"🥈"},
+    {done:!!p.third,name:"Derde plaats",icon:"🥉"},
+    {done:!!p.topscorer,name:"Topschutter",icon:"⚽"},
+    {done:!!p.playerTournament,name:"Speler van het toernooi",icon:"⭐"},
+    {done:!!p.keeperTournament,name:"Keeper van het toernooi",icon:"🧤"},
+    {done:p.redCards!=null&&p.redCards!=="",name:"Aantal rode kaarten",icon:"🟥"},
+    {done:!!p.belgiumRound,name:"In welke ronde strandt België?",icon:"🇧🇪"},
+  ];
+  let html='<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px 11px;font-size:.7rem;color:#94a3b8;line-height:1.5;margin-bottom:12px;">⚠️ <strong style="color:#e8f0ff">Deadline: 11 juni 21:00</strong> — sluit bij de aftrap van de eerste wedstrijd!</div>';
+  tasks.forEach(t=>{
+    const done=t.done;
+    html+='<div style="display:flex;align-items:center;gap:9px;padding:7px 10px;background:'+(done?"rgba(34,197,94,.05)":"rgba(239,68,68,.06)")+';border-radius:8px;margin-bottom:5px;border:1px solid '+(done?"rgba(34,197,94,.15)":"rgba(239,68,68,.15)")+'">';
+    html+='<div style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;background:'+(done?"rgba(34,197,94,.12)":"rgba(239,68,68,.1)")+'">'+t.icon+'</div>';
+    html+='<div style="flex:1;font-size:.77rem;font-weight:600;color:#e8f0ff">'+t.name+'</div>';
+    html+='<span style="font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:10px;background:'+(done?"rgba(34,197,94,.12)":"rgba(239,68,68,.1)")+';color:'+(done?"#22c55e":"#ef4444")+';border:1px solid '+(done?"rgba(34,197,94,.25)":"rgba(239,68,68,.2)")+'">'+(done?"✓ Ingevuld":"Niet ingevuld")+'</span>';
+    html+='</div>';
+  });
+  html+='<button class="dp-btn-main gold" style="margin-top:12px;background:#F5A623;color:#000;border:none" id="specials-invullen-btn">🏆 Nu invullen</button>';
+  html+='<button class="dp-btn-main outline" style="margin-top:6px" id="specials-later-btn">Later</button>';
+  document.getElementById("specials-reminder-body").innerHTML=html;
+  document.getElementById("specials-reminder-popup").style.display="flex";
+  const sib=document.getElementById("specials-invullen-btn");
+  if(sib) sib.addEventListener("click",()=>{ document.getElementById("specials-reminder-popup").style.display="none"; goToSpecials(); });
+  const spslb=document.getElementById("specials-later-btn");
+  if(spslb) spslb.addEventListener("click",()=>{ document.getElementById("specials-reminder-popup").style.display="none"; });
+}
 function closeWkWelcome(){document.getElementById("wk-welcome-popup").style.display="none";}
+function closeTodayPopup(){document.getElementById("today-popup").style.display="none";}
+function closeSpecialsReminder(){document.getElementById("specials-reminder-popup").style.display="none";}
+
+function showTodayPopup(){
+  const todayMatches=getTodayMatches();
+  if(todayMatches.length===0) return;
+  const ydayPts=calcDayPts(currentUser,getYesterdayStr());
+  const myRank=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a)).indexOf(currentUser)+1;
+  const dateStr=new Date().toLocaleDateString("nl-BE",{weekday:"long",day:"numeric",month:"long"});
+  document.getElementById("today-popup-title").textContent="Vandaag speelt";
+  document.getElementById("today-popup-sub").textContent=dateStr+" · "+todayMatches.length+" wedstrijden";
+  let html="";
+  if(ydayPts>0){
+    html+='<div class="dp-yday-strip"><span style="font-size:1.4rem">🏆</span><div style="flex:1;font-size:.75rem;color:#e8f0ff;line-height:1.4">Gisteren scoorde je<br><strong style="color:#FFD700">+'+ydayPts+' punten</strong></div><div style="text-align:right"><div style="font-size:.58rem;color:#6b82a8">Positie</div><div style="font-family:Bebas Neue,cursive;font-size:1.3rem;color:#00C8FF">#'+myRank+'</div></div></div>';
+  }
+  todayMatches.forEach(m=>{
+    html+='<div class="dp-match-row"><span class="dp-match-name">'+m.t1+' – '+m.t2+'</span><span class="dp-match-time">'+(MATCH_TIMES[m.id]||"")+'</span>'+(m.g?'<span class="dp-match-grp">Gr.'+m.g+'</span>':'')+'<div class="'+(m.filled?"dp-dot-on":"dp-dot-off")+'"></div></div>';
+  });
+  const hasOpen=todayMatches.some(m=>!m.filled&&m.editable);
+  if(hasOpen) html+='<button class="dp-btn-main blue" onclick="closeTodayPopup();window._goSpeeldagen()">⚽ Invullen</button>';
+  html+='<button class="dp-btn-main outline" style="margin-top:6px" onclick="closeTodayPopup()">Sluiten</button>';
+  document.getElementById("today-popup-body").innerHTML=html;
+  document.getElementById("today-popup").style.display="flex";
+}
+
+function showSpecialsReminder(){
+  const p=state.participants[currentUser]||{};
+  const tasks=[
+    {done:!!p.winner,name:"Eindwinnaar",icon:"🏆"},
+    {done:!!p.runnerUp,name:"Runner-up",icon:"🥈"},
+    {done:!!p.third,name:"Derde",icon:"🥉"},
+    {done:!!p.topscorer,name:"Topschutter",icon:"⚽"},
+    {done:!!p.playerTournament,name:"Speler van het toernooi",icon:"⭐"},
+    {done:!!p.keeperTournament,name:"Keeper van het toernooi",icon:"🧤"},
+    {done:p.redCards!=null&&p.redCards!=="",name:"Aantal rode kaarten",icon:"🟥"},
+    {done:!!p.belgiumRound,name:"In welke ronde strandt België?",icon:"🇧🇪"},
+  ];
+  const missing=tasks.filter(t=>!t.done);
+  if(missing.length===0) return;
+  let html='<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px 11px;font-size:.7rem;color:#94a3b8;line-height:1.5;margin-bottom:12px;">⚠️ <strong style="color:#e8f0ff">Deadline: 11 juni 21:00</strong> — sluit bij de aftrap!</div>';
+  tasks.forEach(t=>{
+    const bg=t.done?"rgba(34,197,94,.05)":"rgba(239,68,68,.06)";
+    const bc=t.done?"rgba(34,197,94,.15)":"rgba(239,68,68,.15)";
+    const pill=t.done?'<span class="dp-pill dp-pill-green">✓</span>':'<span class="dp-pill dp-pill-red">Niet ingevuld</span>';
+    html+='<div class="dp-task" style="background:'+bg+';border:1px solid '+bc+'">';
+    html+='<div class="dp-task-icon" style="background:'+(t.done?"rgba(34,197,94,.12)":"rgba(239,68,68,.12)")+';color:'+(t.done?"#22c55e":"#ef4444")+'">'+t.icon+'</div>';
+    html+='<div style="flex:1"><div class="dp-task-name">'+t.name+'</div></div>'+pill+'</div>';
+  });
+  html+='<button class="dp-btn-main gold" onclick="closeSpecialsReminder();window._goSpecials()">🏆 Nu invullen</button>';
+  html+='<button class="dp-btn-main outline" style="margin-top:6px" onclick="closeSpecialsReminder()">Later</button>';
+  document.getElementById("specials-reminder-body").innerHTML=html;
+  document.getElementById("specials-reminder-popup").style.display="flex";
+}
 
 function checkSdPopups(){
   // Check if any speeldag popup needs showing after results come in
@@ -1972,7 +2289,7 @@ function checkAndShowStartupPopups(){
   const dayBeforeWK="2026-06-10";
   const r32PredStartDate="2026-07-02";
 
-  // 1. First ever login: WK welcome popup (always, once)
+  // 1. First ever login: WK welcome popup (once per user ever)
   const wkWelcomeKey="wk-welcome:"+currentUser;
   if(!state.shownPopups.includes(wkWelcomeKey)){
     state.shownPopups.push(wkWelcomeKey);saveState();
@@ -1997,7 +2314,26 @@ function checkAndShowStartupPopups(){
     return;
   }
 
-  // 4. Daily: yesterday score popup
+  // 4. Daily: today's matches popup (once per day, if there are matches today)
+  const todayMatchesKey="todaymatches:"+today;
+  const todayMatches=getTodayMatches();
+  if(todayMatches.length>0&&!state.shownPopups.includes(todayMatchesKey)){
+    state.shownPopups.push(todayMatchesKey);saveState();
+    setTimeout(()=>showTodayPopup(),500);
+    return;
+  }
+
+  // 5. Daily: specials reminder from June 10 onwards until all filled (once per day)
+  const p=state.participants[currentUser]||{};
+  const specReminderKey="specreminder:"+today+":"+currentUser;
+  const hasUnfilledSpecials=specialsOpen()&&(!p.winner||!p.runnerUp||!p.third||!p.topscorer||!p.playerTournament||!p.keeperTournament||(p.redCards==null||p.redCards==="")||!p.belgiumRound);
+  if(hasUnfilledSpecials&&today>=dayBeforeWK&&!state.shownPopups.includes(specReminderKey)){
+    state.shownPopups.push(specReminderKey);saveState();
+    setTimeout(()=>showSpecialsReminder(),600);
+    return;
+  }
+
+  // 6. Yesterday score popup (once per day)
   const ydayPts=calcDayPts(currentUser,getYesterdayStr());
   if(ydayPts>0&&state.shownYesterdayPopup!==today){
     state.shownYesterdayPopup=today;saveState();
@@ -2005,17 +2341,16 @@ function checkAndShowStartupPopups(){
     return;
   }
 
-  // 5. Unfilled specials reminder (once, after welcome)
-  const p=state.participants[currentUser]||{};
+  // 7. First time specials reminder (before June 10, once)
   const popupKey="welcome:"+currentUser;
-  const hasUnfilled=specialsOpen()&&(!p.winner||!p.topscorer||!p.playerTournament||!p.keeperTournament||(p.redCards==null||p.redCards==="")||!p.belgiumRound);
-  if(hasUnfilled&&!state.shownPopups.includes(popupKey)){
+  const hasUnfilled2=specialsOpen()&&(!p.winner||!p.topscorer||!p.playerTournament||!p.keeperTournament||(p.redCards==null||p.redCards==="")||!p.belgiumRound);
+  if(hasUnfilled2&&!state.shownPopups.includes(popupKey)){
     state.shownPopups.push(popupKey);saveState();
     setTimeout(()=>showWelcomePopup(),600);
     return;
   }
 
-  // 6. From July 2 onwards: R32 re-prediction reminder (once)
+  // 8. From July 2 onwards: R32 re-prediction reminder (once)
   const r32done=state.r32PredDone&&state.r32PredDone[currentUser];
   const r32timeOk=today>=r32PredStartDate;
   const r32popupKey="r32pred:"+currentUser;
