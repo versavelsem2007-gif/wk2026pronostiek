@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WK 2026 Pronostiek</title>
-<!-- v2.1 -->
+<!-- v3.0 -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -2083,30 +2086,65 @@ function renderAdminScores() {
   syncBtn.addEventListener("click",async()=>{
     syncBtn.innerHTML='<span class="spinner"></span> Bezig…'; syncBtn.disabled=true;
     try{
-      const prompt = "Search FIFA World Cup 2026 latest official match results. " +
-        "Return ONLY a JSON object mapping match IDs to scores. " +
-        "Match IDs: A11=Mexico vs ZuidAfrika, A21=ZuidKorea vs Tsjechie, " +
-        "B11=Canada vs Bosnie, B21=Qatar vs Zwitserland, " +
-        "C11=Brazilie vs Marokko, C21=Haiti vs Schotland, " +
-        "D11=VerStaten vs Paraguay, D21=Australie vs Turkije, " +
-        "E11=Duitsland vs Curacao, E21=Ivoorkust vs Ecuador, " +
-        "F11=Nederland vs Japan, F21=Zweden vs Tunesie, " +
-        "G11=Belgie vs Egypte, G21=Iran vs NieuwZeeland, " +
-        "H11=Spanje vs Kaapverdie, H21=SaoediArabie vs Uruguay, " +
-        "I11=Frankrijk vs Senegal, I21=Irak vs Noorwegen, " +
-        "J11=Argentinie vs Algerije, J21=Oostenrijk vs Jordanie, " +
-        "K11=Portugal vs DRCongo, K21=Oezbekistan vs Colombia, " +
-        "L11=Engeland vs Kroatie, L21=Ghana vs Panama. " +
-        "Only include played matches. If none return empty object.";
+      // ── PROMPT: scores + tijdslot + scorer + topscorers + rode kaarten ──
+      const matchList = "A11=Mexico-ZuidAfrika,A21=ZuidKorea-Tsjechie,B11=Canada-Bosnie,B21=Qatar-Zwitserland,C11=Brazilie-Marokko,C21=Haiti-Schotland,D11=VerStaten-Paraguay,D21=Australie-Turkije,E11=Duitsland-Curacao,E21=Ivoorkust-Ecuador,F11=Nederland-Japan,F21=Zweden-Tunesie,G11=Belgie-Egypte,G21=Iran-NieuwZeeland,H11=Spanje-Kaapverdie,H21=SaoediArabie-Uruguay,I11=Frankrijk-Senegal,I21=Irak-Noorwegen,J11=Argentinie-Algerije,J21=Oostenrijk-Jordanie,K11=Portugal-DRCongo,K21=Oezbekistan-Colombia,L11=Engeland-Kroatie,L21=Ghana-Panama";
+      const prompt =
+        "Search for FIFA World Cup 2026 latest official match results and statistics. " +
+        "Return ONLY valid JSON with this exact structure (no markdown, no explanation): " +
+        '{"scores":{"A11":{"h":2,"a":1},...},' +
+        '"details":{"A11":{"goalSlot":"15-30","firstScorer":"Mexico"},...},' +
+        '"topscorers":[{"name":"Mbappe","country":"Frankrijk","goals":3}],' +
+        '"redCards":8}. ' +
+        "For goalSlot use one of: 0-15, 15-30, 30-45, 45-60, 60-75, 75-90, 90plus, geen. " +
+        "For firstScorer use the team name that scored first, or 'Geen' if 0-0. " +
+        "Match IDs: " + matchList + ". " +
+        "Only include played matches in scores and details. " +
+        "For topscorers list top 10. For redCards give total number in tournament so far. " +
+        "If WK not started yet return empty scores object.";
+
       const res=await fetch("https://api.anthropic.com/v1/messages",{
         method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]})
+        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:2000,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]})
       });
       const data=await res.json();
-      const txt2=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
-      const m=txt2.match(/\{[\s\S]*?\}/);
-      if(m){const sc=JSON.parse(m[0]);if(Object.keys(sc).length>0){Object.assign(state.actualScores,sc);saveState();renderAdminScores();showToast("✅ "+Object.keys(sc).length+" scores!");}else showToast("⚽ Nog geen gespeeld (WK start 11 juni 2026)");}
-      else showToast("⚠️ Geen data");
+      const txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+      // Extract JSON from response
+      const jsonMatch=txt.match(/\{[\s\S]*\}/);
+      if(jsonMatch){
+        const parsed=JSON.parse(jsonMatch[0]);
+        let updated=0;
+        // ── Scores ──
+        if(parsed.scores&&Object.keys(parsed.scores).length>0){
+          Object.assign(state.actualScores, parsed.scores);
+          updated+=Object.keys(parsed.scores).length;
+        }
+        // ── Details: tijdslot + eerste scorer ──
+        if(parsed.details){
+          Object.entries(parsed.details).forEach(([mid,det])=>{
+            if(!state.actualScores[mid]) state.actualScores[mid]={};
+            if(det.goalSlot) state.actualScores[mid].goalSlot=det.goalSlot;
+            if(det.firstScorer) state.actualScores[mid].firstScorer=det.firstScorer;
+          });
+        }
+        // ── Topscorers ──
+        if(parsed.topscorers&&parsed.topscorers.length>0){
+          state.topscorers=parsed.topscorers;
+        }
+        // ── Rode kaarten ──
+        if(parsed.redCards!=null&&parsed.redCards>=0){
+          state.actualRedCardsTotal=parsed.redCards;
+        }
+        if(updated>0||parsed.topscorers?.length>0){
+          saveState();
+          renderAdminScores();
+          refreshKlassementIfVisible();
+          showToast("✅ "+updated+" scores · "+( parsed.topscorers?.length||0)+" topscorers · "+( parsed.redCards||0)+" rode kaarten");
+        } else {
+          showToast("⚽ Nog geen gespeeld (WK start 11 juni 2026)");
+        }
+      } else {
+        showToast("⚠️ Geen data ontvangen");
+      }
     }catch(err){showToast("❌ "+err.message);}
     syncBtn.innerHTML="🔄 Auto-sync via internet"; syncBtn.disabled=false;
   });
