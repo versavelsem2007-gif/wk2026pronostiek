@@ -977,7 +977,7 @@ function jokerUsedElsewhere(userName, matchId) {
 
 function calcMatchPtsBase(pred, actual) {
   const pts = state.pts;
-  if(!actual||actual.h===""||actual.a==="") return {total:0,bd:[]};
+  if(!actual||actual.h===undefined||actual.h===""||actual.h===null||actual.a===undefined||actual.a===""||actual.a===null) return {total:0,bd:[]};
   const ph=parseInt(pred?.h??""),pa=parseInt(pred?.a??""),ah=parseInt(actual.h),aa=parseInt(actual.a);
   if(isNaN(ph)||isNaN(pa)) return {total:0,bd:[]};
   const bd=[]; let total=0;
@@ -1296,6 +1296,8 @@ function setPred(mid, field, val) {
 function setSpecial(field, val) {
   if(!state.participants[currentUser]) return;
   state.participants[currentUser][field]=val;
+  clearTimeout(window._autoSaveTimer);
+  window._autoSaveTimer = setTimeout(()=>{ saveState(); }, 800);
 }
 
 // ══════════════════════════════════════════════════
