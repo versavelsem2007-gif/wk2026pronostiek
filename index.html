@@ -2629,7 +2629,7 @@ function renderKlassement(isAdminView=false) {
   });
   card.appendChild(leg);
   const medals=["🥇","🥈","🥉"];
-  const participants=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a));
+  const participants=Object.keys(state.participants).filter(n=>n!=="admin").sort((a,b)=>calcTotal(b)-calcTotal(a));
   if(participants.length===0){const p=div(""); p.style.cssText="color:var(--muted);font-size:.8rem"; p.textContent="Nog geen deelnemers."; card.appendChild(p);}
   participants.forEach((name,i)=>{
     const p=state.participants[name]||{};
@@ -2684,7 +2684,7 @@ function renderAdminEindoverzicht() {
   const card=div("card"); card.innerHTML="<div class='card-title'>🏆 Eindoverzicht alle spelers</div>";
   const hdr=div(""); hdr.style.cssText="display:grid;grid-template-columns:24px 1fr 48px 48px 48px 48px 48px;gap:5px;padding:5px 10px;font-size:.58rem;color:#6b82a8;text-transform:uppercase;letter-spacing:.4px";
   ["#","Naam","Punten","% Win","Exact","Streak","Joker+"].forEach(h=>{const c=div(""); c.textContent=h; c.style.textAlign=h==="Naam"?"left":"center"; hdr.appendChild(c);}); card.appendChild(hdr);
-  Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a)).forEach((name,i)=>{
+  Object.keys(state.participants).filter(n=>n!=="admin").sort((a,b)=>calcTotal(b)-calcTotal(a)).forEach((name,i)=>{
     const s=calcStats(name);
     const medals=["🥇","🥈","🥉"];
     let jokerBonus=0;
@@ -3151,7 +3151,7 @@ function renderStats() {
   if(!container) return;
   container.innerHTML="";
   const s=calcStats(currentUser);
-  const allPlayers=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a));
+  const allPlayers=Object.keys(state.participants).filter(n=>n!=="admin").sort((a,b)=>calcTotal(b)-calcTotal(a));
   const rank=allPlayers.indexOf(currentUser)+1;
   const myPts=calcTotal(currentUser);
   const leader=allPlayers[0];
@@ -3239,7 +3239,7 @@ function renderAdminStats() {
   const card=div("card"); card.innerHTML="<div class='card-title'>📊 Stats alle deelnemers</div>";
   const hdr=div(""); hdr.style.cssText="display:grid;grid-template-columns:24px 1fr 48px 48px 48px 48px;gap:6px;padding:6px 10px;font-size:.58rem;color:#6b82a8;text-transform:uppercase;letter-spacing:.4px";
   ["#","Naam","Punten","% Win","Exact","Streak"].forEach(h=>{const c=div(""); c.textContent=h; c.style.textAlign=h==="Naam"?"left":"center"; hdr.appendChild(c);}); card.appendChild(hdr);
-  Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a)).forEach((name,i)=>{
+  Object.keys(state.participants).filter(n=>n!=="admin").sort((a,b)=>calcTotal(b)-calcTotal(a)).forEach((name,i)=>{
     const s=calcStats(name);
     const medals=["🥇","🥈","🥉"];
     const row=div(""); row.style.cssText="display:grid;grid-template-columns:24px 1fr 48px 48px 48px 48px;gap:6px;align-items:center;padding:8px 10px;background:"+(i===0?"rgba(245,166,35,.05)":"#162038")+";border:1px solid "+(i===0?"rgba(245,166,35,.3)":"#1e3050")+";border-radius:9px;margin-bottom:5px;font-size:.72rem";
@@ -3256,7 +3256,7 @@ function renderAdminStats() {
 function showEindoverzicht() {
   const myStats=calcStats(currentUser);
   const myPts=calcTotal(currentUser);
-  const allPlayers=Object.keys(state.participants).sort((a,b)=>calcTotal(b)-calcTotal(a));
+  const allPlayers=Object.keys(state.participants).filter(n=>n!=="admin").sort((a,b)=>calcTotal(b)-calcTotal(a));
   const rank=allPlayers.indexOf(currentUser)+1;
   const leader=allPlayers[0];
   const p=state.participants[currentUser]||{};
