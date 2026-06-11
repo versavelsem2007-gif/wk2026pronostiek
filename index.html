@@ -848,12 +848,68 @@ function compressState(s) {
 function saveState() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
   clearTimeout(window._saveTimer);
-  window._saveTimer = setTimeout(()=>{
-    fetch(JSONBIN_URL, {
-      method: "PUT",
-      headers: {"Content-Type":"application/json","X-Master-Key":JSONBIN_KEY},
-      body: JSON.stringify(compressState(state))
-    }).catch(()=>{});
+  window._saveTimer = setTimeout(async ()=>{
+    try {
+      // Fetch latest server state first to avoid overwriting others
+      const res = await fetch(JSONBIN_URL, {
+        headers: {"X-Master-Key": JSONBIN_KEY, "X-Bin-Meta": "false"}
+      });
+      if(res.ok) {
+        const serverData = await res.json();
+        if(serverData && serverData.participants) {
+          // Merge: keep all other users' data from server, only update current user
+          const merged = {...serverData};
+          if(!merged.participants) merged.participants = {};
+          if(!merged.passwords) merged.passwords = {};
+          // Copy current user's latest data into server state
+          if(currentUser) {
+            merged.participants[currentUser] = state.participants[currentUser] || {};
+            if(state.passwords[currentUser]) merged.passwords[currentUser] = state.passwords[currentUser];
+          }
+          // Always update shared state (scores, specials results, settings)
+          merged.actualScores = state.actualScores;
+          merged.actualWinner = state.actualWinner;
+          merged.actualRunnerUp = state.actualRunnerUp;
+          merged.actualThird = state.actualThird;
+          merged.actualBelgiumRound = state.actualBelgiumRound;
+          merged.actualTopscorer = state.actualTopscorer;
+          merged.actualPlayerTournament = state.actualPlayerTournament;
+          merged.actualKeeperTournament = state.actualKeeperTournament;
+          merged.actualRedCards = state.actualRedCards;
+          merged.actualRedCardsTotal = state.actualRedCardsTotal;
+          merged.topscorers = state.topscorers;
+          merged.pts = state.pts;
+          merged.jokers = {...(serverData.jokers||{}), ...(state.jokers||{})};
+          merged.shownPopups = state.shownPopups;
+          merged.sdStatus = state.sdStatus;
+          merged.r32PredDone = {...(serverData.r32PredDone||{}), ...(state.r32PredDone||{})};
+          // Update local state with merged server participants
+          state.participants = merged.participants;
+          state.passwords = merged.passwords;
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+          // Save merged state to server
+          await fetch(JSONBIN_URL, {
+            method: "PUT",
+            headers: {"Content-Type":"application/json","X-Master-Key":JSONBIN_KEY},
+            body: JSON.stringify(compressState(merged))
+          });
+        } else {
+          // No existing data, just save
+          await fetch(JSONBIN_URL, {
+            method: "PUT",
+            headers: {"Content-Type":"application/json","X-Master-Key":JSONBIN_KEY},
+            body: JSON.stringify(compressState(state))
+          });
+        }
+      }
+    } catch(e) {
+      // Fallback: save directly
+      fetch(JSONBIN_URL, {
+        method: "PUT",
+        headers: {"Content-Type":"application/json","X-Master-Key":JSONBIN_KEY},
+        body: JSON.stringify(compressState(state))
+      }).catch(()=>{});
+    }
   }, 1500);
 }
 // JSONBin config
