@@ -770,6 +770,7 @@ let state = {
 };
 // Extra specials deadline: SD1 start = 2026-06-11T21:00+02:00
 const SPECIALS_DEADLINE = new Date("2026-06-11T21:00+02:00");
+const BELGIUM_DEADLINE = new Date("2026-06-15T21:00+02:00");
 const R16_DEADLINE = new Date("2026-07-04T19:00+02:00");
 function specialsOpen(){ if(state.specialsOverrideOpen) return true; return new Date() < SPECIALS_DEADLINE; }
 function r16PredOpen(){ return new Date() < R16_DEADLINE; }
@@ -1887,9 +1888,10 @@ function renderSpecials() {
     if(isOpen){
       const grid=div("team-grid");
       ALL_TEAMS.filter(t=>!exclude.includes(t)).forEach(t=>{
-        const btn=e("button",{class:"team-btn"+(p[field]===t?" sel":"")});
+        const btn=e("button",{class:"team-btn"+(p[field]===t?" sel":"")+(isOpen?"":" locked-btn")});
         btn.textContent=t;
-        btn.addEventListener("click",()=>{setSpecial(field,p[field]===t?"":t);renderSpecials();});
+        btn.disabled=!isOpen;
+        if(isOpen) btn.addEventListener("click",()=>{setSpecial(field,p[field]===t?"":t);renderSpecials();});
         grid.appendChild(btn);
       });
       wrap.appendChild(grid);
@@ -1959,11 +1961,19 @@ function renderSpecials() {
   belTitleRow.appendChild(belTtl); belTitleRow.appendChild(belPts); belWrap.appendChild(belTitleRow);
   if(p.belgiumRound){const cur=div(""); cur.style.cssText="background:rgba(245,166,35,.08);border:1px solid var(--gold);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:.8rem;display:flex;align-items:center;gap:8px"; cur.textContent="Jouw keuze: "; const b=e("strong",{}); b.style.color="var(--gold)"; b.textContent=p.belgiumRound; cur.appendChild(b); if(state.actualBelgiumRound&&p.belgiumRound===state.actualBelgiumRound){cur.appendChild(e("span",{class:"badge badge-correct"},"+"+state.pts.belgiumRound+" ✓"));}else if(state.actualBelgiumRound&&p.belgiumRound!==state.actualBelgiumRound){cur.appendChild(e("span",{class:"badge badge-wrong"},"✗"));} belWrap.appendChild(cur);}
   const roundBtns=div(""); roundBtns.style.cssText="display:flex;flex-wrap:wrap;gap:6px";
+  const belOpen = new Date() < BELGIUM_DEADLINE || state.specialsOverrideOpen;
   KO_ROUNDS.forEach(r=>{
-    const btn=e("button",{class:"round-btn"+(p.belgiumRound===r?" sel":"")});
-    btn.textContent=r; btn.addEventListener("click",()=>{setSpecial("belgiumRound",p.belgiumRound===r?"":r);renderSpecials();});
+    const btn=e("button",{class:"round-btn"+(p.belgiumRound===r?" sel":"")+(belOpen?"":" locked-btn")});
+    btn.textContent=r;
+    btn.disabled=!belOpen;
+    if(belOpen) btn.addEventListener("click",()=>{setSpecial("belgiumRound",p.belgiumRound===r?"":r);renderSpecials();});
     roundBtns.appendChild(btn);
   });
+  if(!belOpen){
+    const lck=div(""); lck.style.cssText="font-size:.65rem;color:var(--muted);margin-top:5px;text-align:center";
+    lck.textContent="🔒 Deadline verstreken — voorspelling vergrendeld";
+    roundBtns.after ? roundBtns.insertAdjacentElement('afterend', lck) : belWrap.appendChild(lck);
+  }
   belWrap.appendChild(roundBtns); card.appendChild(belWrap);
 
   // R32 re-prediction - always shown, locked until July 2
@@ -2167,66 +2177,70 @@ function renderAdminScores() {
   syncBtn.addEventListener("click",async()=>{
     syncBtn.innerHTML='<span class="spinner"></span> Bezig…'; syncBtn.disabled=true;
     try{
-      // ── PROMPT: scores + tijdslot + scorer + topscorers + rode kaarten ──
-      const matchList = "A11=Mexico-ZuidAfrika,A21=ZuidKorea-Tsjechie,B11=Canada-Bosnie,B21=Qatar-Zwitserland,C11=Brazilie-Marokko,C21=Haiti-Schotland,D11=VerStaten-Paraguay,D21=Australie-Turkije,E11=Duitsland-Curacao,E21=Ivoorkust-Ecuador,F11=Nederland-Japan,F21=Zweden-Tunesie,G11=Belgie-Egypte,G21=Iran-NieuwZeeland,H11=Spanje-Kaapverdie,H21=SaoediArabie-Uruguay,I11=Frankrijk-Senegal,I21=Irak-Noorwegen,J11=Argentinie-Algerije,J21=Oostenrijk-Jordanie,K11=Portugal-DRCongo,K21=Oezbekistan-Colombia,L11=Engeland-Kroatie,L21=Ghana-Panama";
       const prompt =
-        "Search for FIFA World Cup 2026 latest official match results and statistics. " +
-        "Return ONLY valid JSON with this exact structure (no markdown, no explanation): " +
-        '{"scores":{"A11":{"h":2,"a":1},...},' +
-        '"details":{"A11":{"goalSlot":"15-30","firstScorer":"Mexico"},...},' +
-        '"topscorers":[{"name":"Mbappe","country":"Frankrijk","goals":3}],' +
-        '"redCards":8}. ' +
-        "For goalSlot use one of: 0-15, 15-30, 30-45, 45-60, 60-75, 75-90, 90plus, geen. " +
-        "For firstScorer use the team name that scored first, or 'Geen' if 0-0. " +
-        "Match IDs: " + matchList + ". " +
-        "Only include played matches in scores and details. " +
-        "For topscorers list top 10. For redCards give total number in tournament so far. " +
-        "If WK not started yet return empty scores object.";
+        "Search the web for FIFA World Cup 2026 match results today and recent days. " +
+        "Return ONLY a valid JSON object, no markdown, no explanation, no backticks. " +
+        "Structure: {\"scores\":{\"MATCHID\":{\"h\":HOMESCORE,\"a\":AWAYSCORE,\"goalSlot\":\"SLOT\",\"firstScorer\":\"TEAM\"},...},\"topscorers\":[{\"name\":\"NAME\",\"country\":\"COUNTRY\",\"goals\":N},...],\"redCards\":N} " +
+        "For goalSlot use: 0-15, 15-30, 30-45, 45-60, 60-75, 75-90, 90plus, or geen. " +
+        "For firstScorer use the team name that scored first, or Geen if 0-0. " +
+        "Match IDs and teams: " +
+        "A11=Mexico-ZuidAfrika, A21=ZuidKorea-Tsjechiee, B11=Canada-Bosnie, B21=Qatar-Zwitserland, " +
+        "C11=Brazilie-Marokko, C21=Haiti-Schotland, D11=VerenStaten-Paraguay, D21=Australie-Turkije, " +
+        "E11=Duitsland-Curacao, E21=Ivoorkust-Ecuador, F11=Nederland-Japan, F21=Zweden-Tunesie, " +
+        "G11=Belgie-Egypte, G21=Iran-NieuwZeeland, H11=Spanje-Kaapverdie, H21=SaoediArabie-Uruguay, " +
+        "I11=Frankrijk-Senegal, I21=Irak-Noorwegen, J11=Argentinie-Algerije, J21=Oostenrijk-Jordanie, " +
+        "K11=Portugal-DRCongo, K21=Oezbekistan-Colombia, L11=Engeland-Kroatie, L21=Ghana-Panama, " +
+        "A31=Mexico-ZuidKorea, A41=Tsjechiee-ZuidAfrika, B31=Canada-Qatar, B41=Zwitserland-Bosnie, " +
+        "C31=Brazilie-Haiti, C41=Schotland-Marokko, D31=VerenStaten-Australie, D41=Turkije-Paraguay, " +
+        "E31=Duitsland-Ivoorkust, E41=Ecuador-Curacao, F31=Nederland-Zweden, F41=Tunesie-Japan, " +
+        "G31=Belgie-Iran, G41=NieuwZeeland-Egypte, H31=Spanje-SaoediArabie, H41=Uruguay-Kaapverdie, " +
+        "I31=Frankrijk-Irak, I41=Noorwegen-Senegal, J31=Argentinie-Oostenrijk, J41=Jordanie-Algerije, " +
+        "K31=Portugal-Oezbekistan, K41=Colombia-DRCongo, L31=Panama-Kroatie, L41=Engeland-Ghana. " +
+        "Only include matches that have been played. List top 10 topscorers. Give total red cards in tournament.";
 
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:2000,tools:[{type:"web_search_20250305",name:"web_search"}],messages:[{role:"user",content:prompt}]})
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 2000,
+          tools: [{type:"web_search_20250305",name:"web_search"}],
+          messages: [{role:"user",content:prompt}]
+        })
       });
-      const data=await res.json();
-      const txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
-      // Extract JSON from response
-      const jsonMatch=txt.match(/\{[\s\S]*\}/);
+      const data = await res.json();
+      const txt = (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+      // Extract JSON
+      const jsonMatch = txt.match(/\{[\s\S]*\}/);
       if(jsonMatch){
-        const parsed=JSON.parse(jsonMatch[0]);
-        let updated=0;
-        // ── Scores ──
-        if(parsed.scores&&Object.keys(parsed.scores).length>0){
-          Object.assign(state.actualScores, parsed.scores);
-          updated+=Object.keys(parsed.scores).length;
-        }
-        // ── Details: tijdslot + eerste scorer ──
-        if(parsed.details){
-          Object.entries(parsed.details).forEach(([mid,det])=>{
-            if(!state.actualScores[mid]) state.actualScores[mid]={};
-            if(det.goalSlot) state.actualScores[mid].goalSlot=det.goalSlot;
-            if(det.firstScorer) state.actualScores[mid].firstScorer=det.firstScorer;
+        const parsed = JSON.parse(jsonMatch[0]);
+        let updatedScores = 0;
+        if(parsed.scores){
+          Object.entries(parsed.scores).forEach(([mid,sc])=>{
+            if(sc.h!==undefined && sc.a!==undefined){
+              if(!state.actualScores[mid]) state.actualScores[mid]={};
+              state.actualScores[mid].h = sc.h;
+              state.actualScores[mid].a = sc.a;
+              if(sc.goalSlot) state.actualScores[mid].goalSlot = sc.goalSlot;
+              if(sc.firstScorer) state.actualScores[mid].firstScorer = sc.firstScorer;
+              updatedScores++;
+            }
           });
         }
-        // ── Topscorers ──
-        if(parsed.topscorers&&parsed.topscorers.length>0){
-          state.topscorers=parsed.topscorers;
-        }
-        // ── Rode kaarten ──
-        if(parsed.redCards!=null&&parsed.redCards>=0){
-          state.actualRedCardsTotal=parsed.redCards;
-        }
-        if(updated>0||parsed.topscorers?.length>0){
-          saveState();
-          renderAdminScores();
-          refreshKlassementIfVisible();
-          showToast("✅ "+updated+" scores · "+( parsed.topscorers?.length||0)+" topscorers · "+( parsed.redCards||0)+" rode kaarten");
-        } else {
-          showToast("⚽ Nog geen gespeeld (WK start 11 juni 2026)");
-        }
+        if(parsed.topscorers&&parsed.topscorers.length>0) state.topscorers = parsed.topscorers;
+        if(parsed.redCards!=null) state.actualRedCardsTotal = parsed.redCards;
+        saveState();
+        renderAdminScores();
+        refreshKlassementIfVisible();
+        showToast("✅ "+updatedScores+" scores · "+(parsed.topscorers?.length||0)+" topscorers · "+(parsed.redCards||0)+" rode kaarten");
       } else {
-        showToast("⚠️ Geen data ontvangen");
+        showToast("⚠️ Geen geldige data ontvangen — probeer opnieuw");
+        console.log("Sync response:", txt.substring(0,500));
       }
-    }catch(err){showToast("❌ "+err.message);}
+    } catch(err){
+      showToast("❌ Sync fout: "+err.message);
+      console.error("Sync error:", err);
+    }
     syncBtn.innerHTML="🔄 Auto-sync via internet"; syncBtn.disabled=false;
   });
   const syncLbl=e("span",{style:"font-size:.66rem;color:var(--muted)"},"Haalt officiële WK-scores op");
