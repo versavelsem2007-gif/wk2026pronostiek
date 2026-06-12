@@ -2177,65 +2177,70 @@ function renderAdminScores() {
   syncBtn.addEventListener("click",async()=>{
     syncBtn.innerHTML='<span class="spinner"></span> Bezig…'; syncBtn.disabled=true;
     try{
-      const prompt =
-        "Search the web for FIFA World Cup 2026 match results today and recent days. " +
-        "Return ONLY a valid JSON object, no markdown, no explanation, no backticks. " +
-        "Structure: {\"scores\":{\"MATCHID\":{\"h\":HOMESCORE,\"a\":AWAYSCORE,\"goalSlot\":\"SLOT\",\"firstScorer\":\"TEAM\"},...},\"topscorers\":[{\"name\":\"NAME\",\"country\":\"COUNTRY\",\"goals\":N},...],\"redCards\":N} " +
-        "For goalSlot use: 0-15, 15-30, 30-45, 45-60, 60-75, 75-90, 90plus, or geen. " +
-        "For firstScorer use the team name that scored first, or Geen if 0-0. " +
-        "Match IDs and teams: " +
-        "A11=Mexico-ZuidAfrika, A21=ZuidKorea-Tsjechiee, B11=Canada-Bosnie, B21=Qatar-Zwitserland, " +
-        "C11=Brazilie-Marokko, C21=Haiti-Schotland, D11=VerenStaten-Paraguay, D21=Australie-Turkije, " +
-        "E11=Duitsland-Curacao, E21=Ivoorkust-Ecuador, F11=Nederland-Japan, F21=Zweden-Tunesie, " +
-        "G11=Belgie-Egypte, G21=Iran-NieuwZeeland, H11=Spanje-Kaapverdie, H21=SaoediArabie-Uruguay, " +
-        "I11=Frankrijk-Senegal, I21=Irak-Noorwegen, J11=Argentinie-Algerije, J21=Oostenrijk-Jordanie, " +
-        "K11=Portugal-DRCongo, K21=Oezbekistan-Colombia, L11=Engeland-Kroatie, L21=Ghana-Panama, " +
-        "A31=Mexico-ZuidKorea, A41=Tsjechiee-ZuidAfrika, B31=Canada-Qatar, B41=Zwitserland-Bosnie, " +
-        "C31=Brazilie-Haiti, C41=Schotland-Marokko, D31=VerenStaten-Australie, D41=Turkije-Paraguay, " +
-        "E31=Duitsland-Ivoorkust, E41=Ecuador-Curacao, F31=Nederland-Zweden, F41=Tunesie-Japan, " +
-        "G31=Belgie-Iran, G41=NieuwZeeland-Egypte, H31=Spanje-SaoediArabie, H41=Uruguay-Kaapverdie, " +
-        "I31=Frankrijk-Irak, I41=Noorwegen-Senegal, J31=Argentinie-Oostenrijk, J41=Jordanie-Algerije, " +
-        "K31=Portugal-Oezbekistan, K41=Colombia-DRCongo, L31=Panama-Kroatie, L41=Engeland-Ghana. " +
-        "Only include matches that have been played. List top 10 topscorers. Give total red cards in tournament.";
+      // TheSportsDB - free, CORS-friendly, no API key needed
+      // Fetch all FIFA World Cup 2026 events
+      const resp = await fetch("https://www.thesportsdb.com/api/v1/json/3/eventsseason.php?id=4328&s=2026-27");
+      const data = await resp.json();
 
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 2000,
-          tools: [{type:"web_search_20250305",name:"web_search"}],
-          messages: [{role:"user",content:prompt}]
-        })
-      });
-      const data = await res.json();
-      const txt = (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
-      // Extract JSON
-      const jsonMatch = txt.match(/\{[\s\S]*\}/);
-      if(jsonMatch){
-        const parsed = JSON.parse(jsonMatch[0]);
-        let updatedScores = 0;
-        if(parsed.scores){
-          Object.entries(parsed.scores).forEach(([mid,sc])=>{
-            if(sc.h!==undefined && sc.a!==undefined){
-              if(!state.actualScores[mid]) state.actualScores[mid]={};
-              state.actualScores[mid].h = sc.h;
-              state.actualScores[mid].a = sc.a;
-              if(sc.goalSlot) state.actualScores[mid].goalSlot = sc.goalSlot;
-              if(sc.firstScorer) state.actualScores[mid].firstScorer = sc.firstScorer;
-              updatedScores++;
-            }
-          });
+      if(!data || !data.events || data.events.length === 0) {
+        // Try alternative endpoint
+        const resp2 = await fetch("https://www.thesportsdb.com/api/v1/json/3/searchevents.php?e=FIFA+World+Cup&s=Soccer");
+        const data2 = await resp2.json();
+        if(!data2 || !data2.event) throw new Error("Geen data gevonden");
+      }
+
+      const events = data.events || [];
+      // Map team names to our match IDs
+      const teamMap = {
+        "Mexico":"México","South Africa":"Zuid-Afrika","South Korea":"Zuid-Korea",
+        "Czech Republic":"Tsjechië","Czechia":"Tsjechië","Canada":"Canada",
+        "Bosnia":"Bosnië-Herz.","Bosnia and Herzegovina":"Bosnië-Herz.",
+        "Qatar":"Qatar","Switzerland":"Zwitserland","Brazil":"Brazilië",
+        "Morocco":"Marokko","Haiti":"Haïti","Scotland":"Schotland",
+        "United States":"Ver. Staten","USA":"Ver. Staten","Paraguay":"Paraguay",
+        "Australia":"Australië","Turkey":"Turkije","Germany":"Duitsland",
+        "Curacao":"Curaçao","Ivory Coast":"Ivoorkust","Ecuador":"Ecuador",
+        "Netherlands":"Nederland","Japan":"Japan","Sweden":"Zweden",
+        "Tunisia":"Tunesië","Spain":"Spanje","Cape Verde":"Kaapverdië",
+        "Saudi Arabia":"Saoedi-Arabië","Belgium":"België","Egypt":"Egypte",
+        "Iran":"Iran","New Zealand":"Nieuw-Zeeland","France":"Frankrijk",
+        "Senegal":"Senegal","Iraq":"Irak","Norway":"Noorwegen",
+        "Argentina":"Argentinië","Algeria":"Algerije","Austria":"Oostenrijk",
+        "Jordan":"Jordanië","Portugal":"Portugal","DR Congo":"DR Congo",
+        "Uzbekistan":"Oezbekistan","Colombia":"Colombia","England":"Engeland",
+        "Croatia":"Kroatië","Ghana":"Ghana","Panama":"Panama","Uruguay":"Uruguay"
+      };
+
+      let updated = 0;
+      const allMatches = SPEELDAGEN.flatMap(sd=>sd.matches);
+
+      events.forEach(ev=>{
+        if(!ev.intHomeScore || ev.intHomeScore === "" || ev.intHomeScore === null) return;
+        const home = teamMap[ev.strHomeTeam] || ev.strHomeTeam;
+        const away = teamMap[ev.strAwayTeam] || ev.strAwayTeam;
+        // Find matching match
+        const match = allMatches.find(m=>
+          (m.t1===home && m.t2===away) || (m.t1===away && m.t2===home)
+        );
+        if(match) {
+          const h = m.t1===home ? parseInt(ev.intHomeScore) : parseInt(ev.intAwayScore);
+          const a = m.t1===home ? parseInt(ev.intAwayScore) : parseInt(ev.intHomeScore);
+          if(!isNaN(h) && !isNaN(a)) {
+            if(!state.actualScores[match.id]) state.actualScores[match.id]={};
+            state.actualScores[match.id].h = h;
+            state.actualScores[match.id].a = a;
+            updated++;
+          }
         }
-        if(parsed.topscorers&&parsed.topscorers.length>0) state.topscorers = parsed.topscorers;
-        if(parsed.redCards!=null) state.actualRedCardsTotal = parsed.redCards;
+      });
+
+      if(updated > 0) {
         saveState();
         renderAdminScores();
         refreshKlassementIfVisible();
-        showToast("✅ "+updatedScores+" scores · "+(parsed.topscorers?.length||0)+" topscorers · "+(parsed.redCards||0)+" rode kaarten");
+        showToast("✅ "+updated+" scores bijgewerkt!");
       } else {
-        showToast("⚠️ Geen geldige data ontvangen — probeer opnieuw");
-        console.log("Sync response:", txt.substring(0,500));
+        showToast("⚽ Nog geen nieuwe uitslagen gevonden");
       }
     } catch(err){
       showToast("❌ Sync fout: "+err.message);
@@ -2265,7 +2270,7 @@ function renderAdminScores() {
   const rcAdminRow=div(""); rcAdminRow.style.cssText="margin-bottom:10px";
   const rcAdminLbl=e("label",{class:"lbl"},"🟥 Aantal rode kaarten (totaal toernooi)");
   const rcAdminInp=e("input",{type:"number",min:"0",max:"200",class:"inp",value:state.actualRedCards!==undefined&&state.actualRedCards!==""?state.actualRedCards:"",placeholder:"Vul het totaal in, bv. 12",style:"max-width:200px;margin-bottom:0"});
-  rcAdminInp.addEventListener("input",ev=>{state.actualRedCards=ev.target.value===""?"":parseInt(ev.target.value);saveState();refreshKlassementIfVisible();});
+  rcAdminInp.addEventListener("input",ev=>{state.actualRedCards=ev.target.value===""?"":parseInt(ev.target.value);saveState();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
   rcAdminRow.appendChild(rcAdminLbl); rcAdminRow.appendChild(rcAdminInp); endCard.appendChild(rcAdminRow);
   // Manual open/close for tournament specials deadline
   const specRow=div(""); specRow.style.cssText="margin-bottom:14px;padding:12px 14px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:9px;";
@@ -2319,10 +2324,10 @@ function renderAdminMatch(match) {
   const scoreRow=div(""); scoreRow.style.cssText="display:grid;grid-template-columns:1fr 34px 10px 34px 1fr;align-items:center;gap:4px;margin-bottom:7px";
   const t1=span("",match.t1); t1.style.cssText="font-size:.74rem;font-weight:600";
   const hIn=e("input",{type:"number",min:"0",max:"30",class:"score-inp admin-inp",value:actual.h||""});
-  hIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].h=ev.target.value;saveState();refreshKlassementIfVisible();});
+  hIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].h=ev.target.value;saveState();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
   const vs=span("vsep","–");
   const aIn=e("input",{type:"number",min:"0",max:"30",class:"score-inp admin-inp",value:actual.a||""});
-  aIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].a=ev.target.value;saveState();renderAdminScores();refreshKlassementIfVisible();});
+  aIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].a=ev.target.value;saveState();renderAdminScores();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
   const t2=span("",match.t2); t2.style.cssText="font-size:.74rem;font-weight:600;text-align:right";
   scoreRow.append(t1,hIn,vs,aIn,t2);
   const extras=div("extra-row");
@@ -2331,7 +2336,7 @@ function renderAdminMatch(match) {
     const pkRow=div(""); pkRow.style.cssText="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 8px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:7px";
     const pkLbl=div(""); pkLbl.style.cssText="font-size:.7rem;color:#a855f7;font-weight:600;flex:1"; pkLbl.textContent="⚡ Naar penalty's?";
     const pkChk=e("input",{type:"checkbox"}); pkChk.style.cssText="width:16px;height:16px;cursor:pointer"; pkChk.checked=!!actual.pk;
-    pkChk.addEventListener("change",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].pk=ev.target.checked;saveState();refreshKlassementIfVisible();});
+    pkChk.addEventListener("change",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].pk=ev.target.checked;saveState();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
     pkRow.appendChild(pkLbl); pkRow.appendChild(pkChk); extras.appendChild(pkRow);
   }
   const gsDiv=div(""); gsDiv.style.cssText="flex:1 1 165px";
@@ -2339,7 +2344,7 @@ function renderAdminMatch(match) {
   const gsChips=div("chips");
   NORMAL_SLOTS.forEach((lbl,i)=>{
     const c=e("button",{class:"chip chip-accent chip-sm"+(actual.goalSlot===NORMAL_KEYS[i]?" sel":"")});
-    c.textContent=lbl; c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].goalSlot=actual.goalSlot===NORMAL_KEYS[i]?"":NORMAL_KEYS[i];saveState();renderAdminScores();refreshKlassementIfVisible();});
+    c.textContent=lbl; c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].goalSlot=actual.goalSlot===NORMAL_KEYS[i]?"":NORMAL_KEYS[i];saveState();renderAdminScores();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
     gsChips.appendChild(c);
   });
   gsDiv.appendChild(gsLbl); gsDiv.appendChild(gsChips); extras.appendChild(gsDiv);
@@ -3123,18 +3128,21 @@ setInterval(()=>{
 function calcStats(name) {
   const p=state.participants[name]||{};
   const preds=p.predictions||{};
-  let total=0,filled=0,correctWinner=0,exactScore=0,correctSlot=0,correctScorer=0;
+  let total=0,filled=0,played=0,correctWinner=0,exactScore=0,correctSlot=0,correctScorer=0;
   let bestDayPts=0,bestMatchPts=0,bestMatchName="",streak=0,maxStreak=0,bestDayLabel="";
   SPEELDAGEN.forEach(sd=>{
     let sdPts=0;
     sd.matches.forEach(m=>{
       const pred=preds[m.id]||{};
       const actual=state.actualScores[m.id]||{};
-      if(pred.h===undefined||pred.h==="") return;
-      filled++;
+      // Count filled predictions
+      if(pred.h!==undefined&&pred.h!=="") filled++;
+      // Only count stats for played matches (with real result)
       const ah=parseInt(actual.h),aa=parseInt(actual.a);
+      if(isNaN(ah)||isNaN(aa)) return;
+      played++; // match has been played
       const ph=parseInt(pred.h),pa=parseInt(pred.a);
-      if(isNaN(ah)||isNaN(aa)||isNaN(ph)||isNaN(pa)) return;
+      if(isNaN(ph)||isNaN(pa)) return;
       const res=calcMatchPts(pred,actual,m.id,name);
       total+=res.total; sdPts+=res.total;
       if(ph===ah&&pa===aa) exactScore++;
@@ -3147,12 +3155,12 @@ function calcStats(name) {
     if(sdPts>bestDayPts){bestDayPts=sdPts;bestDayLabel=sd.label;}
   });
   return {
-    total,filled,
-    pctWinner:filled>0?Math.round(correctWinner/filled*100):0,
-    pctExact:filled>0?Math.round(exactScore/filled*100):0,
-    pctSlot:filled>0?Math.round(correctSlot/filled*100):0,
-    pctScorer:filled>0?Math.round(correctScorer/filled*100):0,
-    avgPerMatch:filled>0?Math.round(total/filled*10)/10:0,
+    total,filled,played,
+    pctWinner:played>0?Math.round(correctWinner/played*100):0,
+    pctExact:played>0?Math.round(exactScore/played*100):0,
+    pctSlot:played>0?Math.round(correctSlot/played*100):0,
+    pctScorer:played>0?Math.round(correctScorer/played*100):0,
+    avgPerMatch:played>0?Math.round(total/played*10)/10:0,
     bestDayPts,bestDayLabel,bestMatchPts,bestMatchName,maxStreak
   };
 }
@@ -3207,7 +3215,7 @@ function renderStats() {
   const sg3=div(""); sg3.style.cssText="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px";
   function mkStat(num,lbl,color){const b=div(""); b.style.cssText="background:#162038;border:1px solid #1e3050;border-radius:9px;padding:9px 10px;text-align:center";const n=div(""); n.style.cssText="font-family:'Bebas Neue',cursive;font-size:1.8rem;line-height:1;margin-bottom:2px;color:"+color; n.textContent=num;const l=div(""); l.style.cssText="font-size:.58rem;color:#6b82a8;text-transform:uppercase;letter-spacing:.4px"; l.textContent=lbl;b.append(n,l);return b;}
   sg2.append(mkStat(myPts,"Totaal punten","#FFD700"),mkStat(s.pctWinner+"%","Juiste winnaars","#00C8FF"));
-  sg3.append(mkStat(s.pctExact+"%","Exacte scores","#22c55e"),mkStat(s.avgPerMatch,"Gem./match","#f97316"),mkStat(s.filled,"Ingevuld","#a855f7"));
+  sg3.append(mkStat(s.pctExact+"%","Exacte scores","#22c55e"),mkStat(s.avgPerMatch,"Gem./match","#f97316"),mkStat(s.played,"Gespeeld","#a855f7"));
   genCard.append(sg2,sg3); container.appendChild(genCard);
 
   // Records
@@ -3406,6 +3414,13 @@ function checkAndShowStartupPopups(){
     state.shownPopups.push(eindKey);saveState();
     setTimeout(()=>showEindoverzicht(),600);
   }
+}
+
+function refreshKlassementIfVisible(){
+  const klassPage = document.getElementById("admin-page-klassement");
+  if(klassPage && klassPage.classList.contains("active")) renderKlassement(true);
+  const userKlass = document.getElementById("page-klassement");
+  if(userKlass && userKlass.classList.contains("active")) renderKlassement(false);
 }
 
 // Ensure functions are globally accessible
