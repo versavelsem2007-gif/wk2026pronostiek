@@ -994,7 +994,12 @@ function sdAutoOpen(sdId) {
   return today >= openDate;
 }
 
-function isLocked(mid) { const iso=MATCH_ISO[mid]; return iso ? new Date(iso)<=new Date() : false; }
+function isLocked(mid) { 
+  const iso=MATCH_ISO[mid]; 
+  if(!iso) return false;
+  // Add 30 second buffer to ensure lock happens at kickoff
+  return new Date(iso).getTime() <= (new Date().getTime() + 30000);
+}
 function matchEditable(mid) {
   const sd=SPEELDAGEN.find(s=>s.matches.some(m=>m.id===mid));
   if(!sd) return false;
@@ -1331,7 +1336,8 @@ function doAdminLogin() {
   } else { showToast("❌ Fout wachtwoord!"); }
 }
 function doLogout() {
-  savePreds();
+  // Save state without toast notification
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
   currentUser=""; isAdmin=false;
   showScreen("login");
 }
@@ -1359,6 +1365,8 @@ function savePreds() {
   updateBellBadge();
 }
 function setPred(mid, field, val) {
+  // Never save if match is locked
+  if(isLocked(mid)) { showToast("🔒 Match is al begonnen!"); return; }
   if(!state.participants[currentUser]) state.participants[currentUser]={predictions:{},winner:"",runnerUp:"",third:"",belgiumRound:""};
   if(!state.participants[currentUser].predictions[mid]) state.participants[currentUser].predictions[mid]={};
   state.participants[currentUser].predictions[mid][field]=val;
