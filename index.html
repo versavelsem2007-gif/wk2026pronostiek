@@ -882,7 +882,12 @@ function saveState() {
           merged.pts = state.pts;
           merged.jokers = {...(serverData.jokers||{}), ...(state.jokers||{})};
           merged.shownPopups = state.shownPopups;
-          merged.sdStatus = state.sdStatus;
+          // Keep most open sdStatus
+          const serverSd = serverData.sdStatus||{};
+          const localSd = state.sdStatus||{};
+          const mergedSd = {...serverSd};
+          Object.keys(localSd).forEach(k=>{ if(localSd[k]==="open") mergedSd[k]="open"; });
+          merged.sdStatus = mergedSd;
           merged.r32PredDone = {...(serverData.r32PredDone||{}), ...(state.r32PredDone||{})};
           // Update local state with merged server participants
           state.participants = merged.participants;
@@ -949,12 +954,18 @@ function loadState() {
     const s = localStorage.getItem(STORAGE_KEY);
     if (s) {
       const d = JSON.parse(s);
+      const prevSdStatus = state.sdStatus||{};
       state = {...state,...d};
       state.pts = {...DEFAULT_PTS,...(state.pts||{})};
       if(!state.shownPopups) state.shownPopups=[];
       if(!state.jokers) state.jokers={};
       if(!state.passwords) state.passwords={};
       if(!state.participants) state.participants={};
+      // Preserve manually opened rounds
+      if(!state.sdStatus) state.sdStatus={};
+      Object.keys(prevSdStatus).forEach(k=>{
+        if(prevSdStatus[k]==="open") state.sdStatus[k]="open";
+      });
     }
   } catch(e) {}
 
@@ -976,16 +987,22 @@ function loadState() {
 // ══════════════════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════════════════
+function sdAutoOpen(sdId) {
+  const openDate = SD_AUTO_OPEN[sdId];
+  if(!openDate) return true; // default open
+  const today = getTodayStr();
+  return today >= openDate;
+}
+
 function isLocked(mid) { const iso=MATCH_ISO[mid]; return iso ? new Date(iso)<=new Date() : false; }
 function matchEditable(mid) {
   const sd=SPEELDAGEN.find(s=>s.matches.some(m=>m.id===mid));
   if(!sd) return false;
-  const sdOpen = state.sdStatus[sd.id]==="open";
+  const sdOpen = state.sdStatus[sd.id]==="open" || sdAutoOpen(sd.id);
   if(!sdOpen) return false;
-  // If admin explicitly opened this speeldag, override time lock
-  const adminOverride = state.sdStatus[sd.id+"_override"]===true;
-  if(adminOverride) return true;
-  return !isLocked(mid);
+  // isLocked (kickoff time) always takes priority - can never edit after kickoff
+  if(isLocked(mid)) return false;
+  return true;
 }
 function myPreds() { return (state.participants[currentUser]||{}).predictions||{}; }
 function mySpecials() { const p=state.participants[currentUser]||{}; return {winner:p.winner||"",runnerUp:p.runnerUp||"",third:p.third||"",belgiumRound:p.belgiumRound||""}; }
@@ -2423,10 +2440,33 @@ function renderGroepen() {
   const b8grid=div(""); b8grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:7px";
   best8.forEach((t,i)=>{const bc=div(""); bc.style.cssText="background:var(--dark4);border:1px solid var(--green);border-radius:8px;padding:6px 8px";const n1=div(""); n1.style.cssText="font-size:.54rem;color:var(--muted)"; n1.textContent="#"+(i+1)+" ✅";const n2=div(""); n2.style.cssText="font-size:.76rem;font-weight:700"; n2.textContent=t.name;const n3=div(""); n3.style.cssText="font-size:.6rem;color:var(--gold)"; n3.textContent="Groep "+t.grp;const n4=div(""); n4.style.cssText="font-size:.58rem;color:var(--accent)"; n4.textContent=t.pts+"pt · "+(t.gd>0?"+":"")+t.gd;bc.append(n1,n2,n3,n4); b8grid.appendChild(bc);});
   card2.appendChild(b8grid); container.appendChild(card2);
-  const card3=div("card"); card3.innerHTML="<div class='card-title'>⚽ Ronde van 32 koppelingen</div>";
-  const r32grid=div(""); r32grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:5px";
-  R32_SLOTS.forEach(s=>{const row=div(""); row.style.cssText="background:var(--dark4);border:1px solid var(--border);border-radius:7px;padding:6px 9px;display:flex;align-items:center;gap:5px";const id=span("",s.id); id.style.cssText="font-size:.58rem;color:var(--gold);font-weight:700;min-width:24px";const t1=span("",r32res[s.id+"_t1"]||s.t1); t1.style.cssText="font-size:.68rem;font-weight:600;flex:1;text-align:right;color:var(--text)";const vs=span("","vs"); vs.style.cssText="font-size:.54rem;color:var(--muted)";const t2=span("",r32res[s.id+"_t2"]||s.t2); t2.style.cssText="font-size:.68rem;font-weight:600;flex:1;color:var(--text)";row.append(id,t1,vs,t2); r32grid.appendChild(row);});
-  card3.appendChild(r32grid); container.appendChild(card3);
+  const card3=div("card"); card3.innerHTML="<div class='card-title'>⚽ Ronde van 32 koppelingen</div><div style='font-size:.68rem;color:var(--muted);margin-bottom:10px'>Klik op een teamnaam om manueel aan te passen (voor beste derdes)</div>";
+  const r32grid=div(""); r32grid.style.cssText="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px";
+  if(!state.r32Overrides) state.r32Overrides={};
+  R32_SLOTS.forEach(s=>{
+    const row=div(""); row.style.cssText="background:var(--dark4);border:1px solid var(--border);border-radius:8px;padding:7px 9px";
+    const hdr=div(""); hdr.style.cssText="font-size:.58rem;color:var(--gold);font-weight:700;margin-bottom:5px"; hdr.textContent=s.id+" · "+MATCH_TIMES[s.id];
+    const teams=div(""); teams.style.cssText="display:flex;align-items:center;gap:5px";
+    ["t1","t2"].forEach((side,si)=>{
+      const key=s.id+"_"+side;
+      const current=state.r32Overrides[key]||r32res[key]||s[side];
+      const isPlaceholder=current.includes("Beste 3e")||current.includes("1e Groep")||current.includes("2e Groep");
+      const inp=e("input",{class:"inp",value:current,placeholder:"Teamnaam...",style:"flex:1;margin-bottom:0;font-size:.7rem;text-align:"+(si===0?"right":"left")+";border-color:"+(isPlaceholder?"var(--gold)":"var(--border)")});
+      inp.addEventListener("change",ev=>{
+        const val=ev.target.value.trim();
+        if(val) state.r32Overrides[key]=val;
+        else delete state.r32Overrides[key];
+        saveState(); renderAdminScores(); showToast("✅ "+s.id+" bijgewerkt!");
+      });
+      if(si===0) teams.appendChild(inp);
+      if(si===0){const vs=span("","vs"); vs.style.cssText="font-size:.54rem;color:var(--muted);flex-shrink:0"; teams.appendChild(vs);}
+      if(si===1) teams.appendChild(inp);
+    });
+    row.append(hdr,teams); r32grid.appendChild(row);
+  });
+  const clearBtn=e("button",{class:"btn",style:"margin-top:10px;border:1px solid var(--red);color:var(--red);background:transparent;font-size:.72rem"},"🗑 Overrides wissen");
+  clearBtn.addEventListener("click",()=>{state.r32Overrides={};saveState();renderAdminScores();showToast("Overrides gewist");});
+  card3.appendChild(r32grid); card3.appendChild(clearBtn); container.appendChild(card3);
 }
 
 
@@ -2733,7 +2773,7 @@ function countOpenTasks() {
   if(open&&!p.redCards&&p.redCards!==0)count++;
   const today=getTodayStr();
   SPEELDAGEN.forEach(sd=>{
-    if(state.sdStatus[sd.id]!=="open")return;
+    if(state.sdStatus[sd.id]!=="open" && !sdAutoOpen(sd.id))return;
     sd.matches.forEach(m=>{
       const iso=MATCH_ISO[m.id];if(!iso)return;
       const matchDate=new Date(iso).toISOString().split("T")[0];
@@ -3109,10 +3149,17 @@ setInterval(()=>{
   if(currentUser){
     loadFromServer(function(j){
       if(j&&j.data){
+        // Merge server data but preserve sdStatus if locally more open
+        const localSdStatus = state.sdStatus||{};
         state={...state,...j.data};
         state.pts={...DEFAULT_PTS,...(state.pts||{})};
         if(!state.shownPopups) state.shownPopups=[];
         if(!state.jokers) state.jokers={};
+        // Keep most open sdStatus between local and server
+        if(!state.sdStatus) state.sdStatus={};
+        Object.keys(localSdStatus).forEach(k=>{
+          if(localSdStatus[k]==="open") state.sdStatus[k]="open";
+        });
         try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
         renderCurrentView();
         updateHeaderPts();
@@ -3374,7 +3421,7 @@ function checkAndShowStartupPopups(){
 
   // 3. When R32 opens: knockout rules popup
   const koRulesKey="rules-ko:"+currentUser;
-  if(state.sdStatus["SD_R32"]==="open"&&!state.shownPopups.includes(koRulesKey)){
+  if((state.sdStatus["SD_R32"]==="open"||sdAutoOpen("SD_R32"))&&!state.shownPopups.includes(koRulesKey)){
     state.shownPopups.push(koRulesKey);saveState();
     setTimeout(()=>{document.getElementById("rules-ko-popup").style.display="flex";},400);
     return;
