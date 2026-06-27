@@ -848,6 +848,7 @@ function compressState(s) {
   c.jokers = s.jokers||{};
   c.topscorers = s.topscorers||[];
   c.actualRedCardsTotal = s.actualRedCardsTotal||0;
+  c.r32Overrides = s.r32Overrides||{};
   return c;
 }
 
@@ -1134,11 +1135,24 @@ function getBest8(standings){return Object.values(standings).map(s=>s[2]).filter
 
 function resolveR32() {
   const standings=computeStandings(); const out={};
+  const overrides=state.r32Overrides||{};
   const allDone=Object.keys(GROUPS).every(g=>GROUP_MATCHES[g].every((_,i)=>{const sc=state.actualScores[`${g}${i+1}1`];return sc&&sc.h!==""&&sc.a!==""}));
   const lbl=(v)=>{if(/^[12][A-L]$/.test(v))return(parseInt(v[0])===1?"1e":"2e")+" Groep "+v[1];if(v.startsWith("3rd:"))return"Beste 3e ("+v.replace("3rd:","").split("").join("/")+")";return v;};
-  if(!allDone){R32_SLOTS.forEach(s=>{out[s.id+"_t1"]=lbl(s.t1);out[s.id+"_t2"]=lbl(s.t2);});return out;}
+  R32_SLOTS.forEach(s=>{
+    if(overrides[s.id+"_t1"]) out[s.id+"_t1"]=overrides[s.id+"_t1"];
+    if(overrides[s.id+"_t2"]) out[s.id+"_t2"]=overrides[s.id+"_t2"];
+  });
+  if(!allDone){
+    R32_SLOTS.forEach(s=>{
+      if(!out[s.id+"_t1"]) out[s.id+"_t1"]=lbl(s.t1);
+      if(!out[s.id+"_t2"]) out[s.id+"_t2"]=lbl(s.t2);
+    });
+    return out;
+  }
   const best8=getBest8(standings);const used=new Set();
-  R32_SLOTS.forEach(slot=>{["t1","t2"].forEach(side=>{const v=slot[side];
+  R32_SLOTS.forEach(slot=>{["t1","t2"].forEach(side=>{
+    if(out[slot.id+"_"+side]) return;
+    const v=slot[side];
     if(/^[12][A-L]$/.test(v)){const r=parseInt(v[0])-1,g=v[1];out[slot.id+"_"+side]=standings[g]?.[r]?.name||v;}
     else if(v.startsWith("3rd:")){const al=v.replace("3rd:","").split("");const m=best8.find(t=>al.includes(t.grp)&&!used.has(t.name));if(m){used.add(m.name);out[slot.id+"_"+side]=m.name;}else out[slot.id+"_"+side]="Beste 3e ("+al.join("/")+")";}}); });
   return out;
@@ -1490,8 +1504,8 @@ function renderSpeeldagen() {
 
         if(!isDayCollapsed){
           dayMatches.forEach(m=>{
-            const t1=sd.knockout&&r32res[m.id+"_t1"]||m.t1;
-            const t2=sd.knockout&&r32res[m.id+"_t2"]||m.t2;
+            const t1=(sd.knockout&&r32res[m.id+"_t1"])||m.t1;
+            const t2=(sd.knockout&&r32res[m.id+"_t2"])||m.t2;
             const editable=sdOpen&&(state.sdStatus[sd.id+"_override"]===true||!isLocked(m.id));
             body.appendChild(renderMatchCard({...m,t1,t2}, editable, !!m.knockout));
           });
@@ -1605,32 +1619,23 @@ function renderMatchCard(match, editable, isKO) {
   if(isKO&&(editable||pred.et||pred.pkWinner)){
     const koRow=div("extra-row"+(editable?"":" locked-row"));
 
-    // ET
-    const etDiv=div(""); etDiv.style.cssText="flex:1 1 160px";
-    const etLbl=div("extra-label"); etLbl.textContent="⏱ Verlenging?";
-    const etChips=div("chips");
-    ["Nee","Ja"].forEach(v=>{
-      const c=e("button",{class:"chip chip-purple"+(pred.et===v?" sel":""),disabled:!editable});
-      c.textContent=v;
-      if(editable) c.addEventListener("click",()=>{setPred(match.id,"et",pred.et===v?"":v); refreshMatchCard(match,editable,isKO,card);});
-      etChips.appendChild(c);
-    });
-    etDiv.appendChild(etLbl); etDiv.appendChild(etChips);
-    if(pred.et==="Ja"){
-      const etGsLbl=div("extra-label"); etGsLbl.style.marginTop="5px"; etGsLbl.textContent="⏱ Eerste goal verlengingen";
+    // ET - tijdsintervallen incl. verlengingen, alles in 1 lijst (enkel zichtbaar bij gelijkspel)
+    const etDiv=div(""); etDiv.style.cssText="flex:1 1 220px";
+    if(isDrawPred){
+      const etGsLbl=div("extra-label"); etGsLbl.textContent="⏱ Eerste goal verlengingen (bij gelijkspel na 90')";
       const etGsChips=div("chips");
       ET_SLOTS.forEach((lbl,i)=>{
         const c=e("button",{class:"chip chip-purple"+(pred.etGoalSlot===ET_KEYS[i]?" sel":""),disabled:!editable});
         c.textContent=lbl;
-        if(editable) c.addEventListener("click",()=>{setPred(match.id,"etGoalSlot",pred.etGoalSlot===ET_KEYS[i]?"":ET_KEYS[i]); refreshMatchCard(match,editable,isKO,card);});
+        if(editable) c.addEventListener("click",()=>{setPred(match.id,"etGoalSlot",pred.etGoalSlot===ET_KEYS[i]?"":ET_KEYS[i]); setPred(match.id,"et",pred.etGoalSlot===ET_KEYS[i]?"":"Ja"); refreshMatchCard(match,editable,isKO,card);});
         etGsChips.appendChild(c);
       });
       etDiv.appendChild(etGsLbl); etDiv.appendChild(etGsChips);
+      koRow.appendChild(etDiv);
     }
-    koRow.appendChild(etDiv);
 
     // PK
-    if(isDrawPred||pred.et==="Ja"){
+    if(isDrawPred){
       const pkDiv=div(""); pkDiv.style.cssText="flex:1 1 150px";
       const pkLbl=div("extra-label"); pkLbl.style.color="var(--orange)"; pkLbl.textContent="🎯 Winnaar penalty's";
       const pkChips=div("chips");
