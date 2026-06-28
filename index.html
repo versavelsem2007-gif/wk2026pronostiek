@@ -895,6 +895,8 @@ function saveState() {
           Object.keys(localSd).forEach(k=>{ if(localSd[k]==="open") mergedSd[k]="open"; });
           merged.sdStatus = mergedSd;
           merged.r32PredDone = {...(serverData.r32PredDone||{}), ...(state.r32PredDone||{})};
+          merged.r32Overrides = {...(serverData.r32Overrides||{}), ...(state.r32Overrides||{})};
+          state.r32Overrides = merged.r32Overrides;
           // Update local state with merged server participants
           state.participants = merged.participants;
           state.passwords = merged.passwords;
@@ -978,12 +980,26 @@ function loadState() {
   // Then try to sync from server in background
   loadFromServer(function(j){
     if(j&&j.data){
+      const localR32Overrides = state.r32Overrides||{};
+      const localSdStatus = state.sdStatus||{};
+      const localActualScores = state.actualScores||{};
       state={...state,...j.data};
       state.pts={...DEFAULT_PTS,...(state.pts||{})};
       if(!state.shownPopups) state.shownPopups=[];
       if(!state.jokers) state.jokers={};
       if(!state.passwords) state.passwords={};
       if(!state.participants) state.participants={};
+      // Merge r32Overrides - never lose local admin edits
+      if(!state.r32Overrides) state.r32Overrides={};
+      state.r32Overrides = {...state.r32Overrides, ...localR32Overrides};
+      // Merge sdStatus - keep most open
+      if(!state.sdStatus) state.sdStatus={};
+      Object.keys(localSdStatus).forEach(k=>{ if(localSdStatus[k]==="open") state.sdStatus[k]="open"; });
+      // Merge actualScores - keep any local scores not yet confirmed by server
+      if(!state.actualScores) state.actualScores={};
+      Object.keys(localActualScores).forEach(mid=>{
+        if(!state.actualScores[mid] && localActualScores[mid]) state.actualScores[mid]=localActualScores[mid];
+      });
       try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
       if(currentUser) renderCurrentView();
     }
@@ -1585,14 +1601,17 @@ function renderMatchCard(match, editable, isKO) {
   } else {
     const extras=div("extra-row"+(editable?"":" locked-row"));
 
-    // Goal slot
-    const gsDiv=div(""); gsDiv.style.cssText="flex:1 1 180px";
-    const gsLbl=div("extra-label"); gsLbl.textContent="⏱ Tijdslot eerste goal";
+    // Goal slot - voor knockout incl. verlengingsloten, alles in 1 lijst
+    const gsDiv=div(""); gsDiv.style.cssText="flex:1 1 240px";
+    const gsLbl=div("extra-label"); gsLbl.textContent="⏱ Tijdslot eerste goal"+(isKO?" (incl. verlenging)":"");
     const gsChips=div("chips");
-    NORMAL_SLOTS.forEach((lbl,i)=>{
-      const c=e("button",{class:"chip chip-accent"+(pred.goalSlot===NORMAL_KEYS[i]?" sel":""),disabled:!editable});
+    const gsSlots = isKO ? [...NORMAL_SLOTS.slice(0,-1), ...ET_SLOTS.slice(0,-1), "Geen goal"] : NORMAL_SLOTS;
+    const gsKeys  = isKO ? [...NORMAL_KEYS.slice(0,-1), ...ET_KEYS.slice(0,-1), "geen"] : NORMAL_KEYS;
+    gsSlots.forEach((lbl,i)=>{
+      const key=gsKeys[i];
+      const c=e("button",{class:"chip chip-accent"+(pred.goalSlot===key?" sel":""),disabled:!editable});
       c.textContent=lbl;
-      if(editable) c.addEventListener("click",()=>{setPred(match.id,"goalSlot",pred.goalSlot===NORMAL_KEYS[i]?"":NORMAL_KEYS[i]); refreshMatchCard(match,editable,isKO,card);});
+      if(editable) c.addEventListener("click",()=>{setPred(match.id,"goalSlot",pred.goalSlot===key?"":key); refreshMatchCard(match,editable,isKO,card);});
       gsChips.appendChild(c);
     });
     gsDiv.appendChild(gsLbl); gsDiv.appendChild(gsChips);
@@ -1619,22 +1638,7 @@ function renderMatchCard(match, editable, isKO) {
   if(isKO&&(editable||pred.et||pred.pkWinner)){
     const koRow=div("extra-row"+(editable?"":" locked-row"));
 
-    // ET - tijdsintervallen incl. verlengingen, alles in 1 lijst (enkel zichtbaar bij gelijkspel)
-    const etDiv=div(""); etDiv.style.cssText="flex:1 1 220px";
-    if(isDrawPred){
-      const etGsLbl=div("extra-label"); etGsLbl.textContent="⏱ Eerste goal verlengingen (bij gelijkspel na 90')";
-      const etGsChips=div("chips");
-      ET_SLOTS.forEach((lbl,i)=>{
-        const c=e("button",{class:"chip chip-purple"+(pred.etGoalSlot===ET_KEYS[i]?" sel":""),disabled:!editable});
-        c.textContent=lbl;
-        if(editable) c.addEventListener("click",()=>{setPred(match.id,"etGoalSlot",pred.etGoalSlot===ET_KEYS[i]?"":ET_KEYS[i]); setPred(match.id,"et",pred.etGoalSlot===ET_KEYS[i]?"":"Ja"); refreshMatchCard(match,editable,isKO,card);});
-        etGsChips.appendChild(c);
-      });
-      etDiv.appendChild(etGsLbl); etDiv.appendChild(etGsChips);
-      koRow.appendChild(etDiv);
-    }
-
-    // PK
+    // PK - winnaar penalty's, enkel zichtbaar bij gelijkspel voorspeld
     if(isDrawPred){
       const pkDiv=div(""); pkDiv.style.cssText="flex:1 1 150px";
       const pkLbl=div("extra-label"); pkLbl.style.color="var(--orange)"; pkLbl.textContent="🎯 Winnaar penalty's";
@@ -2011,15 +2015,15 @@ function renderSpecials() {
   }
   belWrap.appendChild(roundBtns); card.appendChild(belWrap);
 
-  // R32 re-prediction - always shown, locked until July 2
-  const r32PredStart = new Date("2026-07-02T00:00+02:00");
-  const r32Open = (new Date() >= r32PredStart || state.r32PredOverrideOpen) && r16PredOpen();
+  // R32 re-prediction - opens after Ronde van 16 ends, before Kwartfinale starts (8 juli)
+  const r32PredStart = new Date("2026-07-08T00:00+02:00");
+  const r32Open = (new Date() >= r32PredStart || state.r32PredOverrideOpen);
   // Always show this section
   const r32SectionDiv=div(""); r32SectionDiv.style.cssText="margin-top:6px";
-  card.appendChild(sectionHeader("🔄 Hervoorspelling na Ronde van 32 · Opent 2 juli", r32Open?"🟢 Open":"🔒 Opent op 2 juli", r32Open));
+  card.appendChild(sectionHeader("🔄 Hervoorspelling na Ronde van 32 · Opent 8 juli", r32Open?"🟢 Open":"🔒 Opent op 8 juli", r32Open));
   if(!r32Open){
     const r32LockedMsg=div(""); r32LockedMsg.style.cssText="font-size:.74rem;color:var(--muted);font-style:italic;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:10px;border:1px solid var(--border)";
-    r32LockedMsg.textContent="🔒 Deze sectie opent op 2 juli (dag na de laatste groepswedstrijd). Voorspel opnieuw de top 3 voor "+state.pts.champion2+" pt elk.";
+    r32LockedMsg.textContent="🔒 Deze sectie opent op 8 juli (dag na de laatste groepswedstrijd). Voorspel opnieuw de top 3 voor "+state.pts.champion2+" pt elk.";
     card.appendChild(r32LockedMsg);
   }
   card.appendChild(teamPicker("🥇 Winnaar (2e kans)","winner2",state.pts.champion2,state.actualWinner,[],r32Open));
@@ -2310,7 +2314,7 @@ function renderAdminScores() {
   // Manual open/close for tournament specials deadline
   const specRow=div(""); specRow.style.cssText="margin-bottom:14px;padding:12px 14px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:9px;";
   const specTitle2=div(""); specTitle2.style.cssText="font-size:.82rem;font-weight:700;margin-bottom:4px;color:var(--gold)"; specTitle2.textContent="⏰ Specials deadline beheren";
-  const specSub=div(""); specSub.style.cssText="font-size:.68rem;color:var(--muted);margin-bottom:10px;line-height:1.5"; specSub.textContent="Standaard sluit Sectie 1 + 2 op 11 juni 21:00. Hervoorspelling opent op 2 juli.";
+  const specSub=div(""); specSub.style.cssText="font-size:.68rem;color:var(--muted);margin-bottom:10px;line-height:1.5"; specSub.textContent="Standaard sluit Sectie 1 + 2 op 11 juni 21:00. Hervoorspelling opent op 8 juli.";
   specRow.appendChild(specTitle2); specRow.appendChild(specSub);
   // Row 1: Specials (section 1+2)
   const specBtnRow1=div(""); specBtnRow1.style.cssText="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px";
@@ -2354,6 +2358,7 @@ function renderAdminScores() {
 
 function renderAdminMatch(match) {
   const actual=state.actualScores[match.id]||{};
+  const isKO = /^(M\d+|R16_|QF_|SF_|THIRD|FINAL)/.test(match.id);
   const card=div("admin-match");
   const timeDiv=div(""); timeDiv.style.cssText="font-size:.58rem;color:var(--accent);margin-bottom:4px;font-weight:600"; timeDiv.textContent="🕐 "+match.time;
   const scoreRow=div(""); scoreRow.style.cssText="display:grid;grid-template-columns:1fr 34px 10px 34px 1fr;align-items:center;gap:4px;margin-bottom:7px";
@@ -2377,9 +2382,12 @@ function renderAdminMatch(match) {
   const gsDiv=div(""); gsDiv.style.cssText="flex:1 1 165px";
   const gsLbl=div("extra-label"); gsLbl.textContent="⏱ Tijdslot eerste goal";
   const gsChips=div("chips");
-  NORMAL_SLOTS.forEach((lbl,i)=>{
-    const c=e("button",{class:"chip chip-accent chip-sm"+(actual.goalSlot===NORMAL_KEYS[i]?" sel":"")});
-    c.textContent=lbl; c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].goalSlot=actual.goalSlot===NORMAL_KEYS[i]?"":NORMAL_KEYS[i];saveState();renderAdminScores();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
+  const allSlots = isKO ? [...NORMAL_SLOTS.slice(0,-1), ...ET_SLOTS.slice(0,-1), "Geen goal"] : NORMAL_SLOTS;
+  const allKeys = isKO ? [...NORMAL_KEYS.slice(0,-1), ...ET_KEYS.slice(0,-1), "geen"] : NORMAL_KEYS;
+  allSlots.forEach((lbl,i)=>{
+    const key = allKeys[i];
+    const c=e("button",{class:"chip chip-accent chip-sm"+(actual.goalSlot===key?" sel":"")});
+    c.textContent=lbl; c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].goalSlot=actual.goalSlot===key?"":key;saveState();renderAdminScores();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
     gsChips.appendChild(c);
   });
   gsDiv.appendChild(gsLbl); gsDiv.appendChild(gsChips); extras.appendChild(gsDiv);
@@ -2531,7 +2539,7 @@ function renderSpelregels(containerId) {
   card.appendChild(mkRule("⭐","Speler van het toernooi",null,pts.playerTournament,"b"));
   card.appendChild(mkRule("🧤","Keeper van het toernooi",null,pts.keeperTournament,"b"));
   card.appendChild(mkRule("🟥","Rode kaarten totaal",null,pts.redCards,"b"));
-  card.appendChild(mkSec("🔄 Hervoorspelling na R32 (vanaf 2 juli)"));
+  card.appendChild(mkSec("🔄 Hervoorspelling na R32 (vanaf 8 juli)"));
   card.appendChild(mkRule("🥇","Eindwinnaar (2e kans)",null,pts.champion2,"g"));
   card.appendChild(mkRule("🥈","Runner-up (2e kans)",null,pts.runnerUp2,"g"));
   card.appendChild(mkRule("🥉","Derde (2e kans)",null,pts.third2,"g"));
@@ -3398,7 +3406,7 @@ function checkAndShowStartupPopups(){
   const today=getTodayStr();
   const wkStartDate="2026-06-11";
   const dayBeforeWK="2026-06-10";
-  const r32PredStartDate="2026-07-02";
+  const r32PredStartDate="2026-07-08";
 
   // 0. Daily today-matches popup
   const todayMatchesKey="today-matches:"+today;
