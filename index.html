@@ -2121,6 +2121,7 @@ function renderAdminPronostieken() {
   const container = document.getElementById("admin-page-pronostieken");
   if(!container) return;
   container.innerHTML = "";
+  const r32res = resolveR32();
   const participants = Object.keys(state.participants);
   if(participants.length === 0) {
     const card = div("card");
@@ -2156,7 +2157,7 @@ function renderAdminPronostieken() {
         const hasActual = actual.h!==""&&actual.a!=="";
         const row = div(""); row.style.cssText = "display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;margin-bottom:5px;background:"+(hasActual?(matchPts>0?"rgba(34,197,94,.06)":"rgba(239,68,68,.05)"):"var(--dark3)")+";border:1px solid "+(hasActual?(matchPts>0?"rgba(34,197,94,.2)":"rgba(239,68,68,.15)"):"var(--border)");
         const info = div("");
-        const mn = div(""); mn.style.cssText = "font-size:.75rem;font-weight:600"; mn.textContent = m.t1+" – "+m.t2;
+        const mn = div(""); mn.style.cssText = "font-size:.75rem;font-weight:600"; mn.textContent = (r32res[m.id+"_t1"]||m.t1)+" – "+(r32res[m.id+"_t2"]||m.t2);
         const ps = div(""); ps.style.cssText = "font-size:.68rem;color:var(--muted);margin-top:2px"; ps.textContent = "Pronostiek: "+pred.h+" – "+pred.a+(pred.goalSlot?" · "+pred.goalSlot:"")+(pred.firstScorer?" · "+pred.firstScorer:"");
         info.appendChild(mn); info.appendChild(ps);
         if(hasActual&&actual.h!==undefined&&actual.h!==""){const as2=div(""); as2.style.cssText="font-size:.68rem;color:var(--gold);margin-top:1px"; as2.textContent="Uitslag: "+actual.h+" – "+actual.a; info.appendChild(as2);}
@@ -2290,8 +2291,8 @@ function renderAdminScores() {
   const syncLbl=e("span",{style:"font-size:.66rem;color:var(--muted)"},"Haalt officiële WK-scores op");
   syncRow.appendChild(syncBtn); syncRow.appendChild(syncLbl); syncCard.appendChild(syncRow);
 
-  SPEELDAGEN.slice(0,3).forEach(sd=>{
-    const sdTitle=div(""); sdTitle.style.cssText="font-family:Bebas Neue,cursive;font-size:1rem;color:var(--gold);letter-spacing:2px;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border)"; sdTitle.textContent=sd.emoji+" "+sd.label;
+  SPEELDAGEN.forEach(sd=>{
+    const sdTitle=div(""); sdTitle.style.cssText="font-family:Bebas Neue,cursive;font-size:1rem;color:var(--gold);letter-spacing:2px;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border);margin-top:14px"; sdTitle.textContent=sd.emoji+" "+sd.label;
     syncCard.appendChild(sdTitle);
     sd.matches.forEach(m=>syncCard.appendChild(renderAdminMatch(m)));
   });
@@ -2359,16 +2360,19 @@ function renderAdminScores() {
 function renderAdminMatch(match) {
   const actual=state.actualScores[match.id]||{};
   const isKO = /^(M\d+|R16_|QF_|SF_|THIRD|FINAL)/.test(match.id);
+  const r32resM = isKO ? resolveR32() : {};
+  const mT1 = r32resM[match.id+"_t1"] || match.t1;
+  const mT2 = r32resM[match.id+"_t2"] || match.t2;
   const card=div("admin-match");
   const timeDiv=div(""); timeDiv.style.cssText="font-size:.58rem;color:var(--accent);margin-bottom:4px;font-weight:600"; timeDiv.textContent="🕐 "+match.time;
   const scoreRow=div(""); scoreRow.style.cssText="display:grid;grid-template-columns:1fr 34px 10px 34px 1fr;align-items:center;gap:4px;margin-bottom:7px";
-  const t1=span("",match.t1); t1.style.cssText="font-size:.74rem;font-weight:600";
+  const t1=span("",mT1); t1.style.cssText="font-size:.74rem;font-weight:600";
   const hIn=e("input",{type:"number",min:"0",max:"30",class:"score-inp admin-inp",value:actual.h||""});
   hIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].h=ev.target.value;saveState();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
   const vs=span("vsep","–");
   const aIn=e("input",{type:"number",min:"0",max:"30",class:"score-inp admin-inp",value:actual.a||""});
   aIn.addEventListener("input",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].a=ev.target.value;saveState();renderAdminScores();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
-  const t2=span("",match.t2); t2.style.cssText="font-size:.74rem;font-weight:600;text-align:right";
+  const t2=span("",mT2); t2.style.cssText="font-size:.74rem;font-weight:600;text-align:right";
   scoreRow.append(t1,hIn,vs,aIn,t2);
   const extras=div("extra-row");
   const matchSd=SPEELDAGEN.find(sd=>sd.matches.some(m=>m.id===match.id));
@@ -3310,11 +3314,14 @@ function renderStats() {
   ["SD_R32","SD_R16","SD_QF","SD_SF"].forEach(roundId=>{
     const mid=myJokers[roundId]; if(!mid) return; jUsed=true;
     const match=SPEELDAGEN.flatMap(s=>s.matches).find(m=>m.id===mid);
+    const r32resJ=resolveR32();
+    const jT1=match?(r32resJ[mid+"_t1"]||match.t1):mid;
+    const jT2=match?(r32resJ[mid+"_t2"]||match.t2):"";
     const res=calcMatchPts((state.participants[currentUser]?.predictions||{})[mid]||{},state.actualScores[mid]||{},mid,currentUser);
     const row=div(""); row.style.cssText="display:flex;align-items:center;gap:9px;padding:9px 11px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:9px;margin-bottom:5px";
     const icon=span("","🃏"); icon.style.cssText="font-size:1.4rem;flex-shrink:0";
     const info=div(""); info.style.flex="1";
-    const nm=div(""); nm.style.cssText="font-size:.77rem;font-weight:600;color:#e8f0ff"; nm.textContent=match?match.t1+" – "+match.t2:mid;
+    const nm=div(""); nm.style.cssText="font-size:.77rem;font-weight:600;color:#e8f0ff"; nm.textContent=match?jT1+" – "+jT2:mid;
     const sub=div(""); sub.style.cssText="font-size:.65rem;color:#6b82a8;margin-top:1px"; sub.textContent=SPEELDAGEN.find(sd=>sd.id===roundId)?.label||roundId;
     info.append(nm,sub);
     const pts2=div(""); pts2.style.cssText="font-family:'Bebas Neue',cursive;font-size:1.4rem;color:#FFD700;line-height:1"; pts2.textContent=res.total>0?"+"+res.total:"—";
