@@ -2376,13 +2376,7 @@ function renderAdminMatch(match) {
   scoreRow.append(t1,hIn,vs,aIn,t2);
   const extras=div("extra-row");
   const matchSd=SPEELDAGEN.find(sd=>sd.matches.some(m=>m.id===match.id));
-  if(matchSd&&matchSd.knockout){
-    const pkRow=div(""); pkRow.style.cssText="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 8px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:7px";
-    const pkLbl=div(""); pkLbl.style.cssText="font-size:.7rem;color:#a855f7;font-weight:600;flex:1"; pkLbl.textContent="⚡ Naar penalty's?";
-    const pkChk=e("input",{type:"checkbox"}); pkChk.style.cssText="width:16px;height:16px;cursor:pointer"; pkChk.checked=!!actual.pk;
-    pkChk.addEventListener("change",ev=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].pk=ev.target.checked;saveState();if(typeof refreshKlassementIfVisible==="function") refreshKlassementIfVisible(); else renderKlassement(true);});
-    pkRow.appendChild(pkLbl); pkRow.appendChild(pkChk); extras.appendChild(pkRow);
-  }
+  // (oude PK checkbox verwijderd - vervangen door volledige versie met winnaar-keuze onderaan)
   const gsDiv=div(""); gsDiv.style.cssText="flex:1 1 165px";
   const gsLbl=div("extra-label"); gsLbl.textContent="⏱ Tijdslot eerste goal";
   const gsChips=div("chips");
@@ -2398,13 +2392,41 @@ function renderAdminMatch(match) {
   const fsDiv=div(""); fsDiv.style.cssText="flex:1 1 105px";
   const fsLbl=div("extra-label"); fsLbl.textContent="🥅 Eerste scorer";
   const fsChips=div("chips");
-  [match.t1,match.t2,"Geen"].forEach(t=>{
+  [mT1,mT2,"Geen"].forEach(t=>{
     const c=e("button",{class:"chip chip-gold chip-sm"+(actual.firstScorer===t?" sel":"")});
     c.textContent=t==="Geen"?"Geen":t.length>6?t.substring(0,5)+"…":t;
     c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].firstScorer=actual.firstScorer===t?"":t;saveState();renderAdminScores();});
     fsChips.appendChild(c);
   });
   fsDiv.appendChild(fsLbl); fsDiv.appendChild(fsChips); extras.appendChild(fsDiv);
+
+  // Penalty winnaar - shown when admin marks "Naar penalty's?"
+  if(isKO){
+    const pkRow=div(""); pkRow.style.cssText="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap";
+    const pkLbl=div(""); pkLbl.style.cssText="font-size:.7rem;color:var(--purple);font-weight:600;flex:1 1 100%"; pkLbl.textContent="⚡ Naar penalty's?";
+    const pkChk=e("input",{type:"checkbox"}); pkChk.style.cssText="width:16px;height:16px;cursor:pointer";
+    pkChk.checked = actual.pk===true||actual.pk===1;
+    pkChk.addEventListener("change",ev=>{
+      if(!state.actualScores[match.id])state.actualScores[match.id]={};
+      state.actualScores[match.id].pk = ev.target.checked;
+      if(!ev.target.checked) delete state.actualScores[match.id].pkWinner;
+      saveState(); renderAdminScores();
+    });
+    const pkChkWrap=div(""); pkChkWrap.style.cssText="display:flex;align-items:center;gap:6px"; pkChkWrap.append(pkLbl,pkChk);
+    pkRow.appendChild(pkChkWrap);
+    if(actual.pk===true||actual.pk===1){
+      const pkWinLbl=div(""); pkWinLbl.style.cssText="font-size:.68rem;color:var(--muted);flex:1 1 100%;margin-top:4px"; pkWinLbl.textContent="🎯 Winnaar penalty's:";
+      pkRow.appendChild(pkWinLbl);
+      [mT1,mT2].forEach(t=>{
+        const c=e("button",{class:"chip chip-purple chip-sm"+(actual.pkWinner===t?" sel":"")});
+        c.textContent=t.length>10?t.substring(0,9)+"…":t;
+        c.addEventListener("click",()=>{if(!state.actualScores[match.id])state.actualScores[match.id]={};state.actualScores[match.id].pkWinner=actual.pkWinner===t?"":t;saveState();renderAdminScores();});
+        pkRow.appendChild(c);
+      });
+    }
+    extras.appendChild(pkRow);
+  }
+
   card.append(timeDiv,scoreRow,extras);
   return card;
 }
